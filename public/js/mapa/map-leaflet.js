@@ -6,6 +6,14 @@ function initLeafletMap() {
     maxZoom: 18
   }).addTo(map);
   loadProvinceBoundaries();
+
+  // En móvil, el sidebar arranca colapsado para no tapar el mapa
+  if (window.innerWidth <= 768) {
+    const sidebar = document.getElementById('mapSidebar');
+    if (sidebar && !sidebar.classList.contains('collapsed')) {
+      sidebar.classList.add('collapsed');
+    }
+  }
 }
 
 function createCustomIcon(cat) {
@@ -266,7 +274,12 @@ function toggleSidebar() {
   if (!sidebar) return;
   sidebar.classList.toggle('collapsed');
   const isCollapsed = sidebar.classList.contains('collapsed');
-  if (fab) fab.style.display = isCollapsed ? 'flex' : 'none';
+
+  // Gestionar FAB con clase — el CSS decide si es visible según breakpoint
+  if (fab) {
+    fab.style.display = ''; // quitar cualquier inline style previo
+    fab.classList.toggle('fab-hidden', !isCollapsed);
+  }
 
   // Backdrop en móvil
   if (window.innerWidth <= 768) {

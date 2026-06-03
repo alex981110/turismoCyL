@@ -549,3 +549,10 @@
   .map-sidebar { max-width: 100vw !important; width: 100vw !important; }
   .msb-province-grid { grid-template-columns: repeat(2, 1fr) !important; }
 }
+
+/* FAB visible en móvil cuando sidebar colapsado */
+.map-sidebar-fab.fab-hidden { display: none !important; }
+@media (max-width: 768px) {
+  .map-sidebar-fab { display: flex !important; }
+  .map-sidebar-fab.fab-hidden { display: none !important; }
+}
