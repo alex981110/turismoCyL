@@ -1,0 +1,226 @@
+<section class="hero-immersive spa-section spa-hero" id="spa-home">
+
+  <!-- Carrusel de fondo -->
+  <div class="hero-bg" id="heroBg">
+    <div class="hero-slide active" style="background-image:url('/hero/segovia.jpg')"></div>
+    <div class="hero-slide" style="background-image:url('/hero/burgos.jpg')"></div>
+    <div class="hero-slide" style="background-image:url('/hero/salamanca.jpg')"></div>
+    <div class="hero-slide" style="background-image:url('/hero/leon.jpg')"></div>
+    <div class="hero-slide" style="background-image:url('/hero/avila.jpg')"></div>
+    <div class="hero-slide" style="background-image:url('/hero/soria.jpg')"></div>
+    <div class="hero-slide" style="background-image:url('/hero/palencia.jpg')"></div>
+    <div class="hero-slide" style="background-image:url('/hero/valladolid.jpg')"></div>
+    <div class="hero-slide" style="background-image:url('/hero/zamora.jpg')"></div>
+    <div class="hero-bg-overlay"></div>
+  </div>
+
+  <!-- Contenido centrado -->
+  <div class="hero-immersive-content">
+
+    <div id="heroSlideLabel" class="hero-eyebrow">Acueducto Romano · Segovia</div>
+
+    <h1 class="hero-immersive-title">
+      Descubre el corazón<br>
+      <em>de España</em>
+    </h1>
+
+    <p class="hero-immersive-sub">
+      Monumentos, naturaleza, gastronomía y cultura.<br>
+      Tu itinerario personalizado te espera.
+    </p>
+
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button onclick="launchTravelAnimation()" class="hero-immersive-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg>
+        Explorar el mapa
+      </button>
+    </div>
+
+    <div class="hero-immersive-steps">
+      <span><strong>2.619</strong> lugares</span>
+      <span class="hero-step-dot">·</span>
+      <span><strong>9</strong> provincias</span>
+      <span class="hero-step-dot">·</span>
+      <span><strong>63</strong> días de itinerario</span>
+    </div>
+
+    <!-- Puntos indicadores -->
+    <div class="hero-carousel-dots" id="heroCarouselDots"></div>
+
+  </div>
+
+
+<!-- Overlay animación de viaje 3D -->
+<div class="travel-overlay" id="travelOverlay">
+  <!-- Cielo con degradado -->
+  <div class="travel-sky"></div>
+
+  <!-- Montañas silueta -->
+  <svg class="travel-mountains" viewBox="0 0 1440 220" preserveAspectRatio="none">
+    <path d="M0,220 L0,160 Q80,80 160,130 Q240,60 320,110 Q400,40 480,100 Q540,30 620,90 Q700,20 780,80 Q850,10 940,70 Q1020,30 1100,90 Q1180,50 1260,110 Q1340,70 1440,140 L1440,220Z" fill="#2a3a2e"/>
+    <path d="M0,220 L0,180 Q100,120 200,155 Q300,100 400,140 Q500,80 600,130 Q700,70 800,120 Q900,90 1000,140 Q1100,100 1200,145 Q1300,110 1440,160 L1440,220Z" fill="#3a4a3a"/>
+  </svg>
+
+  <!-- Escena 3D de la carretera -->
+  <div class="travel-scene">
+    <div class="travel-road">
+      <div class="road-surface"></div>
+      <div class="road-line road-line-1"></div>
+      <div class="road-line road-line-2"></div>
+      <div class="road-line road-line-3"></div>
+      <div class="road-line road-line-4"></div>
+      <div class="road-line road-line-5"></div>
+      <div class="road-line road-line-6"></div>
+    </div>
+
+    <!-- Árboles laterales -->
+    <div class="travel-trees travel-trees-left">
+      <div class="tree tree-1">🌲</div>
+      <div class="tree tree-2">🌳</div>
+      <div class="tree tree-3">🌲</div>
+    </div>
+    <div class="travel-trees travel-trees-right">
+      <div class="tree tree-1">🌳</div>
+      <div class="tree tree-2">🌲</div>
+      <div class="tree tree-3">🌳</div>
+    </div>
+  </div>
+
+  <!-- Caravana SVG -->
+  <div class="travel-van" id="travelVan">
+    <svg viewBox="0 0 200 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Cuerpo principal -->
+      <rect x="20" y="25" width="160" height="50" rx="8" fill="#D4845C"/>
+      <rect x="20" y="25" width="160" height="50" rx="8" stroke="#8B3A1F" stroke-width="2"/>
+      <!-- Cabina -->
+      <path d="M140,25 L170,25 Q185,25 185,40 L185,75 L140,75 Z" fill="#B85C38" stroke="#8B3A1F" stroke-width="2"/>
+      <!-- Ventanas traseras -->
+      <rect x="30" y="33" width="22" height="18" rx="3" fill="#87CEEB" opacity="0.7"/>
+      <rect x="58" y="33" width="22" height="18" rx="3" fill="#87CEEB" opacity="0.7"/>
+      <rect x="86" y="33" width="22" height="18" rx="3" fill="#87CEEB" opacity="0.7"/>
+      <!-- Parabrisas -->
+      <path d="M145,33 L175,33 Q180,33 180,38 L180,55 L145,55 Z" fill="#87CEEB" opacity="0.7"/>
+      <!-- Franja decorativa -->
+      <rect x="20" y="55" width="165" height="4" fill="#8B3A1F" opacity="0.5"/>
+      <!-- Ruedas -->
+      <circle cx="55" cy="78" r="12" fill="#333" stroke="#555" stroke-width="2"/>
+      <circle cx="55" cy="78" r="5" fill="#888"/>
+      <circle cx="155" cy="78" r="12" fill="#333" stroke="#555" stroke-width="2"/>
+      <circle cx="155" cy="78" r="5" fill="#888"/>
+      <!-- Luces traseras -->
+      <rect x="20" y="60" width="5" height="8" rx="2" fill="#ff4444"/>
+      <!-- Faros delanteros -->
+      <rect x="180" y="50" width="5" height="8" rx="2" fill="#ffdd44"/>
+      <!-- Letrero en el lateral -->
+      <text x="75" y="70" font-size="8" fill="#F2ECE0" font-family="sans-serif" font-weight="bold" text-anchor="middle">CyL TOUR</text>
+    </svg>
+  </div>
+
+  <!-- Texto de viaje -->
+  <div class="travel-text" id="travelText">
+    <span class="travel-text-line">Viajando a Castilla y Le&oacute;n</span>
+    <span class="travel-dots"><span>.</span><span>.</span><span>.</span></span>
+  </div>
+
+  <!-- Señal de carretera -->
+  <div class="travel-sign" id="travelSign">
+    <div class="sign-post"></div>
+    <div class="sign-board">
+      <span>Castilla y Le&oacute;n</span>
+      <small>Bienvenido</small>
+    </div>
+  </div>
+</div>
+
+</section>
+
+<script>
+(function() {
+  var SLIDES = [
+    { label: 'Acueducto Romano · Segovia' },
+    { label: 'Catedral · Burgos' },
+    { label: 'Plaza Mayor · Salamanca' },
+    { label: 'Las Médulas · León' },
+    { label: 'Murallas medievales · Ávila' },
+    { label: 'Laguna Negra · Soria' },
+    { label: 'San Martín de Frómista · Palencia' },
+    { label: 'Iglesia de San Pablo · Valladolid' },
+    { label: 'Catedral · Zamora' }
+  ];
+
+  var slides   = document.querySelectorAll('.hero-slide');
+  var dotsWrap = document.getElementById('heroCarouselDots');
+  var labelEl  = document.getElementById('heroSlideLabel');
+  if (labelEl) labelEl.style.transition = 'opacity 0.4s ease';
+  var current = 0;
+
+  slides.forEach(function(_, i) {
+    var dot = document.createElement('button');
+    dot.className = 'hero-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', SLIDES[i].label);
+    dot.onclick = function() { goTo(i); resetTimer(); };
+    dotsWrap.appendChild(dot);
+  });
+
+  function goTo(idx) {
+    slides[current].classList.remove('active');
+    dotsWrap.children[current].classList.remove('active');
+    current = idx;
+    slides[current].classList.add('active');
+    dotsWrap.children[current].classList.add('active');
+    if (labelEl) {
+      labelEl.style.opacity = '0';
+      setTimeout(function() {
+        labelEl.textContent = SLIDES[current].label;
+        labelEl.style.opacity = '1';
+      }, 300);
+    }
+  }
+
+  function next() { goTo((current + 1) % slides.length); }
+  var timer = setInterval(next, 6000);
+  function resetTimer() { clearInterval(timer); timer = setInterval(next, 6000); }
+
+  var bg = document.getElementById('heroBg');
+  if (bg) {
+    bg.addEventListener('mouseenter', function() { clearInterval(timer); });
+    bg.addEventListener('mouseleave', function() { timer = setInterval(next, 6000); });
+  }
+})();
+
+/* ── Animación de viaje 3D ── */
+window.launchTravelAnimation = function() {
+  var overlay = document.getElementById('travelOverlay');
+  var van     = document.getElementById('travelVan');
+  var text    = document.getElementById('travelText');
+  var sign    = document.getElementById('travelSign');
+
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+
+  // Fase 1: La furgoneta aparece y avanza (0-1.5s)
+  setTimeout(function() { van.classList.add('driving'); }, 100);
+
+  // Fase 2: Texto aparece (0.8s)
+  setTimeout(function() { text.classList.add('visible'); }, 800);
+
+  // Fase 3: Señal de bienvenida (2.5s)
+  setTimeout(function() {
+    sign.classList.add('visible');
+  }, 2500);
+
+  // Fase 4: Flash blanco y navegación (3.8s)
+  setTimeout(function() {
+    overlay.classList.add('flash');
+  }, 3800);
+
+  setTimeout(function() {
+    overlay.classList.remove('active', 'flash');
+    van.classList.remove('driving');
+    text.classList.remove('visible');
+    sign.classList.remove('visible');
+    document.body.style.overflow = '';
+    navigateTo('/mapa');
+  }, 4400);
+};
+</script>

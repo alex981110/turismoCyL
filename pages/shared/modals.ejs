@@ -1,0 +1,222 @@
+<!-- ONBOARDING MODAL — Cuestionario de gustos -->
+<div class="modal-overlay" id="onboardingModal" style="display:none;z-index:10000;">
+  <div class="modal-cyl" style="max-width:580px;width:95%;padding:0;overflow:hidden;border-radius:16px;">
+
+    <!-- Header con progreso -->
+    <div id="obHeader" style="padding:24px 28px 16px;border-bottom:1px solid rgba(201,168,76,0.15);">
+      <button class="modal-close" onclick="closeOnboarding()" style="top:16px;right:16px;">✕</button>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <span id="obStepLabel" style="font-size:0.75rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;">Paso 1 de 2</span>
+      </div>
+      <!-- Barra de progreso -->
+      <div style="height:3px;background:rgba(201,168,76,0.15);border-radius:2px;">
+        <div id="obProgress" style="height:100%;background:var(--gold);border-radius:2px;transition:width 0.4s ease;width:50%;"></div>
+      </div>
+    </div>
+
+    <!-- Body del paso -->
+    <div id="obBody" style="padding:24px 28px;max-height:65vh;overflow-y:auto;"></div>
+
+    <!-- Footer con botones -->
+    <div style="padding:16px 28px 24px;border-top:1px solid rgba(201,168,76,0.15);display:flex;justify-content:space-between;align-items:center;">
+      <button id="obBtnBack" onclick="obPrev()" style="background:none;border:1px solid rgba(201,168,76,0.3);color:var(--parch2);padding:8px 20px;cursor:pointer;font-size:0.85rem;display:none;">← Atrás</button>
+      <span></span>
+      <button id="obBtnNext" onclick="obNext()" class="btn" style="padding:10px 28px;font-size:0.9rem;">Siguiente →</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- PHOTO LIGHTBOX -->
+<div id="photoModal" onclick="closePhotoModal()">
+  <button class="photo-close" onclick="closePhotoModal()">✕</button>
+  <img id="photoModalImg" src="" alt="">
+  <div class="photo-caption" id="photoModalCaption"></div>
+</div>
+
+<!-- RATING MODAL -->
+<div id="ratingModal">
+  <div class="rating-modal-inner">
+    <button style="position:absolute;top:14px;right:18px;background:none;border:none;color:var(--parch2);font-size:1.2rem;cursor:pointer;" onclick="closeRatingModal()">✕</button>
+    <h3 id="ratingModalTitle">Valorar lugar</h3>
+    <p id="ratingModalSubtitle">Tu opinión ayuda a otros viajeros</p>
+    <div class="big-stars" id="ratingStars">
+      <span class="star" data-val="1">★</span>
+      <span class="star" data-val="2">★</span>
+      <span class="star" data-val="3">★</span>
+      <span class="star" data-val="4">★</span>
+      <span class="star" data-val="5">★</span>
+    </div>
+    <span class="rating-label">Comentario (opcional)</span>
+    <textarea id="ratingComment" class="form-control form-control-cyl mb-3" placeholder="Comparte tu experiencia..." style="resize:vertical;min-height:80px;"></textarea>
+    <button class="btn w-100" onclick="submitRating()">Enviar valoración</button>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal-cyl">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-tabs">
+      <div class="modal-tab active" id="tabLogin" onclick="switchTab('login')">Iniciar Sesión</div>
+      <div class="modal-tab" id="tabRegister" onclick="switchTab('register')">Registrarse</div>
+    </div>
+    <div id="loginForm">
+      <div class="mb-3">
+        <label class="form-label-cyl">Correo electrónico</label>
+        <input type="email" id="loginEmail" class="form-control form-control-cyl" placeholder="tu@correo.es">
+      </div>
+      <div class="mb-3">
+        <label class="form-label-cyl">Contraseña</label>
+        <div class="input-group">
+          <input type="password" id="loginPassword" class="form-control form-control-cyl" placeholder="••••••••">
+          <button type="button" onclick="togglePassword('loginPassword', this)" style="background:rgba(245,237,216,0.05);border:1px solid rgba(201,168,76,0.25);border-left:none;color:var(--parch2);padding:0 14px;cursor:pointer;font-size:1.1rem;" title="Mostrar/ocultar contraseña">👁</button>
+        </div>
+      </div>
+      <button class="btn w-100 mt-2" onclick="doLogin()">Entrar</button>
+    </div>
+    <div id="registerForm" style="display:none;">
+      <div class="mb-3">
+        <label class="form-label-cyl">Nombre completo</label>
+        <input type="text" id="regName" class="form-control form-control-cyl" placeholder="Tu nombre">
+      </div>
+      <div class="mb-3">
+        <label class="form-label-cyl">Correo electrónico</label>
+        <input type="email" id="regEmail" class="form-control form-control-cyl" placeholder="tu@correo.es">
+      </div>
+      <div class="mb-3">
+        <label class="form-label-cyl">Contraseña</label>
+        <div class="input-group">
+          <input type="password" id="regPassword" class="form-control form-control-cyl" placeholder="Mínimo 6 caracteres">
+          <button type="button" onclick="togglePassword('regPassword', this)" style="background:rgba(245,237,216,0.05);border:1px solid rgba(201,168,76,0.25);border-left:none;color:var(--parch2);padding:0 14px;cursor:pointer;font-size:1.1rem;" title="Mostrar/ocultar contraseña">👁</button>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label-cyl">Repetir contraseña</label>
+        <div class="input-group">
+          <input type="password" id="regPassword2" class="form-control form-control-cyl" placeholder="Repite tu contraseña">
+          <button type="button" onclick="togglePassword('regPassword2', this)" style="background:rgba(245,237,216,0.05);border:1px solid rgba(201,168,76,0.25);border-left:none;color:var(--parch2);padding:0 14px;cursor:pointer;font-size:1.1rem;" title="Mostrar/ocultar contraseña">👁</button>
+        </div>
+      </div>
+      <button class="btn w-100 mt-2" onclick="doRegister()">Crear cuenta gratis</button>
+      <p class="text-center mt-3" style="font-size:0.8rem;color:var(--parch2);">
+        ✦ Accede al planificador de días y rutas exclusivas
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEWS DRAWER -->
+<div id="drawerOverlay" onclick="closeReviewsDrawer()"></div>
+<div id="reviewsDrawer">
+  <div class="drawer-header" style="position:relative;">
+    <button class="drawer-close" onclick="closeReviewsDrawer()">✕</button>
+    <h3 id="drawerTitle">Valoraciones</h3>
+    <p id="drawerSubtitle"></p>
+    <!-- Botón de favorito (se inyecta desde JS) -->
+    <div id="drawerFavBtn" style="position:absolute;top:14px;right:48px;display:none;"></div>
+  </div>
+  <div class="drawer-avg" id="drawerAvg"></div>
+  <div class="drawer-reviews" id="drawerReviews"></div>
+</div>
+
+<!-- FAVORITES DRAWER -->
+<div id="favDrawerOverlay" onclick="closeFavDrawer()"></div>
+<div id="favDrawer">
+  <div class="drawer-header">
+    <button class="drawer-close" onclick="closeFavDrawer()">✕</button>
+    <h3>❤️ Mis Favoritos</h3>
+    <p id="favDrawerSubtitle" style="color:var(--parch2);font-size:0.82rem;margin:4px 0 0;"></p>
+  </div>
+  <div id="favDrawerBody" style="padding:16px;overflow-y:auto;flex:1;"></div>
+</div>
+
+<!-- MARKER EDIT MODAL -->
+<div class="modal-overlay" id="markerEditModal">
+  <div class="modal-cyl" style="max-width:540px;width:95%;">
+    <button class="modal-close" onclick="closeMarkerEditModal()">✕</button>
+    <h3 style="font-family:'Playfair Display',serif;color:var(--gold);margin-bottom:20px;">✏️ Editar Marcador</h3>
+    <input type="hidden" id="editMarkerId">
+    <div class="row g-3">
+      <div class="col-12">
+        <label class="form-label-cyl">Nombre</label>
+        <input type="text" id="editMarkerName" class="form-control form-control-cyl" placeholder="Nombre del lugar">
+      </div>
+      <div class="col-12">
+        <label class="form-label-cyl">Descripción</label>
+        <textarea id="editMarkerDesc" class="form-control form-control-cyl" rows="3" placeholder="Descripción" style="resize:vertical;"></textarea>
+      </div>
+      <div class="col-6">
+        <label class="form-label-cyl">Provincia</label>
+        <select id="editMarkerProvince" class="form-control form-control-cyl">
+          <option value="">— Selecciona —</option>
+          <option>Ávila</option><option>Burgos</option><option>León</option>
+          <option>Palencia</option><option>Salamanca</option><option>Segovia</option>
+          <option>Soria</option><option>Valladolid</option><option>Zamora</option>
+        </select>
+      </div>
+      <div class="col-6">
+        <label class="form-label-cyl">Categoría</label>
+        <select id="editMarkerCat" class="form-control form-control-cyl">
+          <option value="">— Selecciona —</option>
+          <option value="monumento">🏛 Monumento</option>
+          <option value="museo">🎨 Museo</option>
+          <option value="naturaleza">🌿 Naturaleza</option>
+          <option value="historia">📜 Historia</option>
+          <option value="gastronomia">🍽 Gastronomía</option>
+          <option value="teatro">🎭 Teatro</option>
+          <option value="biblioteca">📚 Biblioteca</option>
+          <option value="cultura">🏛 Cultura</option>
+          <option value="exposicion">🖼 Exposición</option>
+          <option value="cine">🎬 Cine</option>
+        </select>
+      </div>
+      <div class="col-6">
+        <label class="form-label-cyl">Latitud</label>
+        <input type="number" id="editMarkerLat" class="form-control form-control-cyl" step="0.0001" placeholder="41.5000">
+      </div>
+      <div class="col-6">
+        <label class="form-label-cyl">Longitud</label>
+        <input type="number" id="editMarkerLng" class="form-control form-control-cyl" step="0.0001" placeholder="-4.0000">
+      </div>
+      <div class="col-12">
+        <label class="form-label-cyl">URL Foto</label>
+        <input type="text" id="editMarkerPhoto" class="form-control form-control-cyl" placeholder="https://...">
+      </div>
+      <div class="col-12">
+        <label class="form-label-cyl">Sitio Web</label>
+        <input type="text" id="editMarkerUrl" class="form-control form-control-cyl" placeholder="https://...">
+      </div>
+    </div>
+    <div class="d-flex gap-2 mt-4">
+      <button class="btn w-100" onclick="saveMarkerEdit()">💾 Guardar cambios</button>
+      <button class="btn btn-outline" onclick="closeMarkerEditModal()" style="min-width:100px;">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ROUTE MAP OVERLAY -->
+<div id="routeMapOverlay" style="border-radius:0;">
+  <div id="routeMapHeader">
+    <div id="routeMapTitle">
+      <span id="routeMapTitleText">Ruta</span>
+      <span id="routeMapSubtext"></span>
+    </div>
+    <button id="routeMapCloseBtn" onclick="closeRouteMap()">✕ Cerrar</button>
+  </div>
+  <div id="routeMapBody">
+    <div id="routeMapSidebar">
+      <div id="routeMapStopList"></div>
+    </div>
+    <div id="routeMapContainer"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container position-fixed bottom-0 end-0 p-4" style="z-index:9999;">
+  <div id="toast" class="toast toast-cyl align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-body d-flex align-items-center gap-2">
+      <span id="toastMsg"></span>
+    </div>
+  </div>
+</div>

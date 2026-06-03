@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../pages/shared/head') %>
+<body>
+
+<button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba">▲</button>
+<div class="province-tooltip" id="provinceTooltip"></div>
+
+<%- include('../pages/shared/navbar') %>
+<%- include('../pages/home/hero') %>
+<%- include('../pages/mapa/mapa') %>
+<%- include('../pages/itinerario/planner') %>
+<%- include('../pages/itinerario/itinerario') %>
+<%- include('../pages/mis-itinerarios/mis-itinerarios') %>
+<%- include('../pages/admin/admin') %>
+<%- include('../pages/shared/modals') %>
+<%- include('../pages/shared/footer') %>
+
+<!-- Compartido -->
+<script src="/js/shared/data.js"></script>
+<script src="/js/shared/auth.js"></script>
+<script src="/js/shared/utils.js"></script>
+<script src="/js/shared/ratings.js"></script>
+<script src="/js/shared/reviews.js"></script>
+<script src="/js/shared/favorites.js"></script>
+
+<!-- Mapa -->
+<script src="/js/mapa/map-leaflet.js"></script>
+<script src="/js/mapa/map-d3.js"></script>
+<script src="/js/mapa/planner.js"></script>
+<script src="/js/mapa/overpass.js"></script>
+
+<!-- Itinerario -->
+<script src="/js/itinerario/itinerary.js"></script>
+<script src="/js/itinerario/pdf.js"></script>
+<script src="/js/itinerario/route.js"></script>
+
+<!-- Home -->
+<script src="/js/home/onboarding.js"></script>
+
+<!-- Admin -->
+<script src="/js/admin/admin.js"></script>
+
+<!-- Router SPA — siempre al final -->
+<script src="/js/shared/router.js"></script>
+
+<script>
+  function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+    btn.textContent = isHidden ? '🙈' : '👁';
+  }
+</script>
+</body>
+</html>

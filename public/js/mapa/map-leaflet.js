@@ -1,0 +1,308 @@
+function initLeafletMap() {
+  if (map) return; // Ya inicializado
+  map = L.map('map', { zoomControl: true }).setView([41.5, -4.0], 7);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '©OpenStreetMap ©CARTO',
+    maxZoom: 18
+  }).addTo(map);
+  loadProvinceBoundaries();
+}
+
+function createCustomIcon(cat) {
+  const emoji = catIcon[cat] || catIcon.default;
+  return L.divIcon({
+    html: `<div style="background:#1a1209;border:2px solid #c9a84c;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,0.5);">${emoji}</div>`,
+    className: '',
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
+    popupAnchor: [0, -20]
+  });
+}
+
+function loadProvinceMarkers(province) {
+  if (!map) return;
+
+  // Eliminar solo el cluster anterior — nunca el provinceBoundariesLayer
+  if (appState.clusterGroup) {
+    map.removeLayer(appState.clusterGroup);
+    appState.clusterGroup = null;
+  }
+  appState.activeLeafletMarkers = [];
+
+  const pMarkers = appState.markers.filter(m => m.province === province);
+  const activeCat = appState.filterCat || null;
+  const displayed = activeCat ? pMarkers.filter(m => m.cat === activeCat) : pMarkers;
+
+  const latLngs = [];
+  const clusterGroup = L.markerClusterGroup({
+    maxClusterRadius: 60,
+    iconCreateFunction: cluster => {
+      const count = cluster.getChildCount();
+      return L.divIcon({
+        html: `<div style="background:rgba(201,168,76,0.9);color:#1a1209;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:0.85rem;border:2px solid #1a1209;box-shadow:0 2px 8px rgba(0,0,0,0.4);">${count}</div>`,
+        className: '', iconSize: [36,36], iconAnchor: [18,18]
+      });
+    }
+  });
+  appState.clusterGroup = clusterGroup;
+  displayed.forEach(mk => {
+    const searchUrl = mk.url || `https://www.google.com/search?q=${encodeURIComponent(mk.name + ' ' + mk.province)}`;
+    const safeName = mk.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const leafletMarker = L.marker([mk.lat, mk.lng], { icon: createCustomIcon(mk.cat) })
+      .bindTooltip(`<span style="font-family:'Playfair Display',serif;font-size:0.82rem;color:#c9a84c;font-weight:700;">${mk.name}</span><br><span style="font-size:0.72rem;color:#999;">${catLabel[mk.cat]||mk.cat}</span>`, {
+        direction: 'top',
+        offset: [0, -8],
+        className: 'leaflet-tooltip-cyl',
+        opacity: 1
+      })
+      .bindPopup(`
+        <div class="lf-popup" onclick="map.closePopup();openReviewsDrawer('${safeName}','${mk.province}')" style="cursor:pointer;position:relative;">
+          <div style="display:flex;align-items:center;justify-content:center;height:72px;background:rgba(184,92,56,0.07);font-size:2.2rem;">
+            ${catIcon[mk.cat]||'📍'}
+          </div>
+          <div class="lf-popup-body">
+            <strong class="lf-popup-name" style="display:flex;align-items:center;gap:6px;">
+              <button onclick="event.stopPropagation();toggleFavorite('${mk._id}','${safeName}');setTimeout(()=>{map.closePopup();loadProvinceMarkers('${mk.province}');},150);"
+                title="Añadir a favoritos"
+                style="background:transparent;border:none;cursor:pointer;font-size:1rem;padding:0;line-height:1;flex-shrink:0;">
+                ${isFavorite(mk._id) ? '❤️' : '🤍'}
+              </button>
+              <span>${mk.name}</span>
+            </strong>
+            <div class="lf-popup-meta">
+              <span class="lf-popup-pill">${catIcon[mk.cat]||'📍'} ${catLabel[mk.cat]||mk.cat}</span>
+              <span class="lf-popup-prov">${mk.province}</span>
+            </div>
+            <p class="lf-popup-hint">Toca para ver detalles →</p>
+          </div>
+        </div>
+      `, { maxWidth: 260, className: 'lf-popup-wrap' })
+      ;
+    clusterGroup.addLayer(leafletMarker);
+    appState.activeLeafletMarkers.push(leafletMarker);
+    latLngs.push([mk.lat, mk.lng]);
+  });
+
+  // Fit map to all markers
+  map.addLayer(clusterGroup);
+  if (latLngs.length > 0) {
+    map.fitBounds(L.latLngBounds(latLngs), { padding: [30, 30], maxZoom: 13, animate: true, duration: 1 });
+  } else {
+    const center = provinceCenters[province];
+    if (center) map.setView(center, 10, { animate: true });
+  }
+
+  // Update markers grid with category filter buttons
+  const catCounts = {};
+  pMarkers.forEach(m => { catCounts[m.cat] = (catCounts[m.cat]||0)+1; });
+
+  const filterBar = document.getElementById('catFilterBar');
+  if (filterBar) {
+    filterBar.innerHTML = `
+      <button onclick="setCatFilter(null,'${province}')" style="${!activeCat?'background:rgba(42,33,24,0.16);border-color:#c9a84c;color:#c9a84c;':''}background:transparent;border:1px solid rgba(42,33,24,0.20);color:var(--parch2);padding:4px 10px;cursor:pointer;font-family:Crimson Pro,serif;font-size:0.8rem;transition:all 0.2s;margin:2px;">
+        Todos (${pMarkers.length})
+      </button>
+      ${Object.entries(catCounts).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`
+        <button onclick="setCatFilter('${c}','${province}')" style="${activeCat===c?'background:rgba(42,33,24,0.16);border-color:#c9a84c;color:#c9a84c;':''}background:transparent;border:1px solid rgba(42,33,24,0.20);color:var(--parch2);padding:4px 10px;cursor:pointer;font-family:Crimson Pro,serif;font-size:0.8rem;transition:all 0.2s;margin:2px;">
+          ${catIcon[c]||'📍'} ${catLabel[c]||c} (${n})
+        </button>
+      `).join('')}
+    `;
+  }
+
+  const CARDS_PER_PAGE = 8;
+  appState.visibleCards = CARDS_PER_PAGE;
+  appState.currentDisplayed = displayed;
+
+  renderMarkerCards();
+
+  document.getElementById('markerCount').textContent = displayed.length > 0 ? displayed.length + ' lugares' : '';
+}
+
+function renderMarkerCards() {
+  let displayed = [...(appState.currentDisplayed || [])];
+
+  // Ordenar por valoración media (mayor primero), sin valoración al final
+  displayed.sort((a, b) => {
+    const avgA = getAvgRating(a.name) || 0;
+    const avgB = getAvgRating(b.name) || 0;
+    return avgB - avgA;
+  });
+
+  const visible = appState.visibleCards || 8;
+  const slice = displayed.slice(0, visible);
+
+  const grid = document.getElementById('markersGrid');
+  const showMoreEl = document.getElementById('markersShowMore');
+
+  grid.style.display = slice.length > 0 ? 'flex' : 'none';
+  grid.style.flexDirection = 'column';
+  grid.style.gap = '0';
+  grid.innerHTML = slice.map((mk, idx) => {
+    const safeName = mk.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const cardId   = 'card-' + mk.id;
+    const avg      = getAvgRating(mk.name);
+    const icon     = catIcon[mk.cat] || '📍';
+    const label    = catLabel[mk.cat] || mk.cat;
+    const photo    = mk.photo || '';
+    const isFav    = isFavorite(mk._id);
+    const starsHtml = avg > 0
+      ? `<span class="mc-stars">${'★'.repeat(Math.round(avg))}${'☆'.repeat(5-Math.round(avg))}</span>`
+      : '';
+    const thumbHtml = '';
+    return `
+    <div class="mc-row" id="${cardId}"
+         onclick="flyToMarker(${mk.lat},${mk.lng});openReviewsDrawer('${safeName}','${mk.province}')">
+      <div class="mc-thumb">
+        <div class="mc-thumb-fallback" style="display:flex">${icon}</div>
+      </div>
+      <div class="mc-body">
+        <div class="mc-name">${mk.name}</div>
+        <div class="mc-meta">
+          <span class="mc-pill">${icon} ${label}</span>
+          ${starsHtml}
+        </div>
+      </div>
+      <button class="mc-fav" id="fav-card-${mk._id}"
+              onclick="event.stopPropagation();toggleFavorite('${mk._id}','${safeName}')"
+              title="${isFav ? 'Quitar favorito' : 'Añadir favorito'}">
+        ${isFav ? '❤️' : '🤍'}
+      </button>
+    </div>`;
+  }).join('');
+
+  // Show more / show less buttons
+  const remaining = displayed.length - visible;
+  if (displayed.length <= 8) {
+    showMoreEl.style.display = 'none';
+  } else {
+    showMoreEl.style.display = 'block';
+    const btnStyle = `display:inline-block;background:transparent;border:1px solid rgba(201,168,76,0.4);color:var(--gold);padding:9px 28px;cursor:pointer;font-family:'Playfair Display',serif;font-size:0.88rem;letter-spacing:0.08em;transition:all 0.2s;margin:0 6px;`;
+    const btnHover = `onmouseover="this.style.background='rgba(184,92,56,0.10)';this.style.borderColor='var(--terra)'" onmouseout="this.style.background='transparent';this.style.borderColor='rgba(201,168,76,0.4)'"`;
+    let html = '';
+    if (remaining > 0) {
+      html += `<button style="${btnStyle}" ${btnHover} onclick="appState.visibleCards+=${Math.min(remaining,8)};renderMarkerCards()">
+        Ver más <span style="opacity:0.6;font-size:0.8rem;">(${remaining} restantes)</span> ▼
+      </button>`;
+    }
+    if (visible > 8) {
+      html += `<button style="${btnStyle}" ${btnHover} onclick="appState.visibleCards=8;renderMarkerCards()">
+        Ver menos ▲
+      </button>`;
+    }
+    showMoreEl.innerHTML = html;
+  }
+}
+
+function loadAllMarkersOnMap() {
+  if (!map) { setTimeout(loadAllMarkersOnMap, 200); return; }
+  if (appState.clusterGroup) {
+    map.removeLayer(appState.clusterGroup);
+    appState.clusterGroup = null;
+  }
+  appState.activeLeafletMarkers = [];
+
+  const clusterGroup = L.markerClusterGroup({
+    maxClusterRadius: 60,
+    showCoverageOnHover: false,
+    iconCreateFunction: function(cluster) {
+      const count = cluster.getChildCount();
+      return L.divIcon({
+        html: `<div style="background:rgba(201,168,76,0.92);color:#1a1209;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:900;font-size:0.85rem;border:2px solid rgba(255,255,255,0.3);box-shadow:0 2px 8px rgba(0,0,0,0.4);">${count}</div>`,
+        className: '', iconSize: [38,38], iconAnchor: [19,19]
+      });
+    }
+  });
+
+  appState.clusterGroup = clusterGroup;
+
+  // Sample all markers (max 800 for performance)
+  const all = appState.markers.filter(m => m.lat && m.lng);
+  const sample = all.length > 800
+    ? all.filter((_, i) => i % Math.ceil(all.length / 800) === 0)
+    : all;
+
+  sample.forEach(mk => {
+    const safeName = mk.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const leafletMarker = L.marker([mk.lat, mk.lng], { icon: createCustomIcon(mk.cat) })
+      .bindTooltip(`<span style="font-family:'Playfair Display',serif;font-size:0.82rem;color:#c9a84c;font-weight:700;">${mk.name}</span>`, {
+        direction: 'top', offset: [0,-8], className: 'leaflet-tooltip-cyl', opacity:1
+      })
+      .bindPopup(`
+        <div class="lf-popup" onclick="map.closePopup();openReviewsDrawer('${safeName}','${mk.province}')" style="cursor:pointer;position:relative;">
+          <div style="display:flex;align-items:center;justify-content:center;height:72px;background:rgba(184,92,56,0.07);font-size:2.2rem;">
+            ${catIcon[mk.cat]||'📍'}
+          </div>
+          <div class="lf-popup-body">
+            <strong class="lf-popup-name" style="display:flex;align-items:center;gap:6px;">
+              <button onclick="event.stopPropagation();toggleFavorite('${mk._id}','${safeName}');setTimeout(()=>map.closePopup(),150);"
+                title="Añadir a favoritos"
+                style="background:transparent;border:none;cursor:pointer;font-size:1rem;padding:0;line-height:1;flex-shrink:0;">
+                ${isFavorite(mk._id) ? '❤️' : '🤍'}
+              </button>
+              <span>${mk.name}</span>
+            </strong>
+            <div class="lf-popup-meta">
+              <span class="lf-popup-pill">${catIcon[mk.cat]||'📍'} ${catLabel[mk.cat]||mk.cat}</span>
+              <span class="lf-popup-prov">${mk.province}</span>
+            </div>
+            <p class="lf-popup-hint">Toca para ver detalles →</p>
+          </div>
+        </div>
+      `, { maxWidth: 260, className: 'lf-popup-wrap' });
+
+    clusterGroup.addLayer(leafletMarker);
+    appState.activeLeafletMarkers.push(leafletMarker);
+  });
+
+  map.addLayer(clusterGroup);
+  // Fit to CyL bounds
+  map.setView([41.6, -4.0], 7);
+}
+
+function toggleSidebar() {
+  const sidebar  = document.getElementById('mapSidebar');
+  const fab      = document.getElementById('sidebarFab');
+  if (!sidebar) return;
+  sidebar.classList.toggle('collapsed');
+  const isCollapsed = sidebar.classList.contains('collapsed');
+  if (fab) fab.style.display = isCollapsed ? 'flex' : 'none';
+
+  // Backdrop en móvil
+  if (window.innerWidth <= 768) {
+    let bd = document.getElementById('mapSidebarBackdrop');
+    if (!bd) {
+      bd = document.createElement('div');
+      bd.id = 'mapSidebarBackdrop';
+      bd.className = 'map-sidebar-backdrop';
+      bd.onclick = toggleSidebar;
+      sidebar.parentNode.insertBefore(bd, sidebar);
+    }
+    bd.classList.toggle('visible', !isCollapsed);
+  }
+
+  setTimeout(() => { if (map) map.invalidateSize(); }, 320);
+}
+
+function flyToMarker(lat, lng) {
+  if (!map) return;
+  map.setView([lat, lng], 14, { animate: true });
+}
+
+function focusMarkerFromPlanner(lat, lng) {
+  if (!lat || !lng) return;
+  if (!map) return;
+  map.setView([lat, lng], 16, { animate: true, duration: 0.8 });
+  setTimeout(() => {
+    const lm = appState.activeLeafletMarkers.find(m =>
+      Math.abs(m.getLatLng().lat - lat) < 0.0001 && Math.abs(m.getLatLng().lng - lng) < 0.0001
+    );
+    if (lm) {
+      if (appState.clusterGroup) appState.clusterGroup.zoomToShowLayer(lm, () => lm.openPopup());
+      else lm.openPopup();
+    }
+  }, 500);
+}
+
+
+// ============================================================

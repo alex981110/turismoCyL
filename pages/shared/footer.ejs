@@ -1,0 +1,88 @@
+<footer class="site-footer" id="siteFooter">
+
+  <!-- Franja superior con columnas de info -->
+  <div class="footer-main">
+    <div class="footer-container">
+
+      <!-- Col 1: Marca -->
+      <div class="footer-col footer-brand">
+        <div class="footer-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:28px;height:28px;">
+            <path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/>
+          </svg>
+          <span>Castilla y Le&oacute;n</span>
+        </div>
+        <p class="footer-desc">
+          Explora el patrimonio, la naturaleza y la gastronom&iacute;a de la comunidad m&aacute;s grande de Espa&ntilde;a.
+          Planifica tu viaje perfecto con nuestro mapa interactivo e itinerarios personalizados.
+        </p>
+        <div class="footer-social">
+          <a href="https://www.instagram.com/turismocastillayleon/" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="https://twitter.com/CyLesVida" target="_blank" rel="noopener" aria-label="X / Twitter" title="X / Twitter">
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="https://www.facebook.com/turismocastillayleon" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+          <a href="https://www.youtube.com/@turismocastillayleon" target="_blank" rel="noopener" aria-label="YouTube" title="YouTube">
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/><polygon fill="#fff" points="9.545,15.568 15.818,12 9.545,8.432"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Col 2: Explora -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Explora</h4>
+        <ul class="footer-links">
+          <li><a href="/mapa" onclick="event.preventDefault();navigateTo('/mapa')">Mapa interactivo</a></li>
+          <li><a href="/planificador" onclick="event.preventDefault();navigateTo('/planificador')">Planificador de viaje</a></li>
+          <li><a href="/itinerario" onclick="event.preventDefault();navigateTo('/itinerario')">Itinerarios</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Provincias -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Provincias</h4>
+        <ul class="footer-links footer-links--two-col">
+          <li><a href="/mapa" onclick="event.preventDefault();goToProvince('Ávila')">Ávila</a></li>
+          <li><a href="/mapa" onclick="event.preventDefault();goToProvince('Burgos')">Burgos</a></li>
+          <li><a href="/mapa" onclick="event.preventDefault();goToProvince('León')">León</a></li>
+          <li><a href="/mapa" onclick="event.preventDefault();goToProvince('Palencia')">Palencia</a></li>
+          <li><a href="/mapa" onclick="event.preventDefault();goToProvince('Salamanca')">Salamanca</a></li>
+          <li><a href="/mapa" onclick="event.preventDefault();goToProvince('Segovia')">Segovia</a></li>
+          <li><a href="/mapa" onclick="event.preventDefault();goToProvince('Soria')">Soria</a></li>
+          <li><a href="/mapa" onclick="event.preventDefault();goToProvince('Valladolid')">Valladolid</a></li>
+          <li><a href="/mapa" onclick="event.preventDefault();goToProvince('Zamora')">Zamora</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 4: Informaci&oacute;n -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Informaci&oacute;n</h4>
+        <ul class="footer-links">
+          <li><a href="https://www.turismocastillayleon.com" target="_blank" rel="noopener">Turismo oficial CyL</a></li>
+          <li><a href="https://www.jcyl.es" target="_blank" rel="noopener">Junta de Castilla y Le&oacute;n</a></li>
+          <li><a href="https://patrimoniocultural.jcyl.es" target="_blank" rel="noopener">Patrimonio Cultural</a></li>
+          <li><a href="https://www.spain.info" target="_blank" rel="noopener">Spain.info</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Franja inferior -->
+  <div class="footer-bottom">
+    <div class="footer-container">
+      <span>&copy; <%= new Date().getFullYear() %> Castilla y Le&oacute;n &mdash; Turismo Interactivo. Proyecto acad&eacute;mico.</span>
+      <div class="footer-bottom-links">
+        <a href="#">Aviso legal</a>
+        <a href="#">Pol&iacute;tica de privacidad</a>
+        <a href="#">Accesibilidad</a>
+        <a href="#">Contacto</a>
+      </div>
+    </div>
+  </div>
+
+</footer>

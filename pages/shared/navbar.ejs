@@ -1,0 +1,52 @@
+<nav class="navbar navbar-cyl navbar-expand-lg" id="mainNavbar" style="height:70px;">
+  <div class="container-fluid px-4 px-lg-5">
+    <a href="/" class="logo me-auto" onclick="navigateTo('/');return false;">
+      Castilla y León
+      <span>Tierra de Historia</span>
+    </a>
+
+    <!-- Eslogan — solo visible en home -->
+    <div id="navSlogan" class="nav-slogan" style="display:none;">
+      Encuentra dónde ir, qué comer y dónde quedarte
+    </div>
+
+    <button class="navbar-toggler border-0 me-3" type="button"
+      data-bs-toggle="collapse" data-bs-target="#navCollapse"
+      aria-controls="navCollapse" aria-expanded="false" aria-label="Menú"
+      style="color:var(--terra);font-size:1.3rem;padding:4px 8px;background:rgba(184,92,56,0.06);border-radius:8px;">
+      ☰
+    </button>
+    <div class="collapse navbar-collapse" id="navCollapse">
+      <ul class="navbar-nav mx-auto gap-lg-4 py-3 py-lg-0" id="navLinks">
+        <li class="nav-item">
+          <a href="/mapa" class="nav-link-cyl" data-bs-toggle="collapse" data-bs-target="#navCollapse.show"
+             onclick="navigateTo('/mapa');return false;">Mapa</a>
+        </li>
+        <li class="nav-item">
+          <a href="/mis-itinerarios" id="myItinNavLink" class="nav-link-cyl" data-bs-toggle="collapse" data-bs-target="#navCollapse.show"
+             onclick="navigateTo('/mis-itinerarios');return false;">Mis Itinerarios</a>
+        </li>
+        <li class="nav-item">
+          <a href="#" id="prefsNavLink" class="nav-link-cyl"
+             onclick="openOnboarding();return false;" style="position:relative;">
+            Mis gustos
+            <span id="prefsNavBadge" style="display:none;position:absolute;top:-4px;right:-8px;
+              background:var(--terra);color:white;font-size:0.55rem;font-weight:700;
+              width:16px;height:16px;border-radius:50%;align-items:center;
+              justify-content:center;line-height:1;"></span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" id="favNavLink" class="nav-link-cyl" style="display:none;"
+             onclick="openFavDrawer();return false;">Favoritos</a>
+        </li>
+        <li class="nav-item">
+          <a href="/admin" id="adminNavLink" class="nav-link-cyl" style="display:none;"
+             onclick="navigateTo('/admin');return false;">Admin</a>
+        </li>
+      </ul>
+      <div id="authAreaMobile" class="d-flex d-lg-none gap-2 pb-3 pb-lg-0"></div>
+    </div>
+    <div id="authArea" class="user-status d-none d-lg-flex"></div>
+  </div>
+</nav>
