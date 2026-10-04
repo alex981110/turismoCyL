@@ -168,11 +168,7 @@ h1, h2, h3, h4, h5, h6 {
 .navbar-cyl.navbar-on-hero .nav-link-cyl:hover { color: white !important; }
 .navbar-cyl.navbar-on-hero .nav-slogan { color: rgba(253,251,247,0.72); }
 .navbar-cyl.navbar-on-hero .navbar-toggler { color: var(--cream) !important; background: rgba(253,251,247,0.12) !important; }
-
-/* ═══════════════════════════════════════════
-   BUTTONS
-   ═══════════════════════════════════════════ */
-.btn-gold, .btn-cyl, .btn {
+.btn {
   background: var(--terra-dark);
   color: white;
   border: none;
@@ -189,17 +185,17 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
   box-shadow: 0 4px 16px rgba(139,58,31,0.35), 0 1px 4px rgba(0,0,0,0.12);
 }
-.btn-gold:hover, .btn-cyl:hover, .btn:hover {
+.btn:hover {
   background: #6E2A12;
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 8px 28px rgba(139,58,31,0.45), 0 2px 8px rgba(0,0,0,0.15);
 }
-.btn-gold:active, .btn-cyl:active, .btn:active {
+.btn:active {
   transform: translateY(0);
   box-shadow: 0 2px 8px rgba(139,58,31,0.3);
 }
-.btn-outline-gold, .btn-outline {
+.btn-outline {
   background: transparent !important;
   border: 1.5px solid var(--terra-dark) !important;
   color: var(--terra-dark) !important;
@@ -216,7 +212,7 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.25s;
   box-shadow: none;
 }
-.btn-outline-gold:hover, .btn-outline:hover {
+.btn-outline:hover {
   background: rgba(139,58,31,0.07) !important;
   border-color: #6E2A12 !important;
   color: #6E2A12 !important;
@@ -299,28 +295,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 .modal-tab.active { color: var(--terra); border-bottom-color: var(--terra); }
 
-/* Forms */
-.form-group { margin-bottom: 18px; }
-.form-group label {
-  display: block; font-size: 0.72rem; font-weight: 600;
-  letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--terra); margin-bottom: 8px;
-}
-.form-group input {
-  width: 100%;
-  background: var(--sand);
-  border: 1.5px solid rgba(42,33,24,0.12);
-  color: var(--ink);
-  padding: 12px 16px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.95rem;
-  outline: none;
-  transition: all 0.2s;
-  border-radius: var(--radius-md);
-}
-.form-group input:focus { border-color: var(--terra); box-shadow: 0 0 0 3px rgba(184,92,56,0.1); }
-.form-group input::placeholder { color: var(--ink-muted); }
-
 .form-control-cyl {
   background: var(--sand) !important;
   border: 1.5px solid rgba(42,33,24,0.12) !important;
@@ -373,13 +347,6 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
   color: var(--ink) !important;
 }
 
-/* ═══════════════════════════════════════════
-   RATINGS
-   ═══════════════════════════════════════════ */
-.star-rating { display: inline-flex; gap: 2px; align-items: center; cursor: pointer; font-size: 1.1rem; }
-.star-rating .star { color: rgba(184,92,56,0.2); transition: color 0.15s, transform 0.15s; line-height: 1; }
-.star-rating .star.filled { color: var(--terra); }
-.star-rating .star:hover, .star-rating .star.hover { color: var(--terra-light); transform: scale(1.2); }
 .rating-summary { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--ink-muted); font-style: italic; margin-top: 4px; cursor: pointer; }
 .rating-summary .avg-stars { color: var(--terra); font-size: 0.85rem; letter-spacing: 1px; }
 .rating-summary .count { font-size: 0.72rem; opacity: 0.7; }
@@ -436,25 +403,7 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
 .drawer-header p { font-size: 0.8rem; color: var(--ink-muted); font-style: italic; margin: 0; }
 .drawer-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--ink-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.2s; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 .drawer-close:hover { color: var(--terra); background: rgba(184,92,56,0.06); }
-.drawer-avg { padding: 16px 24px; background: rgba(184,92,56,0.04); border-bottom: 1px solid rgba(42,33,24,0.10); display: flex; align-items: center; gap: 16px; }
-.drawer-avg .big-avg { font-family: 'Instrument Serif', serif; font-size: 3rem; font-weight: 400; color: var(--terra); line-height: 1; }
-.drawer-avg-detail { flex: 1; }
-.drawer-avg-detail .stars-row { color: var(--terra); font-size: 1.2rem; letter-spacing: 2px; }
-.drawer-avg-detail .total { font-size: 0.78rem; color: var(--ink-muted); font-style: italic; margin-top: 2px; }
-.drawer-bars { flex: 1; }
-.star-bar-row { display: flex; align-items: center; gap: 8px; font-size: 0.72rem; color: var(--ink-muted); margin-bottom: 3px; }
-.star-bar-row .bar-track { flex: 1; height: 5px; background: rgba(184,92,56,0.1); border-radius: 3px; }
-.star-bar-row .bar-fill { height: 100%; background: var(--terra); border-radius: 3px; transition: width 0.5s; }
-.drawer-reviews { flex: 1; overflow-y: auto; padding: 16px 24px; }
-.review-item { border-bottom: 1px solid rgba(42,33,24,0.10); padding: 14px 0; }
-.review-item:last-child { border-bottom: none; }
-.review-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
-.review-author { font-family: 'Instrument Serif', serif; font-size: 0.88rem; color: var(--ink); font-weight: 400; }
-.review-date { font-size: 0.72rem; color: var(--ink-muted); }
-.review-stars { color: var(--terra); font-size: 0.85rem; margin-bottom: 4px; }
-.review-comment { font-size: 0.82rem; color: var(--ink-soft); line-height: 1.6; }
-.drawer-empty { text-align: center; padding: 60px 24px; color: var(--ink-muted); font-style: italic; font-size: 0.9rem; }
-.drawer-empty span { display: block; font-size: 2rem; margin-bottom: 12px; opacity: 0.35; }
+
 #drawerOverlay { position: fixed; inset: 0; z-index: 1499; background: rgba(28,24,20,0.35); display: none; backdrop-filter: blur(4px); }
 #drawerOverlay.active { display: block; }
 
@@ -521,11 +470,6 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
 .pdf-btn:hover { background: #6E2A12; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139,58,31,0.45); }
 .pdf-btn svg { width: 16px; height: 16px; }
 
-.admin-photo-field { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
-.admin-photo-field input { flex: 1; background: var(--sand); border: 1.5px solid rgba(42,33,24,0.1); color: var(--ink); padding: 6px 10px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; outline: none; border-radius: var(--radius-sm); }
-.admin-photo-field input:focus { border-color: var(--terra); }
-.admin-photo-field input::placeholder { color: var(--ink-muted); }
-
 #backToTop {
   position: fixed; bottom: 30px; right: 30px;
   width: 46px; height: 46px;
@@ -558,18 +502,8 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
 
 /* Badge variants */
 .badge-cyl { font-family: 'DM Sans', sans-serif; font-size: 0.68rem; letter-spacing: 0.06em; border-radius: var(--radius-xl); padding: 4px 10px; font-weight: 600; }
-.badge-gold { background: var(--terra); color: white; }
+
 .badge-outline-gold { background: transparent; border: 1px solid var(--terra); color: var(--terra); }
-.badge-nature { background: transparent; border: 1px solid var(--sage); color: var(--sage); }
-.badge-gastro { background: transparent; border: 1px solid var(--terra); color: var(--terra); }
-
-/* Alert overrides */
-.alert-cyl { background: rgba(184,92,56,0.06); border: 1px solid rgba(184,92,56,0.15); color: var(--ink-soft); border-radius: var(--radius-md); }
-.alert-cyl-success { background: rgba(122,139,110,0.08); border: 1px solid rgba(122,139,110,0.2); color: var(--sage); border-radius: var(--radius-md); }
-
-/* Progress bar */
-.progress-cyl { background: rgba(184,92,56,0.08); border-radius: 6px; height: 8px; }
-.progress-cyl .progress-bar { background: linear-gradient(90deg, var(--terra), var(--terra-light)); border-radius: 6px; transition: width 0.3s; }
 
 /* ═══════════════════════════════════════════
    SPA ROUTER
@@ -580,26 +514,6 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
    ITINERARY SECTION
    ═══════════════════════════════════════════ */
 .itin-marker-chip:hover { background: rgba(184,92,56,0.08) !important; border-color: rgba(184,92,56,0.4) !important; }
-#itinMarkersList::-webkit-scrollbar { width: 4px; }
-#itinMarkersList::-webkit-scrollbar-track { background: rgba(242,236,224,0.03); }
-#itinMarkersList::-webkit-scrollbar-thumb { background: rgba(184,92,56,0.2); border-radius: 2px; }
-
-/* ═══════════════════════════════════════════
-   FAVORITES
-   ═══════════════════════════════════════════ */
-.fav-heart-btn {
-  position: absolute; top: 8px; right: 8px;
-  background: rgba(255,255,255,0.85);
-  border: none;
-  border-radius: 50%;
-  width: 32px; height: 32px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.95rem; cursor: pointer; z-index: 2;
-  transition: transform 0.2s, background 0.2s;
-  backdrop-filter: blur(4px);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-.fav-heart-btn:hover { transform: scale(1.15); background: white; }
 
 /* ═══════════════════════════════════════════
    MARKER EDIT MODAL
@@ -619,8 +533,7 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
    RESPONSIVE
    ═══════════════════════════════════════════ */
 @media (max-width: 991.98px) {
-  .province-selector { position: static !important; }
-  .admin-grid { grid-template-columns: 1fr !important; }
+
   .navbar-cyl { padding: 0 16px; }
   .navbar-collapse { padding: 8px 0 16px; }
   .nav-link-cyl { padding: 12px 0 !important; border-bottom: 1px solid rgba(42,33,24,0.10); }
@@ -653,13 +566,7 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
   .map-sidebar.collapsed { transform: translateX(-100vw); }
 }
 
-/* Steps / Onboarding */
-.hero-steps { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 8px; padding-top: 24px; border-top: 1px solid rgba(184,92,56,0.08); }
-.hero-step { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--ink-muted); }
-.hero-step strong { color: var(--ink); }
-.step-num { width: 22px; height: 22px; border-radius: 50%; background: rgba(184,92,56,0.08); border: 1px solid rgba(184,92,56,0.2); color: var(--terra); font-size: 0.7rem; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0; }
-.hero-step-sep { color: rgba(184,92,56,0.2); font-size: 1.2rem; }
-@media (max-width: 576px) { .hero-step-sep { display: none; } .hero-steps { gap: 8px; } }
+@media (max-width: 576px) { .hero-step-sep { display: none; } }
 
 /* ═══════════════════════════════════════════
    ANIMATIONS
@@ -676,11 +583,10 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
    GLOBAL RADIUS OVERRIDES
    ═══════════════════════════════════════════ */
 .btn, button.btn, .hero-immersive-btn, .pdf-btn, [class*="btn-"], input[type="button"], input[type="submit"] { border-radius: var(--radius-xl) !important; }
-.msb-tab, .map-tab, .province-pill, .hero-card, .modal-cyl, .marker-card, .day-plan-card, .obCard { border-radius: var(--radius-md) !important; }
+.msb-tab, .province-pill, .modal-cyl, .day-plan-card { border-radius: var(--radius-md) !important; }
 .msb-cat-filters button, .msb-province-grid .province-pill, #catFilterBar button { border-radius: var(--radius-xl) !important; }
 .modal-cyl { border-radius: var(--radius-xl) !important; }
 .day-plan-card { border-radius: var(--radius-lg) !important; }
-.marker-card { border-radius: var(--radius-md) !important; }
 
 /* Planner route btn */
 #plannerRouteBtn { margin-left: 8px; background: var(--terra) !important; border: none !important; color: white !important; box-shadow: 0 4px 16px rgba(184,92,56,0.35) !important; }
@@ -846,41 +752,8 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
   .footer-bottom-links { justify-content: center; }
 }
 
-
-/* ═══════════════════════════════════════════════════════════════
-   ESTILO UNIFICADO — Tono del navbar aplicado a toda la página
-   Variables --dark/--parch remapeadas en :root → estos overrides
-   corrigen los colores rgba hardcodeados que asumían fondo oscuro.
-   ═══════════════════════════════════════════════════════════════ */
-
-/* ── Provincias SVG: etiqueta blanca → oscura ── */
-.province-label { fill: rgba(42,33,24,0.65) !important; }
-
 /* ── Tooltip de provincia ── */
 .province-tooltip { box-shadow: var(--shadow-md); }
-
-/* ── Selector de provincias / mapa D3 ── */
-.province-selector {
-  background: white;
-  border-color: rgba(42,33,24,0.1);
-  box-shadow: var(--shadow-sm);
-}
-
-/* ── Tarjetas de marcadores ── */
-.marker-card {
-  background: white;
-  border-color: rgba(42,33,24,0.14);
-  box-shadow: var(--shadow-sm);
-}
-.marker-card:hover {
-  background: var(--sand);
-  border-color: rgba(184,92,56,0.3);
-  box-shadow: var(--shadow-md);
-}
-.marker-card-img-wrap {
-  background: var(--sand-deep);
-  border-bottom-color: rgba(42,33,24,0.10);
-}
 
 /* ── Plan diario ── */
 .day-plan-card {
@@ -896,18 +769,6 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
 .msb-section-label                  { color: rgba(42,33,24,0.45); }
 .msb-province-grid .province-pill   { color: var(--ink-soft); background: rgba(42,33,24,0.06); border-color: rgba(42,33,24,0.1); }
 .msb-province-grid .province-pill:hover { background: rgba(184,92,56,0.06); border-color: var(--terra); color: var(--ink); }
-
-/* Búsqueda en sidebar */
-.msb-search-inner {
-  background: white;
-  border-color: rgba(42,33,24,0.12);
-}
-.msb-search-inner:focus-within     { border-color: var(--terra); }
-.msb-search-icon                   { color: rgba(42,33,24,0.35); }
-.msb-search-inner input            { color: var(--ink); }
-.msb-search-inner input::placeholder { color: rgba(42,33,24,0.35); }
-.msb-search-clear                  { color: rgba(42,33,24,0.35); }
-.msb-search-clear:hover            { color: var(--terra); }
 
 /* Filtros de categoría */
 .msb-cat-filters button {
@@ -986,15 +847,13 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
 #routeMapTitleText { color: var(--terra); }
 #routeMapCloseBtn:hover { background: rgba(184,92,56,0.08); color: var(--terra); border-color: var(--terra); }
 
-
 /* ═══════════════════════════════════════════════════════════════
    RESPONSIVE MÓVIL — mejoras comprehensivas
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── Touch targets mínimos ── */
 @media (max-width: 768px) {
-  .btn, .btn-outline, button, .nav-link-cyl,
-  .msb-tab, .province-pill, .map-tab {
+  .btn, .btn-outline, button, .nav-link-cyl, .msb-tab, .province-pill {
     min-height: 44px;
   }
   input, select, textarea { min-height: 44px; font-size: 16px !important; } /* 16px evita zoom en iOS */
@@ -1004,7 +863,6 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
   .navbar-brand-cyl { font-size: 1rem; }
   .nav-slogan { display: none !important; }
   .nav-auth-wrap { gap: 6px; }
-  .btn-nav-login, .btn-nav-register { padding: 8px 14px; font-size: 0.8rem; }
 
   /* Modales — full-screen en móvil */
   .modal-cyl {
@@ -1022,18 +880,12 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
 
   /* Formularios */
   .form-control-cyl { width: 100%; font-size: 16px; }
-  .form-row-cyl { flex-direction: column; gap: 10px; }
 
   /* Sección itinerario */
   #spa-itinerario { padding: 24px 16px !important; }
   #itin-step1 .row, #itin-step2 .row { flex-direction: column; }
-
-  /* Buttons full-width en contextos de acción */
-  #itinGenerateBtn, #itinSaveBtn { width: 100%; justify-content: center; }
-
-  /* Mis itinerarios */
-  #myItinGrid { grid-template-columns: 1fr !important; gap: 12px; }
-  .my-itin-card { padding: 16px; }
+/* Buttons full-width en contextos de acción */
+  #itinGenerateBtn { width: 100%; justify-content: center; }
 
   /* Route overlay sidebar */
   #routeMapSidebar {
@@ -1045,7 +897,7 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
     position: relative;
   }
   #routeMapOverlay { flex-direction: column; }
-  #routeMapLeaflet-wrap, #routeMapContainer { height: 55dvh !important; }
+  #routeMapContainer { height: 55dvh !important; }
 
   /* Footer */
   .footer-container { grid-template-columns: 1fr; gap: 20px; }
@@ -1058,8 +910,6 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
   /* Planificador día */
   .day-plan-card { border-radius: var(--radius-md) !important; }
 
-  /* Admin */
-  .admin-grid { grid-template-columns: 1fr !important; }
   .admin-header { flex-direction: column; align-items: flex-start; gap: 10px; }
 }
 

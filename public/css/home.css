@@ -115,21 +115,6 @@
 }
 .hero-immersive-btn svg { width: 18px; height: 18px; }
 
-.hero-immersive-btn--secondary {
-  background: transparent !important;
-  border: 1.5px solid rgba(242,236,224,0.35) !important;
-  color: rgba(242,236,224,0.85) !important;
-  margin-top: 12px;
-  font-size: 0.82rem !important;
-  padding: 12px 28px !important;
-  box-shadow: none !important;
-}
-.hero-immersive-btn--secondary:hover {
-  background: rgba(255,255,255,0.08) !important;
-  border-color: rgba(242,236,224,0.6) !important;
-  color: white !important;
-}
-
 .hero-immersive-steps {
   margin-top: 32px;
   display: flex;
@@ -181,41 +166,17 @@
 }
 .hero-dot:focus-visible { outline: 2px solid var(--terra-light); outline-offset: 0; }
 
-.hero-scroll-hint {
-  position: absolute; bottom: 28px; left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
-  color: rgba(242,236,224,0.35);
-  animation: scrollBounce 2.5s ease-in-out infinite;
-}
 @keyframes scrollBounce {
   0%, 100% { transform: translateX(-50%) translateY(0); }
   50% { transform: translateX(-50%) translateY(8px); }
 }
 
-/* Hero layout variants */
-.hero-two-col {
-  display: flex !important; align-items: center; justify-content: center;
-  gap: 80px; text-align: left; max-width: 1100px; padding: 0 40px;
-}
-.hero-col-text { flex: 1; min-width: 0; }
-.hero-col-text .hero-immersive-steps { justify-content: flex-start; }
-.hero-col-shield { flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding-top: 20px; }
-.hero-shield-img {
-  width: 280px; height: 280px; object-fit: contain;
-  mix-blend-mode: lighten;
-  filter: drop-shadow(0 6px 30px rgba(184,92,56,0.25));
-  opacity: 0.92;
-  animation: shieldFloat 6s ease-in-out infinite;
-}
 @keyframes shieldFloat {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
 }
 @media (max-width: 900px) {
-  .hero-two-col { flex-direction: column; text-align: center; gap: 32px; padding: 0 24px; }
-  .hero-col-text .hero-immersive-steps { justify-content: center; }
-  .hero-shield-img { width: 140px; height: 140px; }
+
 }
 
 /* Legacy hero fallback */
@@ -225,16 +186,7 @@
   position: relative; overflow: hidden;
   display: flex; align-items: center; justify-content: center; text-align: center;
 }
-.hero-content { position: relative; z-index: 1; }
-.hero-badge {
-  display: inline-block;
-  border: 1px solid var(--terra);
-  color: var(--terra);
-  font-size: 0.68rem; font-weight: 600;
-  letter-spacing: 0.3em; text-transform: uppercase;
-  padding: 6px 20px; margin-bottom: 24px;
-  border-radius: var(--radius-xl);
-}
+
 .hero h1 {
   font-family: 'Instrument Serif', serif;
   font-size: clamp(3rem, 8vw, 6rem);
@@ -243,46 +195,20 @@
   margin-bottom: 8px;
 }
 .hero h1 em { display: block; font-style: italic; color: var(--terra-light); font-size: 0.55em; }
-.hero .lead { font-size: 1.2rem; color: var(--ink-muted); font-style: italic; margin: 24px 0 40px; font-weight: 300; }
 
-/* Hero cards */
-.hero-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 40px auto 36px; max-width: 860px; }
 @media (max-width: 768px) { .hero-cards { grid-template-columns: 1fr; max-width: 400px; } }
-.hero-card {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(184,92,56,0.15);
-  padding: 24px 20px; cursor: pointer;
-  transition: all 0.3s; display: flex; flex-direction: column;
-  align-items: center; gap: 12px; text-align: center;
-  border-radius: var(--radius-lg) !important;
-}
-.hero-card:hover {
-  background: rgba(42,33,24,0.10);
-  border-color: rgba(184,92,56,0.4);
-  transform: translateY(-3px);
-}
-.hero-card-icon { font-size: 2rem; }
-.hero-card-body h3 { font-family: 'Instrument Serif', serif; font-size: 1rem; color: var(--terra-light); margin: 0 0 6px; }
-.hero-card-body p { font-size: 0.8rem; color: var(--ink-muted); margin: 0; }
-.hero-card-arrow { position: absolute; bottom: 14px; right: 16px; color: rgba(184,92,56,0.3); font-size: 1rem; transition: all 0.2s; }
-.hero-card:hover .hero-card-arrow { color: var(--terra); transform: translateX(3px); }
-
-
 
 /* ── Home / Hero móvil ── */
 @media (max-width: 768px) {
   .hero-immersive { min-height: 100dvh; }
   .hero-immersive-title { font-size: clamp(2rem, 9vw, 3rem); }
-  .hero-immersive-subtitle { font-size: 1rem; }
+
   .hero-immersive-btn { padding: 13px 28px; font-size: 0.85rem; }
-  .hero-immersive-badge { font-size: 0.62rem; }
 
   /* Section titles */
   .section-title { font-size: 2rem; }
   .section-subtitle { font-size: 0.95rem; }
 
-  /* Hero cards: 1 columna */
-  .hero-cards { grid-template-columns: 1fr; max-width: 100%; padding: 0 16px; }
 }
 
 /* ═══════════════════════════════════════════
