@@ -595,7 +595,7 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
   let badge = document.getElementById('personalizedBadge');
   if (!badge) { badge = document.createElement('div'); badge.id = 'personalizedBadge'; badge.style.cssText = 'grid-column:1/-1;'; container.parentNode.insertBefore(badge, container); }
   const topPrefs = ranking.slice(0, 3).map(id => { const p = OB_PREFS.find(x => x.id === id); return p ? p.icon + ' ' + p.label : ''; }).filter(Boolean);
-  badge.innerHTML = `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 18px;background:rgba(42,33,24,0.04);border-bottom:1px solid rgba(184,92,56,0.08);"><span style="font-size:0.78rem;color:var(--parch2);">✨ Personalizado para:</span><span style="font-size:0.82rem;color:var(--gold);font-weight:600;">${topPrefs.join(' · ')}</span><button onclick="openOnboarding()" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(184,92,56,0.08);border:1px solid rgba(184,92,56,0.35);border-radius:6px;color:var(--gold);cursor:pointer;font-size:0.75rem;font-weight:600;transition:all 0.2s;" onmouseover="this.style.background='rgba(42,33,24,0.14)'" onmouseout="this.style.background='rgba(184,92,56,0.08)'">🎯 Cambiar gustos</button></div>`;
+  badge.innerHTML = `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 18px;background:rgba(42,33,24,0.04);border-bottom:1px solid rgba(184,92,56,0.08);"><span style="font-size:0.78rem;color:var(--ink-muted);">✨ Personalizado para:</span><span style="font-size:0.82rem;color:var(--terra);font-weight:600;">${topPrefs.join(' · ')}</span><button onclick="openOnboarding()" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(184,92,56,0.08);border:1px solid rgba(184,92,56,0.35);border-radius:6px;color:var(--terra);cursor:pointer;font-size:0.75rem;font-weight:600;transition:all 0.2s;" onmouseover="this.style.background='rgba(42,33,24,0.14)'" onmouseout="this.style.background='rgba(184,92,56,0.08)'">🎯 Cambiar gustos</button></div>`;
   const _allScores = [...dia1, ...dia2].map(i => scoreItem(i, ranking));
   const _maxScore = Math.max(..._allScores, 1);
   const renderItem = (item) => {
@@ -610,7 +610,7 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
       : matchPct >= 0.35
       ? `<span style="font-size:0.62rem;background:rgba(42,33,24,0.06);border:1px solid rgba(42,33,24,0.18);border-radius:20px;color:var(--ink-soft);padding:1px 6px;margin-left:5px;vertical-align:middle;">✦ Rec.</span>` : '';
     const lowNote = matchPct < 0.2 && ranking.length > 0
-      ? `<span style="font-size:0.66rem;color:var(--parch2);margin-left:5px;font-style:italic;vertical-align:middle;">· menos afín</span>` : '';
+      ? `<span style="font-size:0.66rem;color:var(--ink-muted);margin-left:5px;font-style:italic;vertical-align:middle;">· menos afín</span>` : '';
     const sched = (() => {
       if (!isLogged) return '';
       const desc = item.desc || ''; const w = [];
@@ -626,8 +626,8 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
         <div style="display:flex;gap:8px;align-items:flex-start;">
           ${photo ? `<div style="width:44px;height:44px;flex-shrink:0;overflow:hidden;border-radius:6px;border:1px solid rgba(42,33,24,0.14);"><img src="${photo}" alt="" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentNode.style.display='none'"></div>` : ''}
           <div style="flex:1;min-width:0;">
-            <h4 style="margin:0 0 2px;font-size:0.85rem;color:var(--parch);line-height:1.3;">${item.place}
-              <span style="font-size:0.62rem;background:rgba(184,92,56,0.08);border:1px solid rgba(42,33,24,0.14);border-radius:4px;color:var(--gold);padding:1px 5px;margin-left:4px;vertical-align:middle;">${icon} ${cat}</span>
+            <h4 style="margin:0 0 2px;font-size:0.85rem;color:var(--ink);line-height:1.3;">${item.place}
+              <span style="font-size:0.62rem;background:rgba(184,92,56,0.08);border:1px solid rgba(42,33,24,0.14);border-radius:4px;color:var(--terra);padding:1px 5px;margin-left:4px;vertical-align:middle;">${icon} ${cat}</span>
               ${matchBadge}${lowNote}
             </h4>
             <p style="margin:0;font-size:0.78rem;color:var(--ink-soft);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${item.desc}</p>
@@ -640,7 +640,7 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
     </div>`;
   };
   const renderDay = (items, dayLabel, emoji) =>
-    `<div class="col-12 col-md-6"><div class="day-plan-card h-100"><h3>${emoji} ${dayLabel} en ${province}</h3><div class="timeline">${items.length ? items.map(renderItem).join('') : '<p style="color:var(--parch2);font-style:italic;font-size:0.85rem;padding:12px;">Sin lugares disponibles.</p>'}</div></div></div>`;
+    `<div class="col-12 col-md-6"><div class="day-plan-card h-100"><h3>${emoji} ${dayLabel} en ${province}</h3><div class="timeline">${items.length ? items.map(renderItem).join('') : '<p style="color:var(--ink-muted);font-style:italic;font-size:0.85rem;padding:12px;">Sin lugares disponibles.</p>'}</div></div></div>`;
   const planAllDays = allDays || appState.currentPlan?.allDays;
   if (planAllDays && planAllDays.length > 0) {
     container.innerHTML = planAllDays.map(d => renderDay(d.items, d.label, d.emoji)).join('');

@@ -122,7 +122,7 @@ function updateDayPlanner(province) {
   }
 
   if (!plan || (!plan.dia1.length && !plan.dia2.length)) {
-    container.innerHTML = '<p style="color:var(--parch2);grid-column:1/-1;text-align:center;padding:40px 0;">No hay marcadores disponibles para esta provincia.</p>';
+    container.innerHTML = '<p style="color:var(--ink-muted);grid-column:1/-1;text-align:center;padding:40px 0;">No hay marcadores disponibles para esta provincia.</p>';
     return;
   }
 
@@ -147,9 +147,9 @@ function updateDayPlanner(province) {
               </div>` : ''}
             <div style="flex:1;min-width:0;">
               <h4 style="margin:0 0 3px;">${mk.name}
-                <span style="font-size:0.65rem;background:rgba(184,92,56,0.10);border:1px solid rgba(42,33,24,0.16);color:var(--gold);padding:1px 6px;margin-left:6px;vertical-align:middle;">${icon} ${cat}</span>
+                <span style="font-size:0.65rem;background:rgba(184,92,56,0.10);border:1px solid rgba(42,33,24,0.16);color:var(--terra);padding:1px 6px;margin-left:6px;vertical-align:middle;">${icon} ${cat}</span>
               </h4>
-              <p style="margin:0;font-size:0.82rem;color:var(--parch2);line-height:1.45;">${item.desc}</p>
+              <p style="margin:0;font-size:0.82rem;color:var(--ink-muted);line-height:1.45;">${item.desc}</p>
               <span class="plan-map-link">${catIcon.default} Ver en el mapa</span>
             </div>
           </div>
@@ -162,7 +162,7 @@ function updateDayPlanner(province) {
       <div class="day-plan-card h-100">
         <h3>${dayLabel} en ${province}</h3>
         <div class="timeline">
-          ${items.length ? items.map(renderItem).join('') : '<p style="color:var(--parch2);font-style:italic;font-size:0.85rem;">Sin lugares disponibles.</p>'}
+          ${items.length ? items.map(renderItem).join('') : '<p style="color:var(--ink-muted);font-style:italic;font-size:0.85rem;">Sin lugares disponibles.</p>'}
         </div>
       </div>
     </div>

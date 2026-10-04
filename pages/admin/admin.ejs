@@ -2,7 +2,7 @@
   <div class="admin-header">
     <h1>⚙️ Panel de Administración — Castilla y León Turismo</h1>
     <div class="d-flex gap-3 align-items-center">
-      <span style="font-size:0.8rem;color:var(--parch2);">Administrador</span>
+      <span style="font-size:0.8rem;color:var(--ink-muted);">Administrador</span>
       <button class="btn btn-outline" onclick="hideAdmin()">✕ Cerrar</button>
     </div>
   </div>
@@ -11,18 +11,18 @@
       <div class="col-12 col-lg-6">
         <div class="admin-card h-100">
           <h3>📥 Importar Marcadores via CSV</h3>
-          <p style="font-size:0.85rem;color:var(--parch2);margin-bottom:20px;font-style:italic;">Formato: nombre, latitud, longitud, provincia, categoría, descripción</p>
+          <p style="font-size:0.85rem;color:var(--ink-muted);margin-bottom:20px;font-style:italic;">Formato: nombre, latitud, longitud, provincia, categoría, descripción</p>
           <div style="border:2px dashed rgba(184,92,56,0.3);padding:30px;text-align:center;cursor:pointer;margin-bottom:16px;" onclick="document.getElementById('csvInput').click()">
             <div style="font-size:2rem;margin-bottom:8px;">📄</div>
-            <div style="color:var(--gold);font-family:'Instrument Serif',serif;">Arrastra tu CSV aquí</div>
-            <div style="font-size:0.8rem;color:var(--parch2);margin-top:4px;">o haz clic para seleccionar</div>
+            <div style="color:var(--terra);font-family:'Instrument Serif',serif;">Arrastra tu CSV aquí</div>
+            <div style="font-size:0.8rem;color:var(--ink-muted);margin-top:4px;">o haz clic para seleccionar</div>
           </div>
           <input type="file" id="csvInput" accept=".csv" style="display:none;" onchange="handleCSVUpload(event)">
           <button class="btn w-100" onclick="document.getElementById('csvInput').click()">Seleccionar CSV</button>
           <div id="csvStatus" style="margin-top:12px;font-size:0.85rem;"></div>
           <div style="margin-top:20px;background:rgba(245,237,216,0.04);padding:16px;">
-            <div style="font-size:0.75rem;letter-spacing:0.1em;color:var(--gold);margin-bottom:8px;">EJEMPLO CSV</div>
-            <pre style="font-size:0.75rem;color:var(--parch2);line-height:1.6;">nombre,lat,lng,provincia,cat,desc,foto
+            <div style="font-size:0.75rem;letter-spacing:0.1em;color:var(--terra);margin-bottom:8px;">EJEMPLO CSV</div>
+            <pre style="font-size:0.75rem;color:var(--ink-muted);line-height:1.6;">nombre,lat,lng,provincia,cat,desc,foto
 Catedral de Burgos,42.3411,-3.7006,Burgos,monumento,"Catedral gótica...","https://..."
 Las Médulas,42.4588,-6.7743,León,naturaleza,"Patrimonio UNESCO...","https://..."</pre>
           </div>
@@ -33,16 +33,16 @@ Las Médulas,42.4588,-6.7743,León,naturaleza,"Patrimonio UNESCO...","https://..
           <h3>📍 Marcadores Registrados (<span id="markerTotalCount">0</span>) — mostrando <span id="markerShownCount">0</span></h3>
           <div class="input-group input-group-cyl mb-3">
             <input id="adminMarkerSearch" type="text" class="form-control form-control-cyl" placeholder="Buscar por nombre, provincia o categoría..." oninput="adminMarkersLimit=20;renderAdminMarkers()" />
-            <button class="btn" onclick="document.getElementById('adminMarkerSearch').value='';renderAdminMarkers()" style="background:rgba(184,92,56,0.1);border:1px solid rgba(184,92,56,0.25);color:var(--parch2);" title="Limpiar">✕</button>
+            <button class="btn" onclick="document.getElementById('adminMarkerSearch').value='';renderAdminMarkers()" style="background:rgba(184,92,56,0.1);border:1px solid rgba(184,92,56,0.25);color:var(--ink-muted);" title="Limpiar">✕</button>
           </div>
           <table class="admin-table" id="adminMarkersTable">
             <thead><tr><th>Nombre</th><th>Provincia</th><th>Categoría</th><th>Foto</th><th></th></tr></thead>
             <tbody id="adminMarkersBody">
-              <tr><td colspan="4" style="text-align:center;color:var(--parch2);padding:20px;font-style:italic;">Sin marcadores aún</td></tr>
+              <tr><td colspan="4" style="text-align:center;color:var(--ink-muted);padding:20px;font-style:italic;">Sin marcadores aún</td></tr>
             </tbody>
           </table>
           <div id="adminMarkersMore" style="display:none;text-align:center;padding:16px 0 4px;">
-            <button onclick="adminMarkersLimit+=100;renderAdminMarkers()" style="background:transparent;border:1px solid rgba(184,92,56,0.4);color:var(--gold);padding:9px 28px;cursor:pointer;font-family:'Instrument Serif',serif;font-size:0.88rem;letter-spacing:0.08em;">
+            <button onclick="adminMarkersLimit+=100;renderAdminMarkers()" style="background:transparent;border:1px solid rgba(184,92,56,0.4);color:var(--terra);padding:9px 28px;cursor:pointer;font-family:'Instrument Serif',serif;font-size:0.88rem;letter-spacing:0.08em;">
               Ver 100 más <span id="adminMarkersRemaining" style="opacity:0.6;font-size:0.8rem;"></span> ▼
             </button>
           </div>
@@ -68,7 +68,7 @@ Las Médulas,42.4588,-6.7743,León,naturaleza,"Patrimonio UNESCO...","https://..
         <div class="admin-card">
           <h3>⭐ Valoraciones (<span id="ratingsTotalCount">0</span> reseñas)</h3>
           <div id="adminRatingsContainer">
-            <p style="color:var(--parch2);font-style:italic;font-size:0.88rem;">Sin valoraciones aún.</p>
+            <p style="color:var(--ink-muted);font-style:italic;font-size:0.88rem;">Sin valoraciones aún.</p>
           </div>
         </div>
       </div>

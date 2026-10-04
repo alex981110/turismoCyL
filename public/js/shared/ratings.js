@@ -10,7 +10,7 @@ function getAvgRating(name) {
 
 function starsHTML(avg, size) {
   const full = Math.round(avg);
-  return [1,2,3,4,5].map(i => `<span style="color:${i<=full?'var(--gold)':'rgba(42,33,24,0.13)'};font-size:${size||'0.85rem'};">★</span>`).join('');
+  return [1,2,3,4,5].map(i => `<span style="color:${i<=full?'var(--terra)':'rgba(42,33,24,0.13)'};font-size:${size||'0.85rem'};">★</span>`).join('');
 }
 
 function getRatingSummaryHTML(name) {
@@ -19,7 +19,7 @@ function getRatingSummaryHTML(name) {
   const avg = getAvgRating(name);
   return `<div class="rating-summary" onclick="event.stopPropagation();openReviewsDrawer('${name.replace(/'/g,"\\'")}')">
     <span class="avg-stars">${starsHTML(avg)}</span>
-    <span style="color:var(--gold);font-weight:700;font-size:0.82rem;">${avg.toFixed(1)}</span>
+    <span style="color:var(--terra);font-weight:700;font-size:0.82rem;">${avg.toFixed(1)}</span>
     <span class="count">(${rs.length} valoración${rs.length!==1?'es':''})</span>
   </div>`;
 }

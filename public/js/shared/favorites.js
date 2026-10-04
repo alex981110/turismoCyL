@@ -79,7 +79,7 @@ function renderFavDrawer() {
   sub.textContent = `${favs.length} lugar${favs.length !== 1 ? 'es' : ''} guardado${favs.length !== 1 ? 's' : ''}`;
 
   if (!favs.length) {
-    body.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--parch2);font-style:italic;">
+    body.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--ink-muted);font-style:italic;">
       <div class="fav-empty-ico">${favIcon(false)}</div>
       Aún no tienes favoritos.<br>Haz clic en el corazón de cualquier lugar para guardarlo aquí.
     </div>`;
@@ -96,8 +96,8 @@ function renderFavDrawer() {
         ${photo ? `<img src="${photo}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">${catIcon[f.cat] || catIcon.default}</div>`}
       </div>
       <div style="flex:1;min-width:0;">
-        <div style="font-family:'Instrument Serif',serif;color:var(--parch);font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${f.name}</div>
-        <div style="font-size:0.75rem;color:var(--parch2);margin-top:2px;">${f.province} · ${catLabel[f.cat]||f.cat||''}</div>
+        <div style="font-family:'Instrument Serif',serif;color:var(--ink);font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${f.name}</div>
+        <div style="font-size:0.75rem;color:var(--ink-muted);margin-top:2px;">${f.province} · ${catLabel[f.cat]||f.cat||''}</div>
       </div>
       <button onclick="event.stopPropagation();toggleFavorite('${f.markerId}','${f.name.replace(/'/g,"\\'")}')"
         class="mc-fav" title="Quitar favorito" aria-label="Quitar favorito">${favIcon(true)}</button>

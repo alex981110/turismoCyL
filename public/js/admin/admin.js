@@ -24,7 +24,7 @@ function renderAdminMarkers() {
 
   const tbody = document.getElementById('adminMarkersBody');
   if (!slice.length) {
-    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--parch2);padding:20px;font-style:italic;">${q ? 'Sin resultados para "' + q + '"' : 'Sin marcadores aún'}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--ink-muted);padding:20px;font-style:italic;">${q ? 'Sin resultados para "' + q + '"' : 'Sin marcadores aún'}</td></tr>`;
   } else {
   tbody.innerHTML = slice.map(m => `
       <tr>
@@ -39,7 +39,7 @@ function renderAdminMarkers() {
             <input type="text" class="form-control form-control-cyl" placeholder="URL de foto..." value="${m.photo||''}"
               id="photoInput_${m._id}" style="font-size:0.82rem;" />
             <button class="btn btn-sm" onclick="setMarkerPhoto('${m._id}',document.getElementById('photoInput_${m._id}').value);refreshAdminData();"
-              style="background:rgba(184,92,56,0.08);border:1px solid rgba(42,33,24,0.20);color:var(--gold);white-space:nowrap;">
+              style="background:rgba(184,92,56,0.08);border:1px solid rgba(42,33,24,0.20);color:var(--terra);white-space:nowrap;">
               🖼️
             </button>
           </div>
@@ -48,10 +48,10 @@ function renderAdminMarkers() {
           <div class="d-flex gap-1 align-items-center">
             <button onclick="openMarkerEditModal('${m._id}')"
               class="btn btn-sm"
-              style="background:none;border:1px solid rgba(42,33,24,0.20);color:var(--gold);font-size:0.72rem;padding:3px 8px;font-family:'Instrument Serif',serif;" title="Editar">✏️</button>
+              style="background:none;border:1px solid rgba(42,33,24,0.20);color:var(--terra);font-size:0.72rem;padding:3px 8px;font-family:'Instrument Serif',serif;" title="Editar">✏️</button>
             <button onclick="openReviewsDrawer('${m.name.replace(/'/g,"\\'")}');hideAdmin();"
               class="btn btn-sm"
-              style="background:none;border:1px solid rgba(42,33,24,0.20);color:var(--gold);font-size:0.72rem;padding:3px 8px;font-family:'Instrument Serif',serif;">★</button>
+              style="background:none;border:1px solid rgba(42,33,24,0.20);color:var(--terra);font-size:0.72rem;padding:3px 8px;font-family:'Instrument Serif',serif;">★</button>
             <button onclick="deleteMarker('${m._id}')" class="btn btn-sm"
               style="background:none;border:none;color:#d44;font-size:0.85rem;" title="Eliminar">✕</button>
           </div>
@@ -105,7 +105,7 @@ function refreshAdminData() {
     .catch(err => {
       const ubody = document.getElementById('usersBody');
       if (ubody) ubody.innerHTML =
-        `<tr><td colspan="4" style="color:var(--parch2);text-align:center;">${err.message}</td></tr>`;
+        `<tr><td colspan="4" style="color:var(--ink-muted);text-align:center;">${err.message}</td></tr>`;
     });
 
   // Stats
@@ -117,9 +117,9 @@ function refreshAdminData() {
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
         <span style="min-width:100px;font-size:0.85rem;">${prov}</span>
         <div style="flex:1;background:rgba(184,92,56,0.08);height:8px;position:relative;">
-          <div style="background:var(--gold);height:100%;width:${(count/Math.max(...Object.values(stats)))*100}%;transition:width 0.5s;"></div>
+          <div style="background:var(--terra);height:100%;width:${(count/Math.max(...Object.values(stats)))*100}%;transition:width 0.5s;"></div>
         </div>
-        <span style="color:var(--gold);font-family:'Instrument Serif',serif;font-weight:700;">${count}</span>
+        <span style="color:var(--terra);font-family:'Instrument Serif',serif;font-weight:700;">${count}</span>
       </div>
     `).join('');
 
@@ -129,7 +129,7 @@ function refreshAdminData() {
   document.getElementById('ratingsTotalCount').textContent = totalReviews;
   const ratingsEl = document.getElementById('adminRatingsContainer');
   if (!totalReviews) {
-    ratingsEl.innerHTML = '<p style="color:var(--parch2);font-style:italic;font-size:0.88rem;">Sin valoraciones aún.</p>';
+    ratingsEl.innerHTML = '<p style="color:var(--ink-muted);font-style:italic;font-size:0.88rem;">Sin valoraciones aún.</p>';
   } else {
     // Sort places by avg rating desc
     const ranked = allRatings
@@ -144,12 +144,12 @@ function refreshAdminData() {
             <tr>
               <td style="font-family:'Instrument Serif',serif;">${name}</td>
               <td>
-                <span style="color:var(--gold);letter-spacing:1px;">${[1,2,3,4,5].map(i=>`<span style="color:${i<=Math.round(avg)?'var(--gold)':'rgba(42,33,24,0.13)'};font-size:0.85rem;">★</span>`).join('')}</span>
-                <span style="color:var(--gold);font-weight:700;margin-left:4px;">${avg.toFixed(1)}</span>
+                <span style="color:var(--terra);letter-spacing:1px;">${[1,2,3,4,5].map(i=>`<span style="color:${i<=Math.round(avg)?'var(--terra)':'rgba(42,33,24,0.13)'};font-size:0.85rem;">★</span>`).join('')}</span>
+                <span style="color:var(--terra);font-weight:700;margin-left:4px;">${avg.toFixed(1)}</span>
               </td>
               <td>${rs.length}</td>
-              <td style="color:var(--parch2);font-size:0.82rem;">${rs[rs.length-1].date} — ${rs[rs.length-1].userName}</td>
-              <td><button onclick="openReviewsDrawer('${name.replace(/'/g,"\\'")}');hideAdmin();" style="background:none;border:1px solid rgba(42,33,24,0.20);color:var(--gold);cursor:pointer;font-size:0.75rem;padding:3px 10px;font-family:'Instrument Serif',serif;transition:all 0.2s;" onmouseover="this.style.background='rgba(184,92,56,0.08)'" onmouseout="this.style.background='none'">Ver →</button></td>
+              <td style="color:var(--ink-muted);font-size:0.82rem;">${rs[rs.length-1].date} — ${rs[rs.length-1].userName}</td>
+              <td><button onclick="openReviewsDrawer('${name.replace(/'/g,"\\'")}');hideAdmin();" style="background:none;border:1px solid rgba(42,33,24,0.20);color:var(--terra);cursor:pointer;font-size:0.75rem;padding:3px 10px;font-family:'Instrument Serif',serif;transition:all 0.2s;" onmouseover="this.style.background='rgba(184,92,56,0.08)'" onmouseout="this.style.background='none'">Ver →</button></td>
             </tr>
           `).join('')}
         </tbody>

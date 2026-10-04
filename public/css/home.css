@@ -221,7 +221,7 @@
 /* Legacy hero fallback */
 .hero {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--dark) 0%, var(--dark2) 100%);
+  background: linear-gradient(135deg, var(--sand) 0%, var(--sand-deep) 100%);
   position: relative; overflow: hidden;
   display: flex; align-items: center; justify-content: center; text-align: center;
 }
@@ -239,11 +239,11 @@
   font-family: 'Instrument Serif', serif;
   font-size: clamp(3rem, 8vw, 6rem);
   font-weight: 400;
-  color: var(--parch);
+  color: var(--ink);
   margin-bottom: 8px;
 }
 .hero h1 em { display: block; font-style: italic; color: var(--terra-light); font-size: 0.55em; }
-.hero .lead { font-size: 1.2rem; color: var(--parch2); font-style: italic; margin: 24px 0 40px; font-weight: 300; }
+.hero .lead { font-size: 1.2rem; color: var(--ink-muted); font-style: italic; margin: 24px 0 40px; font-weight: 300; }
 
 /* Hero cards */
 .hero-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 40px auto 36px; max-width: 860px; }
@@ -263,7 +263,7 @@
 }
 .hero-card-icon { font-size: 2rem; }
 .hero-card-body h3 { font-family: 'Instrument Serif', serif; font-size: 1rem; color: var(--terra-light); margin: 0 0 6px; }
-.hero-card-body p { font-size: 0.8rem; color: var(--parch2); margin: 0; }
+.hero-card-body p { font-size: 0.8rem; color: var(--ink-muted); margin: 0; }
 .hero-card-arrow { position: absolute; bottom: 14px; right: 16px; color: rgba(184,92,56,0.3); font-size: 1rem; transition: all 0.2s; }
 .hero-card:hover .hero-card-arrow { color: var(--terra); transform: translateX(3px); }
 

@@ -6,11 +6,11 @@
     <div id="obHeader" style="padding:24px 28px 16px;border-bottom:1px solid rgba(184,92,56,0.15);">
       <button class="modal-close" onclick="closeOnboarding()" style="top:16px;right:16px;">✕</button>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-        <span id="obStepLabel" style="font-size:0.75rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;">Paso 1 de 2</span>
+        <span id="obStepLabel" style="font-size:0.75rem;color:var(--terra);letter-spacing:0.1em;text-transform:uppercase;">Paso 1 de 2</span>
       </div>
       <!-- Barra de progreso -->
       <div style="height:3px;background:rgba(184,92,56,0.15);border-radius:2px;">
-        <div id="obProgress" style="height:100%;background:var(--gold);border-radius:2px;transition:width 0.4s ease;width:50%;"></div>
+        <div id="obProgress" style="height:100%;background:var(--terra);border-radius:2px;transition:width 0.4s ease;width:50%;"></div>
       </div>
     </div>
 
@@ -19,7 +19,7 @@
 
     <!-- Footer con botones -->
     <div style="padding:16px 28px 24px;border-top:1px solid rgba(184,92,56,0.15);display:flex;justify-content:space-between;align-items:center;">
-      <button id="obBtnBack" onclick="obPrev()" style="background:none;border:1px solid rgba(184,92,56,0.3);color:var(--parch2);padding:8px 20px;cursor:pointer;font-size:0.85rem;display:none;">← Atrás</button>
+      <button id="obBtnBack" onclick="obPrev()" style="background:none;border:1px solid rgba(184,92,56,0.3);color:var(--ink-muted);padding:8px 20px;cursor:pointer;font-size:0.85rem;display:none;">← Atrás</button>
       <span></span>
       <button id="obBtnNext" onclick="obNext()" class="btn" style="padding:10px 28px;font-size:0.9rem;">Siguiente →</button>
     </div>
@@ -37,7 +37,7 @@
 <!-- RATING MODAL -->
 <div id="ratingModal">
   <div class="rating-modal-inner">
-    <button style="position:absolute;top:14px;right:18px;background:none;border:none;color:var(--parch2);font-size:1.2rem;cursor:pointer;" onclick="closeRatingModal()">✕</button>
+    <button style="position:absolute;top:14px;right:18px;background:none;border:none;color:var(--ink-muted);font-size:1.2rem;cursor:pointer;" onclick="closeRatingModal()">✕</button>
     <h3 id="ratingModalTitle">Valorar lugar</h3>
     <p id="ratingModalSubtitle">Tu opinión ayuda a otros viajeros</p>
     <div class="big-stars" id="ratingStars">
@@ -99,7 +99,7 @@
         </div>
       </div>
       <button class="btn w-100 mt-2" onclick="doRegister()">Crear cuenta gratis</button>
-      <p class="text-center mt-3" style="font-size:0.8rem;color:var(--parch2);">
+      <p class="text-center mt-3" style="font-size:0.8rem;color:var(--ink-muted);">
         ✦ Accede al planificador de días y rutas exclusivas
       </p>
     </div>
@@ -136,7 +136,7 @@
   <div class="drawer-header">
     <button class="drawer-close" onclick="closeFavDrawer()">✕</button>
     <h3>❤️ Mis Favoritos</h3>
-    <p id="favDrawerSubtitle" style="color:var(--parch2);font-size:0.82rem;margin:4px 0 0;"></p>
+    <p id="favDrawerSubtitle" style="color:var(--ink-muted);font-size:0.82rem;margin:4px 0 0;"></p>
   </div>
   <div id="favDrawerBody" style="padding:16px;overflow-y:auto;flex:1;"></div>
 </div>
@@ -145,7 +145,7 @@
 <div class="modal-overlay" id="markerEditModal">
   <div class="modal-cyl" style="max-width:540px;width:95%;">
     <button class="modal-close" onclick="closeMarkerEditModal()">✕</button>
-    <h3 style="font-family:'Instrument Serif',serif;color:var(--gold);margin-bottom:20px;">✏️ Editar Marcador</h3>
+    <h3 style="font-family:'Instrument Serif',serif;color:var(--terra);margin-bottom:20px;">✏️ Editar Marcador</h3>
     <input type="hidden" id="editMarkerId">
     <div class="row g-3">
       <div class="col-12">

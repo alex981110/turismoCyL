@@ -52,7 +52,7 @@ function itinRenderSavedList(items) {
 
   if (!items || items.length === 0) {
     wrap.innerHTML = `
-      <div style="padding:14px 16px;border:1px dashed rgba(184,92,56,0.25);border-radius:10px;color:var(--parch2);font-size:0.85rem;text-align:center;margin-bottom:24px;">
+      <div style="padding:14px 16px;border:1px dashed rgba(184,92,56,0.25);border-radius:10px;color:var(--ink-muted);font-size:0.85rem;text-align:center;margin-bottom:24px;">
         Aún no has guardado ningún itinerario. Genera uno y pulsa <strong>💾 Guardar</strong> para tenerlo siempre a mano.
       </div>`;
     return;
@@ -66,8 +66,8 @@ function itinRenderSavedList(items) {
     return `
       <div style="background:rgba(184,92,56,0.06);border:1px solid rgba(184,92,56,0.2);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
         <div style="flex:1;min-width:200px;">
-          <div style="font-family:'Instrument Serif',serif;color:var(--gold);font-size:1rem;font-weight:700;">${it.title || it.province}</div>
-          <div style="font-size:0.78rem;color:var(--parch2);margin-top:3px;">
+          <div style="font-family:'Instrument Serif',serif;color:var(--terra);font-size:1rem;font-weight:700;">${it.title || it.province}</div>
+          <div style="font-size:0.78rem;color:var(--ink-muted);margin-top:3px;">
             📍 ${it.province} · ${it.numDays} día${it.numDays!==1?'s':''} ${dateLabel ? ' · '+dateLabel : ''}
             <span style="opacity:0.6;margin-left:6px;">· guardado ${created}</span>
           </div>
@@ -80,12 +80,12 @@ function itinRenderSavedList(items) {
   }).join('');
 
   const limitInfo = items.length >= ITIN_MAX
-    ? `<div style="font-size:0.75rem;color:var(--parch2);font-style:italic;margin-top:8px;">⚠️ Has alcanzado el máximo de ${ITIN_MAX} itinerarios. Elimina alguno para guardar otro.</div>`
-    : `<div style="font-size:0.75rem;color:var(--parch2);margin-top:8px;">Tienes ${items.length} de ${ITIN_MAX} itinerarios guardados.</div>`;
+    ? `<div style="font-size:0.75rem;color:var(--ink-muted);font-style:italic;margin-top:8px;">⚠️ Has alcanzado el máximo de ${ITIN_MAX} itinerarios. Elimina alguno para guardar otro.</div>`
+    : `<div style="font-size:0.75rem;color:var(--ink-muted);margin-top:8px;">Tienes ${items.length} de ${ITIN_MAX} itinerarios guardados.</div>`;
 
   wrap.innerHTML = `
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
-      <span style="font-size:0.78rem;letter-spacing:0.12em;color:var(--gold);font-weight:600;">📚 MIS ITINERARIOS GUARDADOS</span>
+      <span style="font-size:0.78rem;letter-spacing:0.12em;color:var(--terra);font-weight:600;">📚 MIS ITINERARIOS GUARDADOS</span>
     </div>
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:8px;">${cards}</div>
     ${limitInfo}
@@ -217,8 +217,8 @@ function renderMyItineraries(items) {
   if (counter) {
     const remaining = ITIN_MAX - items.length;
     counter.innerHTML = items.length >= ITIN_MAX
-      ? `<strong style="color:var(--gold);">${items.length} de ${ITIN_MAX}</strong> itinerarios guardados · <span style="font-style:italic;">elimina alguno para guardar otro</span>`
-      : `<strong style="color:var(--gold);">${items.length} de ${ITIN_MAX}</strong> itinerarios guardados · puedes guardar ${remaining} más`;
+      ? `<strong style="color:var(--terra);">${items.length} de ${ITIN_MAX}</strong> itinerarios guardados · <span style="font-style:italic;">elimina alguno para guardar otro</span>`
+      : `<strong style="color:var(--terra);">${items.length} de ${ITIN_MAX}</strong> itinerarios guardados · puedes guardar ${remaining} más`;
   }
 
   list.innerHTML = items.map(it => {
@@ -235,16 +235,16 @@ function renderMyItineraries(items) {
              onmouseover="this.style.borderColor='rgba(184,92,56,0.5)';this.style.transform='translateY(-2px)'"
              onmouseout="this.style.borderColor='rgba(184,92,56,0.25)';this.style.transform=''">
           <div>
-            <div style="font-family:'Instrument Serif',serif;color:var(--gold);font-size:1.15rem;font-weight:700;line-height:1.3;margin-bottom:6px;">
+            <div style="font-family:'Instrument Serif',serif;color:var(--terra);font-size:1.15rem;font-weight:700;line-height:1.3;margin-bottom:6px;">
               ${it.title || provinces}
             </div>
-            <div style="font-size:0.78rem;color:var(--parch2);line-height:1.6;">
+            <div style="font-size:0.78rem;color:var(--ink-muted);line-height:1.6;">
               📍 ${provinces}<br>
               📅 ${it.numDays} día${it.numDays!==1?'s':''}${dateLabel ? ' · '+dateLabel : ''}<br>
               📌 ${totalPlaces} lugar${totalPlaces!==1?'es':''}
             </div>
           </div>
-          <div style="font-size:0.7rem;color:var(--parch2);font-style:italic;opacity:0.7;border-top:1px solid rgba(184,92,56,0.15);padding-top:10px;">
+          <div style="font-size:0.7rem;color:var(--ink-muted);font-style:italic;opacity:0.7;border-top:1px solid rgba(184,92,56,0.15);padding-top:10px;">
             Guardado el ${created}
           </div>
           <div style="display:flex;gap:8px;margin-top:auto;">
@@ -387,13 +387,13 @@ function itinRenderDayColumns(query) {
       const sel      = itinSelected.includes(m.id);
       const disabled = !isOpen ? 'opacity:0.45;cursor:not-allowed;' : 'cursor:pointer;';
       const bg       = sel ? 'rgba(184,92,56,0.15)' : 'rgba(245,237,216,0.03)';
-      const border   = sel ? 'var(--gold)' : isOpen ? 'rgba(184,92,56,0.2)' : 'rgba(184,92,56,0.1)';
+      const border   = sel ? 'var(--terra)' : isOpen ? 'rgba(184,92,56,0.2)' : 'rgba(184,92,56,0.1)';
       const click    = isOpen ? `onclick="itinToggle(${m.id})"` : '';
       return `<div class="itin-marker-chip" id="chip-${m.id}-d${d}" ${click}
         style="border:1px solid ${border};padding:9px 11px;transition:all 0.18s;background:${bg};display:flex;align-items:center;gap:8px;${disabled}">
-        <span style="font-size:0.75rem;color:var(--gold);">${catEmoji(m.cat)}</span>
+        <span style="font-size:0.75rem;color:var(--terra);">${catEmoji(m.cat)}</span>
         <div style="flex:1;min-width:0;">
-          <div style="font-size:0.8rem;color:${isOpen?'var(--parch)':'var(--parch2)'};line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.name}</div>
+          <div style="font-size:0.8rem;color:${isOpen?'var(--ink)':'var(--ink-muted)'};line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.name}</div>
           ${!isOpen ? `<div style="font-size:0.68rem;color:#e57373;margin-top:2px;">No disponible este día</div>` : ''}
         </div>
       </div>`;
@@ -401,7 +401,7 @@ function itinRenderDayColumns(query) {
 
     const openHTML = filteredOpen.length
       ? filteredOpen.map(m => chipHTML(m, true)).join('')
-      : `<p style="color:var(--parch2);font-style:italic;font-size:0.8rem;padding:8px 0;">Sin resultados.</p>`;
+      : `<p style="color:var(--ink-muted);font-style:italic;font-size:0.8rem;padding:8px 0;">Sin resultados.</p>`;
 
     const closedSection = filteredClosed.length ? `
       <div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(184,92,56,0.1);">
@@ -412,8 +412,8 @@ function itinRenderDayColumns(query) {
     cols.push(`
       <div class="${colWidth}">
         <div style="background:rgba(245,237,216,0.03);border:1px solid rgba(184,92,56,0.2);padding:16px;height:100%;">
-          <div style="font-family:'Instrument Serif',serif;color:var(--gold);font-size:0.95rem;margin-bottom:4px;">${DAY_EMOJIS[d]} Día ${d+1}</div>
-          <div style="font-size:0.78rem;color:var(--parch2);margin-bottom:14px;text-transform:capitalize;">${dateLabel}</div>
+          <div style="font-family:'Instrument Serif',serif;color:var(--terra);font-size:0.95rem;margin-bottom:4px;">${DAY_EMOJIS[d]} Día ${d+1}</div>
+          <div style="font-size:0.78rem;color:var(--ink-muted);margin-bottom:14px;text-transform:capitalize;">${dateLabel}</div>
           <div style="display:flex;flex-direction:column;gap:6px;max-height:380px;overflow-y:auto;padding-right:4px;">
             ${openHTML}
             ${closedSection}
@@ -589,13 +589,13 @@ function itinRenderResult() {
             <div class="timeline-item" style="position:relative;">
               <div class="time-badge">${p.time}</div>
               <div class="timeline-content" style="padding-right:30px;">
-                <h4>${p.name} ${p.rating ? `<span style="font-size:0.72rem;color:var(--gold);font-family:'DM Sans',sans-serif;">★ ${p.rating}</span>` : ''}</h4>
+                <h4>${p.name} ${p.rating ? `<span style="font-size:0.72rem;color:var(--terra);font-family:'DM Sans',sans-serif;">★ ${p.rating}</span>` : ''}</h4>
                 <p style="margin:2px 0 0;">${p.parsedHours ? `Abierto: ${p.parsedHours.text}` : p.desc || p.cat || ''}</p>
               </div>
               ${favBtn}
             </div>`;
         }).join('')
-      : `<p style="color:var(--parch2);font-style:italic;font-size:0.85rem;padding:12px 0;">Sin lugares disponibles este día.</p>`;
+      : `<p style="color:var(--ink-muted);font-style:italic;font-size:0.85rem;padding:12px 0;">Sin lugares disponibles este día.</p>`;
 
     return `
       <div class="col-12 col-md-6 col-lg-4">
@@ -611,8 +611,8 @@ function itinRenderResult() {
     warnEl.innerHTML = `
       <div style="background:rgba(229,115,115,0.08);border:1px solid rgba(229,115,115,0.25);padding:14px 18px;">
         <div style="font-size:0.75rem;letter-spacing:0.1em;color:#e57373;margin-bottom:8px;">⚠ LUGARES NO DISPONIBLES ESTE DÍA</div>
-        <div style="font-size:0.82rem;color:var(--parch2);">
-          ${warnings.map(w => `<span style="display:inline-block;margin:3px 8px 3px 0;"><b style="color:var(--parch);">${w.name}</b> — cerrado el ${w.day}</span>`).join('')}
+        <div style="font-size:0.82rem;color:var(--ink-muted);">
+          ${warnings.map(w => `<span style="display:inline-block;margin:3px 8px 3px 0;"><b style="color:var(--ink);">${w.name}</b> — cerrado el ${w.day}</span>`).join('')}
         </div>
       </div>`;
   } else {

@@ -42,7 +42,7 @@ function openRouteMap(places, title, days) {
       <div style="display:flex;align-items:center;gap:8px;padding:12px 10px 6px;margin-top:${di > 0 ? '10px' : '0'};">
         <div style="width:12px;height:12px;border-radius:50%;background:${color};flex-shrink:0;"></div>
         <span style="font-family:'Instrument Serif',serif;font-size:0.8rem;color:${color};letter-spacing:0.06em;">${day.label || DAY_ROUTE_LABELS[di]}</span>
-        <span style="font-size:0.7rem;color:var(--parch2);">${day.places.length} paradas</span>
+        <span style="font-size:0.7rem;color:var(--ink-muted);">${day.places.length} paradas</span>
       </div>` : '';
     const stops = day.places.map((p, i) => {
       const mk  = appState.markers.find(m => m.name === p.name);

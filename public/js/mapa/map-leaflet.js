@@ -187,7 +187,7 @@ function renderMarkerCards() {
     showMoreEl.style.display = 'none';
   } else {
     showMoreEl.style.display = 'block';
-    const btnStyle = `display:inline-block;background:transparent;border:1px solid rgba(184,92,56,0.4);color:var(--gold);padding:9px 28px;cursor:pointer;font-family:'Instrument Serif',serif;font-size:0.88rem;letter-spacing:0.08em;transition:all 0.2s;margin:0 6px;`;
+    const btnStyle = `display:inline-block;background:transparent;border:1px solid rgba(184,92,56,0.4);color:var(--terra);padding:9px 28px;cursor:pointer;font-family:'Instrument Serif',serif;font-size:0.88rem;letter-spacing:0.08em;transition:all 0.2s;margin:0 6px;`;
     const btnHover = `onmouseover="this.style.background='rgba(184,92,56,0.10)';this.style.borderColor='var(--terra)'" onmouseout="this.style.background='transparent';this.style.borderColor='rgba(184,92,56,0.4)'"`;
     let html = '';
     if (remaining > 0) {

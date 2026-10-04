@@ -28,21 +28,8 @@
   --shadow-lg: 0 12px 40px rgba(42,33,24,0.18), 0 4px 12px rgba(42,33,24,0.10);
   --shadow-xl: 0 24px 60px rgba(42,33,24,0.22);
 
-  /* Surfaces (map, sidebar) — remapped to light palette */
-  --dark:        #F7F3EC;   /* arena cálida — era #1C1814 */
-  --dark2:       #EDE6D8;   /* arena profunda — era #252019 */
-  --dark3:       #FDFBF7;   /* crema — era #302A22 */
-  --dark-border: rgba(42,33,24,0.16); /* idéntico al navbar */
-
-  /* Text on former-dark surfaces — ahora oscuro sobre claro */
-  --parch:  var(--ink);       /* era #F2ECE0 */
-  --parch2: var(--ink-muted); /* era #C4B9A8 */
-
-  /* Inherited for backward compat */
-  --gold: var(--terra);
-  --gold-light: var(--terra-light);
-  --red: #8b1a1a;
-  --green: #7A8B6E;
+  /* Borde suave para superficies y separadores */
+  --line: rgba(42,33,24,0.16);
 
   --bs-body-bg: var(--cream);
   --bs-body-color: var(--ink);
@@ -366,7 +353,7 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
 #spa-itinerario .form-control-cyl {
   background: rgba(242,236,224,0.06) !important;
   border-color: rgba(184,92,56,0.2) !important;
-  color: var(--parch) !important;
+  color: var(--ink) !important;
 }
 .map-sidebar .form-control-cyl:focus,
 .day-planner-section .form-control-cyl:focus,
@@ -382,8 +369,8 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
 .map-sidebar select.form-control-cyl,
 .day-planner-section select.form-control-cyl,
 #spa-itinerario select.form-control-cyl {
-  background-color: var(--dark) !important;
-  color: var(--parch) !important;
+  background-color: var(--sand) !important;
+  color: var(--ink) !important;
 }
 
 /* ═══════════════════════════════════════════
@@ -393,7 +380,7 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
 .star-rating .star { color: rgba(184,92,56,0.2); transition: color 0.15s, transform 0.15s; line-height: 1; }
 .star-rating .star.filled { color: var(--terra); }
 .star-rating .star:hover, .star-rating .star.hover { color: var(--terra-light); transform: scale(1.2); }
-.rating-summary { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--parch2); font-style: italic; margin-top: 4px; cursor: pointer; }
+.rating-summary { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--ink-muted); font-style: italic; margin-top: 4px; cursor: pointer; }
 .rating-summary .avg-stars { color: var(--terra); font-size: 0.85rem; letter-spacing: 1px; }
 .rating-summary .count { font-size: 0.72rem; opacity: 0.7; }
 .rating-summary:hover .avg-stars { text-decoration: underline; text-underline-offset: 3px; }
@@ -716,8 +703,8 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
 
 /* ── Main area ── */
 .footer-main {
-  background: var(--dark);
-  color: var(--parch);
+  background: var(--sand);
+  color: var(--ink);
   padding: 56px 0 40px;
 }
 .footer-container {
@@ -744,7 +731,7 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
 .footer-desc {
   font-size: 0.88rem;
   line-height: 1.65;
-  color: var(--parch2);
+  color: var(--ink-muted);
   margin-bottom: 20px;
 }
 
@@ -760,8 +747,8 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: var(--dark3);
-  color: var(--parch2);
+  background: var(--cream);
+  color: var(--ink-muted);
   transition: background 0.25s, color 0.25s, transform 0.25s;
 }
 .footer-social a:hover {
@@ -783,7 +770,7 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
   color: var(--terra-light);
   margin-bottom: 18px;
   padding-bottom: 10px;
-  border-bottom: 1px solid var(--dark-border);
+  border-bottom: 1px solid var(--line);
 }
 
 /* Links */
@@ -794,7 +781,7 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
 }
 .footer-links li { margin-bottom: 10px; }
 .footer-links a {
-  color: var(--parch2);
+  color: var(--ink-muted);
   text-decoration: none;
   font-size: 0.88rem;
   transition: color 0.2s, padding-left 0.2s;
@@ -954,7 +941,7 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
 /* Listado mc-row (tarjetas en sidebar explorar) */
 .mc-thumb { background: var(--sand); border-color: rgba(42,33,24,0.14); }
 
-/* Popup de Leaflet — fondo ya hereda var(--dark) = sand; estos ajustan los hardcoded */
+/* Popup de Leaflet — fondo ya hereda var(--sand) = sand; estos ajustan los hardcoded */
 .lf-popup-prov  { color: var(--ink-muted); }
 .lf-popup-hint  { color: rgba(184,92,56,0.5); }
 .leaflet-popup-close-button { color: var(--ink-muted) !important; background: rgba(42,33,24,0.10) !important; }
@@ -1054,7 +1041,7 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
     max-height: 45dvh;
     overflow-y: auto;
     border-right: none !important;
-    border-bottom: 1px solid var(--dark-border);
+    border-bottom: 1px solid var(--line);
     position: relative;
   }
   #routeMapOverlay { flex-direction: column; }

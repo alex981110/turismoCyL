@@ -110,7 +110,7 @@ function updateAuthUI() {
   const loggedInHTML = `
     <div class="user-status">
       <div class="user-avatar" title="${u ? u.email : ''}">${u ? u.name[0].toUpperCase() : ''}</div>
-      <span style="color:var(--parch2);font-size:0.85rem;">${u ? u.name.split(' ')[0] : ''}</span>
+      <span style="color:var(--ink-muted);font-size:0.85rem;">${u ? u.name.split(' ')[0] : ''}</span>
       <button class="btn btn-outline" onclick="doLogout()" style="font-size:0.75rem;padding:7px 16px;">${_t('navbar.logout', null, 'Salir')}</button>
     </div>`;
   const loggedOutHTML = `

@@ -277,9 +277,9 @@ function doSearch(query) {
       onmouseover="this.style.borderColor='var(--terra)';this.style.background='rgba(42,33,24,0.05)'"
       onmouseout="this.style.borderColor='rgba(42,33,24,0.13)';this.style.background='var(--sand)'">
       <div style="font-size:1.3rem;margin-bottom:6px;">${catIcon[mk.cat] || catIcon.default}</div>
-      <div style="font-family:'Instrument Serif',serif;font-size:0.95rem;color:var(--parch);font-weight:700;margin-bottom:3px;">${mk.name}</div>
-      <div style="font-size:0.78rem;color:var(--gold);margin-bottom:6px;">${mk.province} · ${catLabel[mk.cat]||mk.cat}</div>
-      <div style="font-size:0.8rem;color:var(--parch2);line-height:1.4;">${mk.desc.slice(0,90)}${mk.desc.length>90?'…':''}</div>
+      <div style="font-family:'Instrument Serif',serif;font-size:0.95rem;color:var(--ink);font-weight:700;margin-bottom:3px;">${mk.name}</div>
+      <div style="font-size:0.78rem;color:var(--terra);margin-bottom:6px;">${mk.province} · ${catLabel[mk.cat]||mk.cat}</div>
+      <div style="font-size:0.8rem;color:var(--ink-muted);line-height:1.4;">${mk.desc.slice(0,90)}${mk.desc.length>90?'…':''}</div>
       <a href="${searchUrl}" target="_blank" rel="noopener" class="marker-link" onclick="event.stopPropagation()" style="margin-top:10px;">
         ${mk.url ? '🔗 Sitio web' : '🔍 Buscar'}
       </a>
@@ -287,7 +287,7 @@ function doSearch(query) {
   }).join('');
 
   if (results.length > 40) {
-    gridEl.innerHTML += `<div style="grid-column:1/-1;text-align:center;color:var(--parch2);font-style:italic;font-size:0.88rem;padding:12px;">
+    gridEl.innerHTML += `<div style="grid-column:1/-1;text-align:center;color:var(--ink-muted);font-style:italic;font-size:0.88rem;padding:12px;">
       Mostrando 40 de ${results.length}. Refina la búsqueda para ver más resultados.
     </div>`;
   }
