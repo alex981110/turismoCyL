@@ -1,4 +1,5 @@
-<section class="hero-immersive spa-section spa-hero" id="spa-home">
+<div class="spa-section" id="spa-home">
+<section class="hero-immersive">
 
   <!-- Carrusel de fondo -->
   <div class="hero-bg" id="heroBg">
@@ -57,6 +58,9 @@
 
 </section>
 
+<%- include('provinces') %>
+</div>
+
 <script>
 (function() {
   var SLIDES = [
@@ -109,6 +113,18 @@
     bg.addEventListener('mouseenter', function() { clearInterval(timer); });
     bg.addEventListener('mouseleave', function() { timer = setInterval(next, 6000); });
   }
+})();
+
+/* ── Barra transparente solo mientras se ve la foto de portada ── */
+(function() {
+  var nav = document.getElementById('mainNavbar');
+  var home = document.getElementById('spa-home');
+  var hero = home && home.querySelector('.hero-immersive');
+  if (!nav || !hero) return;
+  window.addEventListener('scroll', function() {
+    if (home.style.display === 'none') return;
+    nav.classList.toggle('navbar-on-hero', window.scrollY < hero.offsetHeight - nav.offsetHeight);
+  }, { passive: true });
 })();
 
 /* ── Transición "viaje por las nueve provincias" hacia el mapa ──

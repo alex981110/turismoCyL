@@ -31,9 +31,15 @@ function showSection(path) {
   const navSlogan = document.getElementById('navSlogan');
   const authArea  = document.getElementById('authArea');
   if (navbar)    navbar.classList.toggle('navbar-on-hero', isHome);
-  if (navLinks)  navLinks.style.display  = isHome ? 'none'  : '';
+  if (navLinks)  navLinks.style.display  = '';
   if (navSlogan) navSlogan.style.display = isHome ? 'block' : 'none';
-  if (authArea)  authArea.style.opacity  = isHome ? '0'     : '1';
+  if (authArea)  authArea.style.opacity  = '1';
+
+  // Cierra el menú móvil al navegar desde cualquier enlace
+  const navCollapse = document.getElementById('navCollapse');
+  if (navCollapse && navCollapse.classList.contains('show') && window.bootstrap) {
+    bootstrap.Collapse.getOrCreateInstance(navCollapse, { toggle: false }).hide();
+  }
 
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
@@ -45,8 +51,7 @@ function _activateSection(targetId) {
 
   const target = document.getElementById(targetId);
   if (target) {
-    // La portada centra su contenido con flex; el resto de secciones son bloques
-    target.style.display = target.classList.contains('spa-hero') ? 'flex' : 'block';
+    target.style.display = 'block';
     if (targetId === 'spa-mapa') {
       initLeafletMap();
       setTimeout(() => {

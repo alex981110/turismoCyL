@@ -588,7 +588,6 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
    SPA ROUTER
    ═══════════════════════════════════════════ */
 .spa-section { display: none; }
-.spa-section.spa-hero { min-height: 100vh; min-height: 100svh; }
 
 /* ═══════════════════════════════════════════
    ITINERARY SECTION
@@ -1197,3 +1196,27 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
 .place-photos button { padding: 0; border: none; border-radius: var(--radius-sm); overflow: hidden; aspect-ratio: 1; cursor: zoom-in; background: var(--sand); }
 .place-photos img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
 .place-photos button:hover img { transform: scale(1.05); }
+
+/* ── Barra de navegación sobre la foto de portada ── */
+.navbar-cyl.navbar-on-hero .nav-link-cyl.nav-active { color: var(--cream) !important; border-bottom-color: var(--terra-light); }
+.navbar-cyl.navbar-on-hero #authArea .btn-outline {
+  border-color: rgba(253,251,247,0.7) !important;
+  color: var(--cream) !important;
+}
+.navbar-cyl.navbar-on-hero #authArea .btn-outline:hover { background: rgba(253,251,247,0.12) !important; border-color: var(--cream) !important; }
+.navbar-cyl.navbar-on-hero #authArea .user-status span { color: rgba(253,251,247,0.85) !important; }
+/* El eslogan solo cabe junto a los enlaces en pantallas anchas */
+@media (max-width: 1279.98px) { .nav-slogan { display: none !important; } }
+/* Menú desplegable en móvil: fondo claro, así que los enlaces vuelven a tinta */
+@media (max-width: 991.98px) {
+  .navbar-cyl.navbar-on-hero .navbar-collapse .nav-link-cyl { color: var(--ink-soft) !important; }
+  .navbar-cyl.navbar-on-hero .navbar-collapse .nav-link-cyl:hover { color: var(--terra) !important; }
+}
+@media (max-width: 991.98px) {
+  /* El menú desplegable ocupa todo el ancho de la barra, con margen interior */
+  .navbar-cyl .navbar-collapse { position: absolute; top: 100%; left: 0; right: 0; margin: 0; padding: 4px 24px 18px; box-shadow: 0 12px 24px rgba(42,33,24,0.12); }
+  /* Con el menú abierto sobre la foto, la barra pasa a ser opaca */
+  .navbar-cyl.navbar-on-hero:has(.navbar-collapse.show, .navbar-collapse.collapsing) { background: var(--cream) !important; }
+  .navbar-cyl.navbar-on-hero:has(.navbar-collapse.show, .navbar-collapse.collapsing) .logo { color: var(--ink); }
+  .navbar-cyl.navbar-on-hero:has(.navbar-collapse.show, .navbar-collapse.collapsing) .navbar-toggler { color: var(--terra) !important; background: rgba(184,92,56,0.06) !important; }
+}

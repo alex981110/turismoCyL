@@ -1,0 +1,33 @@
+<!-- Portada: acceso directo a cada provincia en el mapa -->
+<%
+  const provincias = [
+    { name: 'Segovia',    img: 'segovia',    place: 'Acueducto romano' },
+    { name: 'Salamanca',  img: 'salamanca',  place: 'Plaza Mayor' },
+    { name: 'León',       img: 'leon',       place: 'Las Médulas' },
+    { name: 'Burgos',     img: 'burgos',     place: 'Catedral' },
+    { name: 'Ávila',      img: 'avila',      place: 'Murallas medievales' },
+    { name: 'Valladolid', img: 'valladolid', place: 'Iglesia de San Pablo' },
+    { name: 'Zamora',     img: 'zamora',     place: 'Catedral' },
+    { name: 'Palencia',   img: 'palencia',   place: 'San Martín de Frómista' },
+    { name: 'Soria',      img: 'soria',      place: 'Laguna Negra' }
+  ];
+%>
+<section class="home-provinces" aria-labelledby="homeProvincesTitle">
+  <header class="home-provinces-head">
+    <h2 id="homeProvincesTitle">Nueve provincias</h2>
+    <p>Elige una y empieza a explorar sus lugares en el mapa.</p>
+  </header>
+  <div class="home-provinces-grid">
+    <% provincias.forEach(function(p, i) { %>
+    <a class="province-tile<%= i === 0 ? ' province-tile--feature' : '' %>" href="/mapa"
+       onclick="event.preventDefault();goToProvince('<%= p.name %>')">
+      <img src="/hero/<%= p.img %>.jpg" alt="" loading="lazy" decoding="async">
+      <span class="province-tile-text">
+        <strong><%= p.name %></strong>
+        <span><%= p.place %></span>
+      </span>
+      <svg class="province-tile-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+    <% }) %>
+  </div>
+</section>
