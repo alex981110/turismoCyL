@@ -90,16 +90,15 @@ function renderFavDrawer() {
     const mk = appState.markers.find(m => String(m._id) === f.markerId);
     const photo = f.photo || (mk && mk.photo) || '';
     return `
-    <div style="display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(184,92,56,0.10);cursor:pointer;"
-         onclick="closeFavDrawer();goToMarker(${mk?.lat||0},${mk?.lng||0},'${f.province}')">
-      <div style="width:56px;height:56px;flex-shrink:0;overflow:hidden;background:var(--sand);border:1px solid rgba(42,33,24,0.13);">
-        ${photo ? `<img src="${photo}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">${catIcon[f.cat] || catIcon.default}</div>`}
+    <div class="fav-row" data-map-action="fav-go" data-lat="${mk?.lat||0}" data-lng="${mk?.lng||0}" data-province="${escHTML(f.province)}">
+      <div class="fav-row-thumb">
+        ${photo ? `<img src="${escHTML(photo)}" alt="" onerror="this.hidden = true">` : `<div class="fav-row-icon">${catIcon[f.cat] || catIcon.default}</div>`}
       </div>
-      <div style="flex:1;min-width:0;">
-        <div style="font-family:'Instrument Serif',serif;color:var(--ink);font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${f.name}</div>
-        <div style="font-size:0.75rem;color:var(--ink-muted);margin-top:2px;">${f.province} · ${catLabel[f.cat]||f.cat||''}</div>
+      <div class="fav-row-text">
+        <div class="fav-row-name">${escHTML(f.name)}</div>
+        <div class="fav-row-meta">${escHTML(f.province)} · ${escHTML(catLabel[f.cat]||f.cat||'')}</div>
       </div>
-      <button onclick="event.stopPropagation();toggleFavorite('${f.markerId}','${f.name.replace(/'/g,"\\'")}')"
+      <button type="button" data-map-action="fav" data-id="${escHTML(f.markerId)}" data-name="${escHTML(f.name)}"
         class="mc-fav" title="Quitar favorito" aria-label="Quitar favorito">${favIcon(true)}</button>
     </div>`;
   }).join('');

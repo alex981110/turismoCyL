@@ -208,7 +208,7 @@ function renderMarkerCards() {
   }
 }
 
-// Acciones de la barra lateral (filtros, lista, favoritos, ver más) por delegación:
+// Acciones del mapa, el planificador y los favoritos por delegación:
 // los datos viajan en atributos data-*, sin construir JavaScript dentro de cadenas
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-map-action]');
@@ -233,6 +233,19 @@ document.addEventListener('click', e => {
     case 'less':
       appState.visibleCards = 8;
       renderMarkerCards();
+      break;
+    case 'focus':
+      focusMarkerFromPlanner(+d.lat, +d.lng);
+      break;
+    case 'province':
+      selectProvince(d.province);
+      break;
+    case 'fav-go':
+      closeFavDrawer();
+      goToMarker(+d.lat, +d.lng, d.province);
+      break;
+    case 'open-modal':
+      openModal(d.modal);
       break;
   }
 });

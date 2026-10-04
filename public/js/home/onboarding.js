@@ -403,16 +403,6 @@ function obToggleProvince(name) {
   _obUpdateProvSummary();
 }
 
-// Mantenida por compatibilidad — selección única (delega en toggle)
-function obSelectProvince(name) {
-  window._obSelectedProvinces = [];
-  document.querySelectorAll('[id^="obProv_"]').forEach(btn => {
-    const provName = btn.id.replace('obProv_', '').replace(/_/g, ' ');
-    _obPaintProvince(provName, false);
-  });
-  obToggleProvince(name);
-}
-
 function obPrev() { if (obStep > 1) { obStep--; renderObStep(); } }
 
 function obSelectDays(d) {

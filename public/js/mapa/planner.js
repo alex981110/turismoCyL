@@ -122,7 +122,7 @@ function updateDayPlanner(province) {
   }
 
   if (!plan || (!plan.dia1.length && !plan.dia2.length)) {
-    container.innerHTML = '<p style="color:var(--ink-muted);grid-column:1/-1;text-align:center;padding:40px 0;">No hay marcadores disponibles para esta provincia.</p>';
+    container.innerHTML = '<p class="plan-empty">No hay marcadores disponibles para esta provincia.</p>';
     return;
   }
 
@@ -132,24 +132,19 @@ function updateDayPlanner(province) {
     const cat   = mk ? (catLabel[mk.cat] || mk.cat) : '';
     const icon  = mk ? (catIcon[mk.cat] || catIcon.default) : catIcon.default;
     return `
-      <div class="timeline-item has-marker"
-           onclick="focusMarkerFromPlanner(${mk?.lat||0},${mk?.lng||0})"
-           style="cursor:pointer;transition:background 0.15s;"
-           onmouseover="this.style.background='rgba(42,33,24,0.04)'"
-           onmouseout="this.style.background=''">
+      <div class="timeline-item has-marker plan-item" data-map-action="focus" data-lat="${mk?.lat||0}" data-lng="${mk?.lng||0}">
         <div class="time-badge">${item.time}</div>
-        <div class="timeline-content" style="flex:1;">
-          <div style="display:flex;gap:10px;align-items:flex-start;">
+        <div class="timeline-content">
+          <div class="plan-item-row">
             ${photo ? `
-              <div style="width:58px;height:58px;flex-shrink:0;overflow:hidden;border:1px solid rgba(42,33,24,0.16);">
-                <img src="${photo}" alt="${mk.name}" style="width:100%;height:100%;object-fit:cover;"
-                     onerror="this.parentNode.style.display='none'">
+              <div class="plan-item-photo">
+                <img src="${escHTML(photo)}" alt="${escHTML(mk.name)}" onerror="this.parentNode.hidden = true">
               </div>` : ''}
-            <div style="flex:1;min-width:0;">
-              <h4 style="margin:0 0 3px;">${mk.name}
-                <span style="font-size:0.65rem;background:rgba(184,92,56,0.10);border:1px solid rgba(42,33,24,0.16);color:var(--terra);padding:1px 6px;margin-left:6px;vertical-align:middle;">${icon} ${cat}</span>
+            <div class="plan-item-text">
+              <h4>${escHTML(mk.name)}
+                <span class="plan-item-cat">${icon} ${escHTML(cat)}</span>
               </h4>
-              <p style="margin:0;font-size:0.82rem;color:var(--ink-muted);line-height:1.45;">${item.desc}</p>
+              <p class="plan-item-desc">${escHTML(item.desc)}</p>
               <span class="plan-map-link">${catIcon.default} Ver en el mapa</span>
             </div>
           </div>
@@ -162,7 +157,7 @@ function updateDayPlanner(province) {
       <div class="day-plan-card h-100">
         <h3>${dayLabel} en ${province}</h3>
         <div class="timeline">
-          ${items.length ? items.map(renderItem).join('') : '<p style="color:var(--ink-muted);font-style:italic;font-size:0.85rem;">Sin lugares disponibles.</p>'}
+          ${items.length ? items.map(renderItem).join('') : '<p class="plan-day-empty">Sin lugares disponibles.</p>'}
         </div>
       </div>
     </div>
@@ -178,8 +173,8 @@ function updateDayPlanner(province) {
           <p class="plan-gate-title">El domingo, con tu cuenta</p>
           <p>Regístrate gratis para ver el segundo día, guardar el itinerario y descargarlo en PDF.</p>
           <div class="plan-gate-actions">
-            <button type="button" class="btn" onclick="openModal('register')">Crear cuenta gratis</button>
-            <button type="button" class="plan-gate-login" onclick="openModal('login')">Ya tengo cuenta</button>
+            <button type="button" class="btn" data-map-action="open-modal" data-modal="register">Crear cuenta gratis</button>
+            <button type="button" class="plan-gate-login" data-map-action="open-modal" data-modal="login">Ya tengo cuenta</button>
           </div>
         </div>
       </div>
@@ -201,9 +196,8 @@ function updateDayPlanner(province) {
   if (!routeBtn) {
     routeBtn = document.createElement('button');
     routeBtn.id = 'plannerRouteBtn';
-    routeBtn.className = 'btn';
-    routeBtn.style.cssText = 'margin-left:8px;background:var(--terra);box-shadow:0 4px 16px rgba(184,92,56,0.35);';
-    routeBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg>&nbsp;Ver ruta en mapa`;
+    routeBtn.className = 'btn planner-route-btn';
+    routeBtn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg>&nbsp;Ver ruta en mapa`;
     if (pdfBtn) {
       pdfBtn.parentNode.insertBefore(routeBtn, pdfBtn.nextSibling);
     } else {

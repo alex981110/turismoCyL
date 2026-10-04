@@ -180,7 +180,7 @@ function renderProvinceList() {
     if (!list) return;
     list.innerHTML = provinces.map(p => {
       const active = p === appState.selectedProvince ? 'active' : '';
-      return `<button class="province-pill ${active}" data-province="${p}" onclick="selectProvince('${p}')">${p}</button>`;
+      return `<button type="button" class="province-pill ${active}" data-map-action="province" data-province="${p}">${p}</button>`;
     }).join('');
   });
 }
@@ -190,7 +190,7 @@ function renderProvinceListExplore() {
   if (!list) return;
   list.innerHTML = provinces.map(p => {
     const active = p === appState.selectedProvince ? 'active' : '';
-    return `<button class="province-pill ${active}" data-province="${p}" onclick="selectProvince('${p}')">${p}</button>`;
+    return `<button type="button" class="province-pill ${active}" data-map-action="province" data-province="${p}">${p}</button>`;
   }).join('');
 }
 
@@ -235,63 +235,6 @@ function selectProvince(name, skipPlanner = false) {
 }
 // ============================================================
 appState.searchProv = null;
-
-function setSearchProv(prov) {
-  appState.searchProv = prov;
-  doSearch(document.getElementById('searchInput')?.value || '');
-}
-
-function toggleInlineSearch() {
-  // Buscador siempre visible — enfoca directamente
-  document.getElementById('searchInput')?.focus();
-}
-
-function doSearch(query) {
-  const q = query.trim().toLowerCase();
-  const resultsEl = document.getElementById('searchResults');
-  const gridEl = document.getElementById('searchResultsGrid');
-  const countEl = document.getElementById('searchResultCount');
-
-  if (q.length < 2) {
-    if (resultsEl) resultsEl.style.display = 'none';
-    return;
-  }
-
-  const activeProv = appState.selectedProvince || appState.searchProv;
-  let results = appState.markers.filter(m => {
-    const matchesQuery = m.name.toLowerCase().includes(q) || m.desc.toLowerCase().includes(q);
-    const matchesProv = !activeProv || m.province === activeProv;
-    return matchesQuery && matchesProv;
-  });
-
-  resultsEl.style.display = 'block';
-  countEl.textContent = results.length > 0
-    ? `${results.length} resultado${results.length !== 1 ? 's' : ''} encontrado${results.length !== 1 ? 's' : ''}`
-    : 'No se encontraron resultados';
-
-  gridEl.innerHTML = results.slice(0, 40).map(mk => {
-    const searchUrl = mk.url || `https://www.google.com/search?q=${encodeURIComponent(mk.name + ' ' + mk.province)}`;
-    return `
-    <div onclick="goToMarker(${mk.lat},${mk.lng},'${mk.province}')"
-      style="background:var(--sand);border:1px solid rgba(42,33,24,0.13);padding:14px 16px;cursor:pointer;transition:all 0.2s;"
-      onmouseover="this.style.borderColor='var(--terra)';this.style.background='rgba(42,33,24,0.05)'"
-      onmouseout="this.style.borderColor='rgba(42,33,24,0.13)';this.style.background='var(--sand)'">
-      <div style="font-size:1.3rem;margin-bottom:6px;">${catIcon[mk.cat] || catIcon.default}</div>
-      <div style="font-family:'Instrument Serif',serif;font-size:0.95rem;color:var(--ink);font-weight:700;margin-bottom:3px;">${mk.name}</div>
-      <div style="font-size:0.78rem;color:var(--terra);margin-bottom:6px;">${mk.province} · ${catLabel[mk.cat]||mk.cat}</div>
-      <div style="font-size:0.8rem;color:var(--ink-muted);line-height:1.4;">${mk.desc.slice(0,90)}${mk.desc.length>90?'…':''}</div>
-      <a href="${searchUrl}" target="_blank" rel="noopener" class="marker-link" onclick="event.stopPropagation()" style="margin-top:10px;">
-        ${mk.url ? '🔗 Sitio web' : '🔍 Buscar'}
-      </a>
-    </div>`;
-  }).join('');
-
-  if (results.length > 40) {
-    gridEl.innerHTML += `<div style="grid-column:1/-1;text-align:center;color:var(--ink-muted);font-style:italic;font-size:0.88rem;padding:12px;">
-      Mostrando 40 de ${results.length}. Refina la búsqueda para ver más resultados.
-    </div>`;
-  }
-}
 
 function goToMarker(lat, lng, province) {
   selectProvince(province);

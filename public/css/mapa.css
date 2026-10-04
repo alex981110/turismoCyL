@@ -250,7 +250,7 @@
 .msb-dayplan .timeline-content { flex: 1; min-width: 0; }
 .msb-dayplan .timeline-content h4 { font-size: 0.85rem; white-space: normal; line-height: 1.3; color: var(--ink); font-weight: 600; margin-bottom: 3px; }
 .msb-dayplan .timeline-content p { font-size: 0.78rem; color: var(--ink-soft); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.msb-dayplan [style*="width:58px"] { width: 44px !important; height: 44px !important; border-radius: var(--radius-sm) !important; flex-shrink: 0; }
+.msb-dayplan .plan-item-photo { width: 44px; height: 44px; border-radius: var(--radius-sm); flex-shrink: 0; }
 #plannerBtnWrap { padding: 12px 16px; background: rgba(42,33,24,0.06); border-top: 1px solid rgba(42,33,24,0.10); }
 #personalizedBadge > div { border-radius: 0 !important; border-left: none !important; border-right: none !important; border-top: none !important; padding: 10px 18px !important; font-size: 0.78rem !important; }
 
@@ -581,3 +581,18 @@
 
 .tt-name { font-family: 'Instrument Serif', serif; font-size: 0.82rem; color: var(--terra); font-weight: 700; }
 .tt-cat { font-size: 0.72rem; color: #999; }
+
+/* ── Planificador (antes estilos en línea en planner.js) ── */
+.plan-empty { color: var(--ink-muted); grid-column: 1 / -1; text-align: center; padding: 40px 0; }
+.plan-day-empty { color: var(--ink-muted); font-style: italic; font-size: 0.85rem; }
+.plan-item { cursor: pointer; transition: background 0.15s; }
+.timeline-item.has-marker.plan-item:hover { background: rgba(42,33,24,0.04); }
+.plan-item .timeline-content { flex: 1; }
+.plan-item-row { display: flex; gap: 10px; align-items: flex-start; }
+.plan-item-photo { width: 58px; height: 58px; flex-shrink: 0; overflow: hidden; border: 1px solid rgba(42,33,24,0.16); }
+.plan-item-photo img { width: 100%; height: 100%; object-fit: cover; }
+.plan-item-text { flex: 1; min-width: 0; }
+.plan-item .timeline-content .plan-item-text h4 { margin: 0 0 3px; }
+.plan-item-cat { font-size: 0.65rem; background: rgba(184,92,56,0.10); border: 1px solid rgba(42,33,24,0.16); color: var(--terra); padding: 1px 6px; margin-left: 6px; vertical-align: middle; }
+.plan-item .timeline-content .plan-item-desc { margin: 0; font-size: 0.82rem; color: var(--ink-muted); line-height: 1.45; }
+.planner-route-btn, .planner-route-btn:hover { margin-left: 8px; background: var(--terra); box-shadow: 0 4px 16px rgba(184,92,56,0.35); }

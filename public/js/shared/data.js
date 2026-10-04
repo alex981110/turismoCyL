@@ -679,11 +679,6 @@ const catPhoto = {
   'default':    'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=600&q=75',
 };
 
-// Devuelve foto propia si existe, si no la genérica de su categoría
-function getMarkerPhoto(mk) {
-  return (mk.photo && mk.photo.trim()) ? mk.photo : (catPhoto[mk.cat] || catPhoto.default);
-}
-
 function setCatFilter(cat, province) {
   appState.filterCat = cat;
   appState.visibleCards = 8;
