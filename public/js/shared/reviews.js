@@ -107,8 +107,8 @@ function renderPlaceActions() {
   const route = mk ? `https://www.google.com/maps/dir/?api=1&destination=${mk.lat},${mk.lng}` : '';
   document.getElementById('placeActions').innerHTML = `
     ${route ? `<a class="place-btn place-btn--primary" href="${route}" target="_blank" rel="noopener">${_placeIco.route}Cómo llegar</a>` : ''}
-    ${mk && mk._id ? `<button type="button" class="place-btn${fav ? ' is-on' : ''}" aria-pressed="${fav}" onclick="placeToggleFavorite()">${favIcon(fav)}${fav ? 'Guardado' : 'Guardar'}</button>` : ''}
-    <button type="button" class="place-btn" onclick="closeReviewsDrawer();openRatingModal('${jsArg(name)}','${jsArg(province)}')">${_placeIco.star}Valorar</button>`;
+    ${mk && mk._id ? `<button type="button" class="place-btn${fav ? ' is-on' : ''}" aria-pressed="${fav}" data-action="place-fav">${favIcon(fav)}${fav ? 'Guardado' : 'Guardar'}</button>` : ''}
+    <button type="button" class="place-btn" data-action="place-rate" data-name="${escHTML(name)}" data-province="${escHTML(province)}">${_placeIco.star}Valorar</button>`;
 }
 
 async function placeToggleFavorite() {
@@ -125,7 +125,7 @@ function renderPlaceRatings() {
   const el = document.getElementById('placeRatings');
   if (!rs.length) {
     el.innerHTML = `<p class="place-empty">Todavía nadie lo ha valorado.
-      <button type="button" class="place-link-btn" onclick="closeReviewsDrawer();openRatingModal('${jsArg(name)}','${jsArg(province)}')">Sé el primero</button></p>`;
+      <button type="button" class="place-link-btn" data-action="place-rate" data-name="${escHTML(name)}" data-province="${escHTML(province)}">Sé el primero</button></p>`;
     return;
   }
   const avg = getAvgRating(name), total = rs.length;
@@ -176,7 +176,7 @@ function renderPlaceGoogle(data, name) {
   }
   if (photos.length) {
     parts.push(`<div class="place-photos">${photos.slice(0, 6).map(url =>
-      `<button type="button" data-src="${escHTML(url)}" onclick="openPhotoModal('${jsArg(url)}','${jsArg(name)}')" aria-label="Ampliar foto"><img src="${escHTML(url)}" alt="" loading="lazy" onerror="this.parentElement.remove()"></button>`).join('')}</div>`);
+      `<button type="button" data-src="${escHTML(url)}" data-action="photo-zoom" data-caption="${escHTML(name)}" aria-label="Ampliar foto"><img src="${escHTML(url)}" alt="" loading="lazy" onerror="this.parentElement.remove()"></button>`).join('')}</div>`);
   }
   if ((data.reviews || []).length) {
     parts.push(data.reviews.map(r => `
@@ -191,6 +191,12 @@ function renderPlaceGoogle(data, name) {
   sec.innerHTML = `<h4 class="place-section-title">En Google</h4>` + parts.join('');
   sec.hidden = false;
 }
+
+registerActions({
+  'place-fav':  () => placeToggleFavorite(),
+  'place-rate': d => { closeReviewsDrawer(); openRatingModal(d.name, d.province); },
+  'photo-zoom': d => openPhotoModal(d.src, d.caption),
+});
 
 function closeReviewsDrawer() {
   const drawer = document.getElementById('reviewsDrawer');

@@ -109,17 +109,19 @@ function updateAuthUI() {
 
   const loggedInHTML = `
     <div class="user-status">
-      <div class="user-avatar" title="${u ? u.email : ''}">${u ? u.name[0].toUpperCase() : ''}</div>
-      <span style="color:var(--ink-muted);font-size:0.85rem;">${u ? u.name.split(' ')[0] : ''}</span>
-      <button class="btn btn-outline" onclick="doLogout()" style="font-size:0.75rem;padding:7px 16px;">${_t('navbar.logout', null, 'Salir')}</button>
+      <div class="user-avatar" title="${u ? escHTML(u.email) : ''}">${u ? escHTML(u.name[0].toUpperCase()) : ''}</div>
+      <span class="user-status-name">${u ? escHTML(u.name.split(' ')[0]) : ''}</span>
+      <button type="button" class="btn btn-outline btn-logout" data-action="logout">${_t('navbar.logout', null, 'Salir')}</button>
     </div>`;
   const loggedOutHTML = `
-    <button class="btn btn-outline" onclick="openModal('login')">${_t('navbar.login', null, 'Iniciar Sesión')}</button>
-    <button class="btn" onclick="openModal('register')">${_t('navbar.register', null, 'Registrarse')}</button>`;
+    <button type="button" class="btn btn-outline" data-action="open-modal" data-modal="login">${_t('navbar.login', null, 'Iniciar Sesión')}</button>
+    <button type="button" class="btn" data-action="open-modal" data-modal="register">${_t('navbar.register', null, 'Registrarse')}</button>`;
 
   if (area) area.innerHTML = u ? loggedInHTML : loggedOutHTML;
   if (areaMobile) areaMobile.innerHTML = u ? loggedInHTML : loggedOutHTML;
 }
+
+registerActions({ 'logout': () => doLogout() });
 
 function doLogout() {
   appState.currentUser = null;

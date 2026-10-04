@@ -48,10 +48,10 @@ function openRouteMap(places, title, days) {
       const mk  = appState.markers.find(m => m.name === p.name);
       const cat = mk ? (catLabel[mk.cat] || mk.cat) : '';
       return `
-        <div class="route-stop-item" onclick="_routeMapFlyTo(${p.lat},${p.lng})" style="border-left:2px solid ${color}30;">
+        <div class="route-stop-item" data-action="route-fly" data-lat="${p.lat}" data-lng="${p.lng}" style="border-left:2px solid ${color}30;">
           <div class="route-stop-num" style="background:${color};">${i + 1}</div>
           <div class="route-stop-info">
-            <div class="route-stop-name">${p.name}</div>
+            <div class="route-stop-name">${escHTML(p.name)}</div>
             ${cat ? `<div class="route-stop-cat">${catIcon[mk.cat] || catIcon.default} ${cat}</div>` : ''}
           </div>
         </div>`;
@@ -162,6 +162,8 @@ function closeRouteMap() {
   overlay.classList.remove('active');
   setTimeout(() => { overlay.style.display = 'none'; }, 250);
 }
+
+registerActions({ 'route-fly': d => _routeMapFlyTo(+d.lat, +d.lng) });
 
 function _routeMapFlyTo(lat, lng) {
   if (_routeMap) _routeMap.setView([lat, lng], 15, { animate: true });

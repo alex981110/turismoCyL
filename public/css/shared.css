@@ -1066,3 +1066,7 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
 .fav-row-text { flex: 1; min-width: 0; }
 .fav-row-name { font-family: 'Instrument Serif', serif; color: var(--ink); font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fav-row-meta { font-size: 0.75rem; color: var(--ink-muted); margin-top: 2px; }
+
+/* ── Zona de sesión de la barra (antes estilos en línea en auth.js) ── */
+.user-status-name { color: var(--ink-muted); font-size: 0.85rem; }
+.user-status .btn-logout { font-size: 0.75rem; padding: 7px 16px; }
