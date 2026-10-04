@@ -43,7 +43,7 @@ async function toggleFavorite(markerId, name) {
       headers: authHeaders(),
       body: JSON.stringify(newFav)
     }).catch(() => {});
-    showToast('❤️ Añadido a favoritos');
+    showToast('Añadido a favoritos');
   }
 
   // Refresh heart icons wherever visible
@@ -53,11 +53,11 @@ async function toggleFavorite(markerId, name) {
 
 function refreshFavIcons(markerId) {
   const isFav = isFavorite(markerId);
-  const emoji = isFav ? '❤️' : '🤍';
+  const icon = favIcon(isFav);
   const popupBtn = document.getElementById(`fav-btn-${markerId}`);
-  if (popupBtn) popupBtn.textContent = emoji;
+  if (popupBtn) popupBtn.innerHTML = icon;
   const cardBtn = document.getElementById(`fav-card-${markerId}`);
-  if (cardBtn) cardBtn.textContent = emoji;
+  if (cardBtn) cardBtn.innerHTML = icon;
 }
 
 function openFavDrawer() {
@@ -80,7 +80,7 @@ function renderFavDrawer() {
 
   if (!favs.length) {
     body.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--parch2);font-style:italic;">
-      <div style="font-size:2.5rem;margin-bottom:12px;">🤍</div>
+      <div class="fav-empty-ico">${favIcon(false)}</div>
       Aún no tienes favoritos.<br>Haz clic en el corazón de cualquier lugar para guardarlo aquí.
     </div>`;
     return;
@@ -93,14 +93,14 @@ function renderFavDrawer() {
     <div style="display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(184,92,56,0.10);cursor:pointer;"
          onclick="closeFavDrawer();goToMarker(${mk?.lat||0},${mk?.lng||0},'${f.province}')">
       <div style="width:56px;height:56px;flex-shrink:0;overflow:hidden;background:var(--sand);border:1px solid rgba(42,33,24,0.13);">
-        ${photo ? `<img src="${photo}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">${catIcon[f.cat]||'📍'}</div>`}
+        ${photo ? `<img src="${photo}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">${catIcon[f.cat] || catIcon.default}</div>`}
       </div>
       <div style="flex:1;min-width:0;">
-        <div style="font-family:'Playfair Display',serif;color:var(--parch);font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${f.name}</div>
+        <div style="font-family:'Instrument Serif',serif;color:var(--parch);font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${f.name}</div>
         <div style="font-size:0.75rem;color:var(--parch2);margin-top:2px;">${f.province} · ${catLabel[f.cat]||f.cat||''}</div>
       </div>
       <button onclick="event.stopPropagation();toggleFavorite('${f.markerId}','${f.name.replace(/'/g,"\\'")}')"
-        style="background:none;border:none;font-size:1.2rem;cursor:pointer;padding:4px 8px;">❤️</button>
+        class="mc-fav" title="Quitar favorito" aria-label="Quitar favorito">${favIcon(true)}</button>
     </div>`;
   }).join('');
 }

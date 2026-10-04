@@ -133,9 +133,9 @@ async function loadProvinceBoundaries() {
 
     provinceBoundariesLayer = L.geoJSON({ type:'FeatureCollection', features: cylFeatures }, {
       style: {
-        color: '#888888',
-        weight: 1.5,
-        opacity: 0.7,
+        color: '#6B5C4E',
+        weight: 1.2,
+        opacity: 0.55,
         fillColor: 'transparent',
         fillOpacity: 0,
         dashArray: null
@@ -163,10 +163,10 @@ function highlightProvinceBoundary(name) {
   provinceBoundariesLayer.eachLayer(layer => {
     const n = PROVINCE_NAME_MAP[layer.feature.properties.name] || layer.feature.properties.name;
     if (n === name) {
-      layer.setStyle({ color: '#000000', weight: 3, opacity: 1 });
+      layer.setStyle({ color: '#B85C38', weight: 2.5, opacity: 1, fillColor: '#B85C38', fillOpacity: 0.06 });
       layer.bringToFront();
     } else {
-      layer.setStyle({ color: '#888888', weight: 1.5, opacity: 0.7 });
+      layer.setStyle({ color: '#6B5C4E', weight: 1.2, opacity: 0.55, fillOpacity: 0 });
     }
   });
 }
@@ -276,8 +276,8 @@ function doSearch(query) {
       style="background:var(--sand);border:1px solid rgba(42,33,24,0.13);padding:14px 16px;cursor:pointer;transition:all 0.2s;"
       onmouseover="this.style.borderColor='var(--terra)';this.style.background='rgba(42,33,24,0.05)'"
       onmouseout="this.style.borderColor='rgba(42,33,24,0.13)';this.style.background='var(--sand)'">
-      <div style="font-size:1.3rem;margin-bottom:6px;">${catIcon[mk.cat]||'📍'}</div>
-      <div style="font-family:'Playfair Display',serif;font-size:0.95rem;color:var(--parch);font-weight:700;margin-bottom:3px;">${mk.name}</div>
+      <div style="font-size:1.3rem;margin-bottom:6px;">${catIcon[mk.cat] || catIcon.default}</div>
+      <div style="font-family:'Instrument Serif',serif;font-size:0.95rem;color:var(--parch);font-weight:700;margin-bottom:3px;">${mk.name}</div>
       <div style="font-size:0.78rem;color:var(--gold);margin-bottom:6px;">${mk.province} · ${catLabel[mk.cat]||mk.cat}</div>
       <div style="font-size:0.8rem;color:var(--parch2);line-height:1.4;">${mk.desc.slice(0,90)}${mk.desc.length>90?'…':''}</div>
       <a href="${searchUrl}" target="_blank" rel="noopener" class="marker-link" onclick="event.stopPropagation()" style="margin-top:10px;">

@@ -12,9 +12,9 @@
         <div class="admin-card h-100">
           <h3>📥 Importar Marcadores via CSV</h3>
           <p style="font-size:0.85rem;color:var(--parch2);margin-bottom:20px;font-style:italic;">Formato: nombre, latitud, longitud, provincia, categoría, descripción</p>
-          <div style="border:2px dashed rgba(201,168,76,0.3);padding:30px;text-align:center;cursor:pointer;margin-bottom:16px;" onclick="document.getElementById('csvInput').click()">
+          <div style="border:2px dashed rgba(184,92,56,0.3);padding:30px;text-align:center;cursor:pointer;margin-bottom:16px;" onclick="document.getElementById('csvInput').click()">
             <div style="font-size:2rem;margin-bottom:8px;">📄</div>
-            <div style="color:var(--gold);font-family:'Playfair Display',serif;">Arrastra tu CSV aquí</div>
+            <div style="color:var(--gold);font-family:'Instrument Serif',serif;">Arrastra tu CSV aquí</div>
             <div style="font-size:0.8rem;color:var(--parch2);margin-top:4px;">o haz clic para seleccionar</div>
           </div>
           <input type="file" id="csvInput" accept=".csv" style="display:none;" onchange="handleCSVUpload(event)">
@@ -33,7 +33,7 @@ Las Médulas,42.4588,-6.7743,León,naturaleza,"Patrimonio UNESCO...","https://..
           <h3>📍 Marcadores Registrados (<span id="markerTotalCount">0</span>) — mostrando <span id="markerShownCount">0</span></h3>
           <div class="input-group input-group-cyl mb-3">
             <input id="adminMarkerSearch" type="text" class="form-control form-control-cyl" placeholder="Buscar por nombre, provincia o categoría..." oninput="adminMarkersLimit=20;renderAdminMarkers()" />
-            <button class="btn" onclick="document.getElementById('adminMarkerSearch').value='';renderAdminMarkers()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:var(--parch2);" title="Limpiar">✕</button>
+            <button class="btn" onclick="document.getElementById('adminMarkerSearch').value='';renderAdminMarkers()" style="background:rgba(184,92,56,0.1);border:1px solid rgba(184,92,56,0.25);color:var(--parch2);" title="Limpiar">✕</button>
           </div>
           <table class="admin-table" id="adminMarkersTable">
             <thead><tr><th>Nombre</th><th>Provincia</th><th>Categoría</th><th>Foto</th><th></th></tr></thead>
@@ -42,7 +42,7 @@ Las Médulas,42.4588,-6.7743,León,naturaleza,"Patrimonio UNESCO...","https://..
             </tbody>
           </table>
           <div id="adminMarkersMore" style="display:none;text-align:center;padding:16px 0 4px;">
-            <button onclick="adminMarkersLimit+=100;renderAdminMarkers()" style="background:transparent;border:1px solid rgba(201,168,76,0.4);color:var(--gold);padding:9px 28px;cursor:pointer;font-family:'Playfair Display',serif;font-size:0.88rem;letter-spacing:0.08em;">
+            <button onclick="adminMarkersLimit+=100;renderAdminMarkers()" style="background:transparent;border:1px solid rgba(184,92,56,0.4);color:var(--gold);padding:9px 28px;cursor:pointer;font-family:'Instrument Serif',serif;font-size:0.88rem;letter-spacing:0.08em;">
               Ver 100 más <span id="adminMarkersRemaining" style="opacity:0.6;font-size:0.8rem;"></span> ▼
             </button>
           </div>

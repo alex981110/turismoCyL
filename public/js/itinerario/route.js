@@ -1,4 +1,4 @@
-const DAY_ROUTE_COLORS = ['#c9a84c', '#4ca8c9', '#7ec94c', '#c94c7e', '#c9784c'];
+const DAY_ROUTE_COLORS = ['#B85C38', '#4ca8c9', '#7ec94c', '#c94c7e', '#c9784c'];
 const DAY_ROUTE_LABELS = ['🌅 Día 1', '🌄 Día 2', '🌇 Día 3', '🌆 Día 4', '🌃 Día 5'];
 
 function buildGoogleMapsUrl(dayGroups) {
@@ -34,7 +34,7 @@ function openRouteMap(places, title, days) {
     const header = multiDay ? `
       <div style="display:flex;align-items:center;gap:8px;padding:12px 10px 6px;margin-top:${di > 0 ? '10px' : '0'};">
         <div style="width:12px;height:12px;border-radius:50%;background:${color};flex-shrink:0;"></div>
-        <span style="font-family:'Playfair Display',serif;font-size:0.8rem;color:${color};letter-spacing:0.06em;">${day.label || DAY_ROUTE_LABELS[di]}</span>
+        <span style="font-family:'Instrument Serif',serif;font-size:0.8rem;color:${color};letter-spacing:0.06em;">${day.label || DAY_ROUTE_LABELS[di]}</span>
         <span style="font-size:0.7rem;color:var(--parch2);">${day.places.length} paradas</span>
       </div>` : '';
     const stops = day.places.map((p, i) => {
@@ -45,7 +45,7 @@ function openRouteMap(places, title, days) {
           <div class="route-stop-num" style="background:${color};">${i + 1}</div>
           <div class="route-stop-info">
             <div class="route-stop-name">${p.name}</div>
-            ${cat ? `<div class="route-stop-cat">${catIcon[mk.cat] || '📍'} ${cat}</div>` : ''}
+            ${cat ? `<div class="route-stop-cat">${catIcon[mk.cat] || catIcon.default} ${cat}</div>` : ''}
           </div>
         </div>`;
     }).join('');

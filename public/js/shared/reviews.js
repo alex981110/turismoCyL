@@ -16,10 +16,10 @@ async function openReviewsDrawer(name, province) {
       favHost.innerHTML = `
         <button onclick="toggleFavorite('${mk._id}','${name.replace(/'/g,"\\'")}');openReviewsDrawer('${name.replace(/'/g,"\\'")}','${province}')"
           title="${isFav ? 'Quitar de favoritos' : 'Añadir a favoritos'}"
-          style="background:${isFav ? 'rgba(229,115,115,0.15)' : 'rgba(184,92,56,0.08)'};border:1px solid ${isFav ? 'rgba(229,115,115,0.45)' : 'rgba(184,92,56,0.3)'};border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.05rem;padding:0;transition:all 0.15s;"
+          style="background:${isFav ? 'rgba(184,92,56,0.14)' : 'rgba(184,92,56,0.08)'};border:1px solid ${isFav ? 'rgba(184,92,56,0.45)' : 'rgba(184,92,56,0.3)'};border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.05rem;padding:0;transition:all 0.15s;"
           onmouseover="this.style.transform='scale(1.08)'"
           onmouseout="this.style.transform=''">
-          ${isFav ? '❤️' : '🤍'}
+          ${favIcon(isFav)}
         </button>`;
       favHost.style.display = 'block';
     } else {
@@ -84,7 +84,7 @@ async function openReviewsDrawer(name, province) {
           <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
           <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
         </svg>
-        <span style="font-family:'Playfair Display',serif;color:var(--gold);font-size:0.9rem;letter-spacing:0.08em;">RESEÑAS DE GOOGLE</span>
+        <span style="font-family:'Instrument Serif',serif;color:var(--gold);font-size:0.9rem;letter-spacing:0.08em;">RESEÑAS DE GOOGLE</span>
       </div>
       <div id="googleReviewsContent" style="color:var(--parch2);font-size:0.85rem;">
         <div style="display:flex;align-items:center;gap:8px;padding:12px 0;">
@@ -131,7 +131,7 @@ async function openReviewsDrawer(name, province) {
       const badge = isOpen === null ? '' :
         isOpen
           ? `<span style="background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);padding:2px 10px;font-size:0.72rem;letter-spacing:0.08em;">ABIERTO AHORA</span>`
-          : `<span style="background:rgba(229,115,115,0.15);color:#e57373;border:1px solid rgba(229,115,115,0.3);padding:2px 10px;font-size:0.72rem;letter-spacing:0.08em;">CERRADO AHORA</span>`;
+          : `<span style="background:rgba(184,92,56,0.14);color:#e57373;border:1px solid rgba(229,115,115,0.3);padding:2px 10px;font-size:0.72rem;letter-spacing:0.08em;">CERRADO AHORA</span>`;
 
       const weekHTML = data.schedule.weekday_text?.length
         ? data.schedule.weekday_text.map(line => {
@@ -158,7 +158,7 @@ async function openReviewsDrawer(name, province) {
     // ── Rating global ──────────────────────────────────────
     const ratingHTML = data.rating ? `
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-        <span style="font-family:'Playfair Display',serif;font-size:2rem;color:var(--gold);">${data.rating.toFixed(1)}</span>
+        <span style="font-family:'Instrument Serif',serif;font-size:2rem;color:var(--gold);">${data.rating.toFixed(1)}</span>
         <div>
           <div style="color:var(--gold);font-size:0.9rem;letter-spacing:2px;">${[1,2,3,4,5].map(i=>`<span style="color:${i<=data.rating?'var(--gold)':'rgba(42,33,24,0.13)'};">★</span>`).join('')}</div>
           <div style="font-size:0.72rem;color:var(--parch2);margin-top:2px;">${(data.total_ratings||0).toLocaleString()} reseñas en Google</div>

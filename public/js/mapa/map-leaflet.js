@@ -19,9 +19,9 @@ function initLeafletMap() {
 }
 
 function createCustomIcon(cat) {
-  const emoji = catIcon[cat] || catIcon.default;
+  const icon = catIcon[cat] || catIcon.default;
   return L.divIcon({
-    html: `<div style="background:#1a1209;border:2px solid #c9a84c;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,0.5);">${emoji}</div>`,
+    html: `<div class="cyl-pin">${icon}</div>`,
     className: '',
     iconSize: [36, 36],
     iconAnchor: [18, 18],
@@ -59,7 +59,7 @@ function loadProvinceMarkers(province) {
     const searchUrl = mk.url || `https://www.google.com/search?q=${encodeURIComponent(mk.name + ' ' + mk.province)}`;
     const safeName = mk.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
     const leafletMarker = L.marker([mk.lat, mk.lng], { icon: createCustomIcon(mk.cat) })
-      .bindTooltip(`<span style="font-family:'Playfair Display',serif;font-size:0.82rem;color:#c9a84c;font-weight:700;">${mk.name}</span><br><span style="font-size:0.72rem;color:#999;">${catLabel[mk.cat]||mk.cat}</span>`, {
+      .bindTooltip(`<span style="font-family:'Instrument Serif',serif;font-size:0.82rem;color:var(--terra);font-weight:700;">${mk.name}</span><br><span style="font-size:0.72rem;color:#999;">${catLabel[mk.cat]||mk.cat}</span>`, {
         direction: 'top',
         offset: [0, -8],
         className: 'leaflet-tooltip-cyl',
@@ -67,26 +67,26 @@ function loadProvinceMarkers(province) {
       })
       .bindPopup(`
         <div class="lf-popup" onclick="map.closePopup();openReviewsDrawer('${safeName}','${mk.province}')" style="cursor:pointer;position:relative;">
-          <div style="display:flex;align-items:center;justify-content:center;height:72px;background:rgba(184,92,56,0.07);font-size:2.2rem;">
-            ${catIcon[mk.cat]||'📍'}
+          <div style="display:flex;align-items:center;justify-content:center;height:72px;background:rgba(184,92,56,0.07);font-size:2.2rem;color:var(--terra);">
+            ${catIcon[mk.cat] || catIcon.default}
           </div>
           <div class="lf-popup-body">
             <strong class="lf-popup-name" style="display:flex;align-items:center;gap:6px;">
               <button onclick="event.stopPropagation();toggleFavorite('${mk._id}','${safeName}');setTimeout(()=>{map.closePopup();loadProvinceMarkers('${mk.province}');},150);"
                 title="Añadir a favoritos"
                 style="background:transparent;border:none;cursor:pointer;font-size:1rem;padding:0;line-height:1;flex-shrink:0;">
-                ${isFavorite(mk._id) ? '❤️' : '🤍'}
+                ${favIcon(isFavorite(mk._id))}
               </button>
               <span>${mk.name}</span>
             </strong>
             <div class="lf-popup-meta">
-              <span class="lf-popup-pill">${catIcon[mk.cat]||'📍'} ${catLabel[mk.cat]||mk.cat}</span>
+              <span class="lf-popup-pill">${catIcon[mk.cat] || catIcon.default} ${catLabel[mk.cat]||mk.cat}</span>
               <span class="lf-popup-prov">${mk.province}</span>
             </div>
             <p class="lf-popup-hint">Toca para ver detalles →</p>
           </div>
         </div>
-      `, { maxWidth: 260, className: 'lf-popup-wrap' })
+      `, { maxWidth: 260, className: 'lf-popup-wrap', autoPanPaddingTopLeft: [20, 70], autoPanPaddingBottomRight: [20, 110] })
       ;
     clusterGroup.addLayer(leafletMarker);
     appState.activeLeafletMarkers.push(leafletMarker);
@@ -109,12 +109,12 @@ function loadProvinceMarkers(province) {
   const filterBar = document.getElementById('catFilterBar');
   if (filterBar) {
     filterBar.innerHTML = `
-      <button onclick="setCatFilter(null,'${province}')" style="${!activeCat?'background:rgba(42,33,24,0.16);border-color:#c9a84c;color:#c9a84c;':''}background:transparent;border:1px solid rgba(42,33,24,0.20);color:var(--parch2);padding:4px 10px;cursor:pointer;font-family:Crimson Pro,serif;font-size:0.8rem;transition:all 0.2s;margin:2px;">
+      <button onclick="setCatFilter(null,'${province}')" class="cat-chip${!activeCat ? ' is-active' : ''}">
         Todos (${pMarkers.length})
       </button>
       ${Object.entries(catCounts).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`
-        <button onclick="setCatFilter('${c}','${province}')" style="${activeCat===c?'background:rgba(42,33,24,0.16);border-color:#c9a84c;color:#c9a84c;':''}background:transparent;border:1px solid rgba(42,33,24,0.20);color:var(--parch2);padding:4px 10px;cursor:pointer;font-family:Crimson Pro,serif;font-size:0.8rem;transition:all 0.2s;margin:2px;">
-          ${catIcon[c]||'📍'} ${catLabel[c]||c} (${n})
+        <button onclick="setCatFilter('${c}','${province}')" class="cat-chip${activeCat===c ? ' is-active' : ''}">
+          ${catIcon[c] || catIcon.default} ${catLabel[c]||c} (${n})
         </button>
       `).join('')}
     `;
@@ -152,7 +152,7 @@ function renderMarkerCards() {
     const safeName = mk.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
     const cardId   = 'card-' + mk.id;
     const avg      = getAvgRating(mk.name);
-    const icon     = catIcon[mk.cat] || '📍';
+    const icon     = catIcon[mk.cat] || catIcon.default;
     const label    = catLabel[mk.cat] || mk.cat;
     const photo    = mk.photo || '';
     const isFav    = isFavorite(mk._id);
@@ -176,7 +176,7 @@ function renderMarkerCards() {
       <button class="mc-fav" id="fav-card-${mk._id}"
               onclick="event.stopPropagation();toggleFavorite('${mk._id}','${safeName}')"
               title="${isFav ? 'Quitar favorito' : 'Añadir favorito'}">
-        ${isFav ? '❤️' : '🤍'}
+        ${favIcon(isFav)}
       </button>
     </div>`;
   }).join('');
@@ -187,8 +187,8 @@ function renderMarkerCards() {
     showMoreEl.style.display = 'none';
   } else {
     showMoreEl.style.display = 'block';
-    const btnStyle = `display:inline-block;background:transparent;border:1px solid rgba(201,168,76,0.4);color:var(--gold);padding:9px 28px;cursor:pointer;font-family:'Playfair Display',serif;font-size:0.88rem;letter-spacing:0.08em;transition:all 0.2s;margin:0 6px;`;
-    const btnHover = `onmouseover="this.style.background='rgba(184,92,56,0.10)';this.style.borderColor='var(--terra)'" onmouseout="this.style.background='transparent';this.style.borderColor='rgba(201,168,76,0.4)'"`;
+    const btnStyle = `display:inline-block;background:transparent;border:1px solid rgba(184,92,56,0.4);color:var(--gold);padding:9px 28px;cursor:pointer;font-family:'Instrument Serif',serif;font-size:0.88rem;letter-spacing:0.08em;transition:all 0.2s;margin:0 6px;`;
+    const btnHover = `onmouseover="this.style.background='rgba(184,92,56,0.10)';this.style.borderColor='var(--terra)'" onmouseout="this.style.background='transparent';this.style.borderColor='rgba(184,92,56,0.4)'"`;
     let html = '';
     if (remaining > 0) {
       html += `<button style="${btnStyle}" ${btnHover} onclick="appState.visibleCards+=${Math.min(remaining,8)};renderMarkerCards()">
@@ -235,31 +235,31 @@ function loadAllMarkersOnMap() {
   sample.forEach(mk => {
     const safeName = mk.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
     const leafletMarker = L.marker([mk.lat, mk.lng], { icon: createCustomIcon(mk.cat) })
-      .bindTooltip(`<span style="font-family:'Playfair Display',serif;font-size:0.82rem;color:#c9a84c;font-weight:700;">${mk.name}</span>`, {
+      .bindTooltip(`<span style="font-family:'Instrument Serif',serif;font-size:0.82rem;color:var(--terra);font-weight:700;">${mk.name}</span>`, {
         direction: 'top', offset: [0,-8], className: 'leaflet-tooltip-cyl', opacity:1
       })
       .bindPopup(`
         <div class="lf-popup" onclick="map.closePopup();openReviewsDrawer('${safeName}','${mk.province}')" style="cursor:pointer;position:relative;">
-          <div style="display:flex;align-items:center;justify-content:center;height:72px;background:rgba(184,92,56,0.07);font-size:2.2rem;">
-            ${catIcon[mk.cat]||'📍'}
+          <div style="display:flex;align-items:center;justify-content:center;height:72px;background:rgba(184,92,56,0.07);font-size:2.2rem;color:var(--terra);">
+            ${catIcon[mk.cat] || catIcon.default}
           </div>
           <div class="lf-popup-body">
             <strong class="lf-popup-name" style="display:flex;align-items:center;gap:6px;">
               <button onclick="event.stopPropagation();toggleFavorite('${mk._id}','${safeName}');setTimeout(()=>map.closePopup(),150);"
                 title="Añadir a favoritos"
                 style="background:transparent;border:none;cursor:pointer;font-size:1rem;padding:0;line-height:1;flex-shrink:0;">
-                ${isFavorite(mk._id) ? '❤️' : '🤍'}
+                ${favIcon(isFavorite(mk._id))}
               </button>
               <span>${mk.name}</span>
             </strong>
             <div class="lf-popup-meta">
-              <span class="lf-popup-pill">${catIcon[mk.cat]||'📍'} ${catLabel[mk.cat]||mk.cat}</span>
+              <span class="lf-popup-pill">${catIcon[mk.cat] || catIcon.default} ${catLabel[mk.cat]||mk.cat}</span>
               <span class="lf-popup-prov">${mk.province}</span>
             </div>
             <p class="lf-popup-hint">Toca para ver detalles →</p>
           </div>
         </div>
-      `, { maxWidth: 260, className: 'lf-popup-wrap' });
+      `, { maxWidth: 260, className: 'lf-popup-wrap', autoPanPaddingTopLeft: [20, 70], autoPanPaddingBottomRight: [20, 110] });
 
     clusterGroup.addLayer(leafletMarker);
     appState.activeLeafletMarkers.push(leafletMarker);

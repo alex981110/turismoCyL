@@ -69,7 +69,7 @@ async function loadOverpassBars(province) {
         return L.divIcon({
           html: `<div style="background:rgba(220,80,60,0.9);color:#fff;width:32px;height:32px;
                   border-radius:50%;display:flex;align-items:center;justify-content:center;
-                  font-family:'Playfair Display',serif;font-weight:700;font-size:0.8rem;
+                  font-family:'Instrument Serif',serif;font-weight:700;font-size:0.8rem;
                   border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.4);">${count}</div>`,
           className: '',
           iconSize: [32, 32],
@@ -96,12 +96,12 @@ async function loadOverpassBars(province) {
           { direction: 'top', offset: [0, -6], className: 'leaflet-tooltip-cyl' }
         )
         .bindPopup(`
-          <div style="font-family:'Playfair Display',serif;min-width:200px;">
+          <div style="font-family:'Instrument Serif',serif;min-width:200px;">
             <strong style="color:#dc5040;font-size:0.95rem;">${bar.name}</strong>
             <div style="color:#888;font-size:0.75rem;margin:4px 0;">${bar.desc || ''}</div>
             <a href="${searchUrl}" target="_blank" rel="noopener"
-               style="display:inline-block;margin-top:6px;padding:4px 10px;background:#1a1209;
-                      color:#c9a84c;border:1px solid #c9a84c;text-decoration:none;font-size:0.74rem;">
+               style="display:inline-block;margin-top:6px;padding:4px 10px;background:#2A2118;
+                      color:var(--terra);border:1px solid var(--terra);text-decoration:none;font-size:0.74rem;">
               🔗 ${bar.url ? 'Sitio web' : 'Buscar'}
             </a>
           </div>

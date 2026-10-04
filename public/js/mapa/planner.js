@@ -130,7 +130,7 @@ function updateDayPlanner(province) {
     const mk    = item.marker;
     const photo = item.photo || mk?.photo || '';
     const cat   = mk ? (catLabel[mk.cat] || mk.cat) : '';
-    const icon  = mk ? (catIcon[mk.cat] || '📍') : '📍';
+    const icon  = mk ? (catIcon[mk.cat] || catIcon.default) : catIcon.default;
     return `
       <div class="timeline-item has-marker"
            onclick="focusMarkerFromPlanner(${mk?.lat||0},${mk?.lng||0})"

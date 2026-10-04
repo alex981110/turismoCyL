@@ -52,7 +52,7 @@ function itinRenderSavedList(items) {
 
   if (!items || items.length === 0) {
     wrap.innerHTML = `
-      <div style="padding:14px 16px;border:1px dashed rgba(201,168,76,0.25);border-radius:10px;color:var(--parch2);font-size:0.85rem;text-align:center;margin-bottom:24px;">
+      <div style="padding:14px 16px;border:1px dashed rgba(184,92,56,0.25);border-radius:10px;color:var(--parch2);font-size:0.85rem;text-align:center;margin-bottom:24px;">
         Aún no has guardado ningún itinerario. Genera uno y pulsa <strong>💾 Guardar</strong> para tenerlo siempre a mano.
       </div>`;
     return;
@@ -64,9 +64,9 @@ function itinRenderSavedList(items) {
       : '';
     const created = new Date(it.createdAt).toLocaleDateString('es-ES', { day:'numeric', month:'short' });
     return `
-      <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <div style="background:rgba(184,92,56,0.06);border:1px solid rgba(184,92,56,0.2);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
         <div style="flex:1;min-width:200px;">
-          <div style="font-family:'Playfair Display',serif;color:var(--gold);font-size:1rem;font-weight:700;">${it.title || it.province}</div>
+          <div style="font-family:'Instrument Serif',serif;color:var(--gold);font-size:1rem;font-weight:700;">${it.title || it.province}</div>
           <div style="font-size:0.78rem;color:var(--parch2);margin-top:3px;">
             📍 ${it.province} · ${it.numDays} día${it.numDays!==1?'s':''} ${dateLabel ? ' · '+dateLabel : ''}
             <span style="opacity:0.6;margin-left:6px;">· guardado ${created}</span>
@@ -89,7 +89,7 @@ function itinRenderSavedList(items) {
     </div>
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:8px;">${cards}</div>
     ${limitInfo}
-    <hr style="border:none;border-top:1px solid rgba(201,168,76,0.15);margin:24px 0 18px;">
+    <hr style="border:none;border-top:1px solid rgba(184,92,56,0.15);margin:24px 0 18px;">
   `;
 }
 
@@ -231,11 +231,11 @@ function renderMyItineraries(items) {
 
     return `
       <div class="col-12 col-md-6 col-lg-4">
-        <div style="background:linear-gradient(180deg,rgba(201,168,76,0.06),rgba(201,168,76,0.02));border:1px solid rgba(201,168,76,0.25);border-radius:14px;padding:22px;height:100%;display:flex;flex-direction:column;gap:14px;transition:all 0.2s;cursor:default;"
-             onmouseover="this.style.borderColor='rgba(201,168,76,0.5)';this.style.transform='translateY(-2px)'"
-             onmouseout="this.style.borderColor='rgba(201,168,76,0.25)';this.style.transform=''">
+        <div style="background:linear-gradient(180deg,rgba(184,92,56,0.06),rgba(184,92,56,0.02));border:1px solid rgba(184,92,56,0.25);border-radius:14px;padding:22px;height:100%;display:flex;flex-direction:column;gap:14px;transition:all 0.2s;cursor:default;"
+             onmouseover="this.style.borderColor='rgba(184,92,56,0.5)';this.style.transform='translateY(-2px)'"
+             onmouseout="this.style.borderColor='rgba(184,92,56,0.25)';this.style.transform=''">
           <div>
-            <div style="font-family:'Playfair Display',serif;color:var(--gold);font-size:1.15rem;font-weight:700;line-height:1.3;margin-bottom:6px;">
+            <div style="font-family:'Instrument Serif',serif;color:var(--gold);font-size:1.15rem;font-weight:700;line-height:1.3;margin-bottom:6px;">
               ${it.title || provinces}
             </div>
             <div style="font-size:0.78rem;color:var(--parch2);line-height:1.6;">
@@ -244,7 +244,7 @@ function renderMyItineraries(items) {
               📌 ${totalPlaces} lugar${totalPlaces!==1?'es':''}
             </div>
           </div>
-          <div style="font-size:0.7rem;color:var(--parch2);font-style:italic;opacity:0.7;border-top:1px solid rgba(201,168,76,0.15);padding-top:10px;">
+          <div style="font-size:0.7rem;color:var(--parch2);font-style:italic;opacity:0.7;border-top:1px solid rgba(184,92,56,0.15);padding-top:10px;">
             Guardado el ${created}
           </div>
           <div style="display:flex;gap:8px;margin-top:auto;">
@@ -386,8 +386,8 @@ function itinRenderDayColumns(query) {
     const chipHTML = (m, isOpen) => {
       const sel      = itinSelected.includes(m.id);
       const disabled = !isOpen ? 'opacity:0.45;cursor:not-allowed;' : 'cursor:pointer;';
-      const bg       = sel ? 'rgba(201,168,76,0.15)' : 'rgba(245,237,216,0.03)';
-      const border   = sel ? 'var(--gold)' : isOpen ? 'rgba(201,168,76,0.2)' : 'rgba(201,168,76,0.1)';
+      const bg       = sel ? 'rgba(184,92,56,0.15)' : 'rgba(245,237,216,0.03)';
+      const border   = sel ? 'var(--gold)' : isOpen ? 'rgba(184,92,56,0.2)' : 'rgba(184,92,56,0.1)';
       const click    = isOpen ? `onclick="itinToggle(${m.id})"` : '';
       return `<div class="itin-marker-chip" id="chip-${m.id}-d${d}" ${click}
         style="border:1px solid ${border};padding:9px 11px;transition:all 0.18s;background:${bg};display:flex;align-items:center;gap:8px;${disabled}">
@@ -404,15 +404,15 @@ function itinRenderDayColumns(query) {
       : `<p style="color:var(--parch2);font-style:italic;font-size:0.8rem;padding:8px 0;">Sin resultados.</p>`;
 
     const closedSection = filteredClosed.length ? `
-      <div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(201,168,76,0.1);">
+      <div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(184,92,56,0.1);">
         <div style="font-size:0.68rem;letter-spacing:0.1em;color:#e57373;margin-bottom:8px;">CERRADOS ESTE DÍA (${filteredClosed.length})</div>
         ${filteredClosed.map(m => chipHTML(m, false)).join('')}
       </div>` : '';
 
     cols.push(`
       <div class="${colWidth}">
-        <div style="background:rgba(245,237,216,0.03);border:1px solid rgba(201,168,76,0.2);padding:16px;height:100%;">
-          <div style="font-family:'Playfair Display',serif;color:var(--gold);font-size:0.95rem;margin-bottom:4px;">${DAY_EMOJIS[d]} Día ${d+1}</div>
+        <div style="background:rgba(245,237,216,0.03);border:1px solid rgba(184,92,56,0.2);padding:16px;height:100%;">
+          <div style="font-family:'Instrument Serif',serif;color:var(--gold);font-size:0.95rem;margin-bottom:4px;">${DAY_EMOJIS[d]} Día ${d+1}</div>
           <div style="font-size:0.78rem;color:var(--parch2);margin-bottom:14px;text-transform:capitalize;">${dateLabel}</div>
           <div style="display:flex;flex-direction:column;gap:6px;max-height:380px;overflow-y:auto;padding-right:4px;">
             ${openHTML}
@@ -583,13 +583,13 @@ function itinRenderResult() {
               style="position:absolute;top:6px;right:6px;background:transparent;border:none;cursor:pointer;font-size:1rem;padding:4px;line-height:1;opacity:0.8;transition:transform 0.15s;"
               onmouseover="this.style.transform='scale(1.2)';this.style.opacity='1'"
               onmouseout="this.style.transform='';this.style.opacity='0.8'">
-              ${isFavorite(mk._id) ? '❤️' : '🤍'}
+              ${favIcon(isFavorite(mk._id))}
             </button>` : '';
           return `
             <div class="timeline-item" style="position:relative;">
               <div class="time-badge">${p.time}</div>
               <div class="timeline-content" style="padding-right:30px;">
-                <h4>${p.name} ${p.rating ? `<span style="font-size:0.72rem;color:var(--gold);font-family:'Crimson Pro',serif;">★ ${p.rating}</span>` : ''}</h4>
+                <h4>${p.name} ${p.rating ? `<span style="font-size:0.72rem;color:var(--gold);font-family:'DM Sans',sans-serif;">★ ${p.rating}</span>` : ''}</h4>
                 <p style="margin:2px 0 0;">${p.parsedHours ? `Abierto: ${p.parsedHours.text}` : p.desc || p.cat || ''}</p>
               </div>
               ${favBtn}

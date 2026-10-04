@@ -28,7 +28,7 @@ function renderAdminMarkers() {
   } else {
   tbody.innerHTML = slice.map(m => `
       <tr>
-        <td style="font-family:'Playfair Display',serif;">
+        <td style="font-family:'Instrument Serif',serif;">
           ${m.photo ? `<img src="${m.photo}" style="width:32px;height:32px;object-fit:cover;vertical-align:middle;margin-right:6px;border:1px solid rgba(42,33,24,0.20);cursor:zoom-in;" onclick="openPhotoModal('${m.photo.replace(/'/g,"\\'")}','${m.name.replace(/'/g,"\\'")}')">` : ''}
           ${m.name}
         </td>
@@ -48,10 +48,10 @@ function renderAdminMarkers() {
           <div class="d-flex gap-1 align-items-center">
             <button onclick="openMarkerEditModal('${m._id}')"
               class="btn btn-sm"
-              style="background:none;border:1px solid rgba(42,33,24,0.20);color:var(--gold);font-size:0.72rem;padding:3px 8px;font-family:'Playfair Display',serif;" title="Editar">✏️</button>
+              style="background:none;border:1px solid rgba(42,33,24,0.20);color:var(--gold);font-size:0.72rem;padding:3px 8px;font-family:'Instrument Serif',serif;" title="Editar">✏️</button>
             <button onclick="openReviewsDrawer('${m.name.replace(/'/g,"\\'")}');hideAdmin();"
               class="btn btn-sm"
-              style="background:none;border:1px solid rgba(42,33,24,0.20);color:var(--gold);font-size:0.72rem;padding:3px 8px;font-family:'Playfair Display',serif;">★</button>
+              style="background:none;border:1px solid rgba(42,33,24,0.20);color:var(--gold);font-size:0.72rem;padding:3px 8px;font-family:'Instrument Serif',serif;">★</button>
             <button onclick="deleteMarker('${m._id}')" class="btn btn-sm"
               style="background:none;border:none;color:#d44;font-size:0.85rem;" title="Eliminar">✕</button>
           </div>
@@ -119,7 +119,7 @@ function refreshAdminData() {
         <div style="flex:1;background:rgba(184,92,56,0.08);height:8px;position:relative;">
           <div style="background:var(--gold);height:100%;width:${(count/Math.max(...Object.values(stats)))*100}%;transition:width 0.5s;"></div>
         </div>
-        <span style="color:var(--gold);font-family:'Playfair Display',serif;font-weight:700;">${count}</span>
+        <span style="color:var(--gold);font-family:'Instrument Serif',serif;font-weight:700;">${count}</span>
       </div>
     `).join('');
 
@@ -142,14 +142,14 @@ function refreshAdminData() {
         <tbody>
           ${ranked.map(({name,rs,avg})=>`
             <tr>
-              <td style="font-family:'Playfair Display',serif;">${name}</td>
+              <td style="font-family:'Instrument Serif',serif;">${name}</td>
               <td>
                 <span style="color:var(--gold);letter-spacing:1px;">${[1,2,3,4,5].map(i=>`<span style="color:${i<=Math.round(avg)?'var(--gold)':'rgba(42,33,24,0.13)'};font-size:0.85rem;">★</span>`).join('')}</span>
                 <span style="color:var(--gold);font-weight:700;margin-left:4px;">${avg.toFixed(1)}</span>
               </td>
               <td>${rs.length}</td>
               <td style="color:var(--parch2);font-size:0.82rem;">${rs[rs.length-1].date} — ${rs[rs.length-1].userName}</td>
-              <td><button onclick="openReviewsDrawer('${name.replace(/'/g,"\\'")}');hideAdmin();" style="background:none;border:1px solid rgba(42,33,24,0.20);color:var(--gold);cursor:pointer;font-size:0.75rem;padding:3px 10px;font-family:'Playfair Display',serif;transition:all 0.2s;" onmouseover="this.style.background='rgba(184,92,56,0.08)'" onmouseout="this.style.background='none'">Ver →</button></td>
+              <td><button onclick="openReviewsDrawer('${name.replace(/'/g,"\\'")}');hideAdmin();" style="background:none;border:1px solid rgba(42,33,24,0.20);color:var(--gold);cursor:pointer;font-size:0.75rem;padding:3px 10px;font-family:'Instrument Serif',serif;transition:all 0.2s;" onmouseover="this.style.background='rgba(184,92,56,0.08)'" onmouseout="this.style.background='none'">Ver →</button></td>
             </tr>
           `).join('')}
         </tbody>

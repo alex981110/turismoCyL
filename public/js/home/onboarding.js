@@ -1,11 +1,11 @@
 const OB_PREFS = [
-  { id: 'monumentos', label: 'Monumentos e historia',   icon: '🏰', cats: ['monumento', 'historia'] },
-  { id: 'museos',     label: 'Museos y arte',            icon: '🏛️', cats: ['museo', 'exposicion'] },
-  { id: 'naturaleza', label: 'Naturaleza y senderismo',  icon: '🌿', cats: ['naturaleza'] },
-  { id: 'gastro',     label: 'Gastronomía',              icon: '🍷', cats: ['gastronomia', 'bar'] },
-  { id: 'religioso',  label: 'Religioso / Patrimonio',   icon: '⛪', cats: ['cultura', 'monumento'] },
-  { id: 'teatro',     label: 'Teatro y cultura viva',    icon: '🎭', cats: ['teatro', 'cultura'] },
-  { id: 'pueblos',    label: 'Pueblos con encanto',      icon: '🏘️', cats: ['naturaleza', 'historia', 'monumento'] },
+  { id: 'monumentos', label: 'Monumentos e historia',   icon: catIcon.monumento, cats: ['monumento', 'historia'] },
+  { id: 'museos',     label: 'Museos y arte',            icon: catIcon.museo, cats: ['museo', 'exposicion'] },
+  { id: 'naturaleza', label: 'Naturaleza y senderismo',  icon: catIcon.naturaleza, cats: ['naturaleza'] },
+  { id: 'gastro',     label: 'Gastronomía',              icon: catIcon.gastronomia, cats: ['gastronomia', 'bar'] },
+  { id: 'religioso',  label: 'Religioso / Patrimonio',   icon: _catSvg('<path d="M10 9h4M12 7v5M14 21v-3a2 2 0 0 0-4 0v3"/><path d="m18 9 3.5 2a1 1 0 0 1 .5.9V20a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-8.1a1 1 0 0 1 .5-.9L6 9"/><path d="M18 22V5l-6-3-6 3v17"/>'), cats: ['cultura', 'monumento'] },
+  { id: 'teatro',     label: 'Teatro y cultura viva',    icon: catIcon.teatro, cats: ['teatro', 'cultura'] },
+  { id: 'pueblos',    label: 'Pueblos con encanto',      icon: _catSvg('<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .7-1.5l7-6a2 2 0 0 1 2.6 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'), cats: ['naturaleza', 'historia', 'monumento'] },
 ];
 
 const OB_KEYWORDS = {
@@ -173,7 +173,7 @@ function renderObResumeStep() {
   }).join('');
 
   body.innerHTML = `
-    <h3 style="font-family:'Playfair Display',serif;color:${OB_C.text};font-size:1.15rem;margin:0 0 6px;font-weight:700;">¿Mantenemos tus gustos?</h3>
+    <h3 style="font-family:'Instrument Serif',serif;color:${OB_C.text};font-size:1.15rem;margin:0 0 6px;font-weight:700;">¿Mantenemos tus gustos?</h3>
     <p style="color:${OB_C.textMuted};font-size:0.85rem;margin:0 0 18px;line-height:1.6;">Tienes ${obRanking.length} preferencias guardadas.</p>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;">${topLabels}</div>
     <button onclick="obRanking=[];renderObStep();document.getElementById('obBtnNext').onclick=obNext;"
@@ -193,12 +193,12 @@ function renderObStep() {
   header.textContent = `Paso ${obStep} de 3`;
   progress.style.width = obStep === 1 ? '33%' : obStep === 2 ? '66%' : '100%';
   btnBack.style.display = obStep > 1 ? 'block' : 'none';
-  btnNext.textContent = obStep < 3 ? 'Siguiente →' : '✨ Ver mi itinerario';
+  btnNext.textContent = obStep < 3 ? 'Siguiente →' : 'Ver mi itinerario';
   btnNext.onclick = obNext;
 
   if (obStep === 1) {
     body.innerHTML = `
-      <h3 style="font-family:'Playfair Display',serif;color:${OB_C.text};font-size:1.2rem;margin:0 0 4px;font-weight:700;">¿Qué te gusta más?</h3>
+      <h3 style="font-family:'Instrument Serif',serif;color:${OB_C.text};font-size:1.2rem;margin:0 0 4px;font-weight:700;">¿Qué te gusta más?</h3>
       <p style="color:${OB_C.textMuted};font-size:0.85rem;margin:0 0 20px;line-height:1.6;">Haz clic en las tarjetas en orden de preferencia.</p>
       <div id="obPrefGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
       <div id="obRankingList" style="margin-top:20px;display:none;">
@@ -226,7 +226,7 @@ function renderObStep() {
     if (!window._obSelectedDays) window._obSelectedDays = 2;
 
     body.innerHTML = `
-      <h3 style="font-family:'Playfair Display',serif;color:${OB_C.text};font-size:1.2rem;margin:0 0 4px;font-weight:700;">¿Cuántos días tienes?</h3>
+      <h3 style="font-family:'Instrument Serif',serif;color:${OB_C.text};font-size:1.2rem;margin:0 0 4px;font-weight:700;">¿Cuántos días tienes?</h3>
       <p style="color:${OB_C.textMuted};font-size:0.85rem;margin:0 0 20px;line-height:1.6;">Los itinerarios de 3 a 7 días requieren registro.</p>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
         ${dayOpts.map(opt => {
@@ -241,14 +241,14 @@ function renderObStep() {
                    opacity:${locked ? '0.45' : '1'};box-shadow:${sel ? '0 4px 16px rgba(184,92,56,0.15)' : '0 1px 4px rgba(42,33,24,0.06)'};"
             ${!locked ? `onmouseover="if(window._obSelectedDays!==${opt.d}){this.style.borderColor='${OB_C.accentLight}';this.style.background='rgba(212,132,92,0.05)'}"
               onmouseout="if(window._obSelectedDays!==${opt.d}){this.style.borderColor='${OB_C.border}';this.style.background='${OB_C.bgCard}'}"` : ''}>
-            ${locked ? `<span style="position:absolute;top:5px;right:7px;font-size:0.65rem;opacity:0.6;">🔒</span>` : ''}
-            <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:${OB_C.accent};">${opt.d}</div>
+            ${locked ? `<span style="position:absolute;top:5px;right:7px;opacity:0.6;"><svg class="cat-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>` : ''}
+            <div style="font-family:'Instrument Serif',serif;font-size:2rem;font-weight:900;color:${OB_C.accent};">${opt.d}</div>
             <div style="font-size:0.7rem;color:${OB_C.textMuted};margin-top:3px;line-height:1.4;font-weight:500;">${opt.label}</div>
           </button>`;
         }).join('')}
       </div>
       ${!isLogged ? `<div style="margin-top:16px;padding:12px 16px;background:${OB_C.lockBg};border:1px solid ${OB_C.lockBorder};border-radius:10px;font-size:0.8rem;color:${OB_C.textMuted};line-height:1.6;">
-        🔒 Itinerarios de 3-7 días disponibles con cuenta gratuita.
+        <svg class="cat-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Itinerarios de 3-7 días disponibles con cuenta gratuita.
         <a href="#" onclick="closeOnboarding();openModal('register');return false;" style="color:${OB_C.accent};margin-left:4px;font-weight:600;">Registrarse →</a>
       </div>` : ''}`;
     setTimeout(() => {
@@ -263,7 +263,7 @@ function renderObStep() {
     if (!Array.isArray(window._obSelectedProvinces)) window._obSelectedProvinces = [];
     const numDays = window._obSelectedDays || 2;
     body.innerHTML = `
-      <h3 style="font-family:'Playfair Display',serif;color:${OB_C.text};font-size:1.2rem;margin:0 0 4px;font-weight:700;">¿A qué provincias viajas?</h3>
+      <h3 style="font-family:'Instrument Serif',serif;color:${OB_C.text};font-size:1.2rem;margin:0 0 4px;font-weight:700;">¿A qué provincias viajas?</h3>
       <p style="color:${OB_C.textMuted};font-size:0.85rem;margin:0 0 6px;line-height:1.6;">
         Itinerario de <strong style="color:${OB_C.accent};font-weight:700;">${numDays} días</strong> · Puedes elegir <strong>varias provincias</strong>.
       </p>
@@ -274,7 +274,7 @@ function renderObStep() {
         ${provs.map(p => `
           <button onclick="obToggleProvince('${p}')" id="obProv_${p.replace(/\s/g,'_')}"
             style="padding:16px 8px;background:${OB_C.bgCard};border:1.5px solid ${OB_C.border};
-                   border-radius:12px;color:${OB_C.textSoft};font-family:'Playfair Display',serif;font-size:0.85rem;
+                   border-radius:12px;color:${OB_C.textSoft};font-family:'Instrument Serif',serif;font-size:0.85rem;
                    cursor:pointer;transition:all 0.2s;box-shadow:0 1px 4px rgba(42,33,24,0.06);position:relative;"
             onmouseover="if(!this.classList.contains('ob-prov-selected')){this.style.borderColor='${OB_C.accentLight}';this.style.background='rgba(212,132,92,0.06)';this.style.color='${OB_C.text}'}"
             onmouseout="if(!this.classList.contains('ob-prov-selected')){this.style.borderColor='${OB_C.border}';this.style.background='${OB_C.bgCard}';this.style.color='${OB_C.textSoft}'}">
@@ -306,7 +306,7 @@ function renderObPrefGrid() {
       onmouseover="if(!${selected}){this.style.borderColor='${OB_C.accentLight}';this.style.background='rgba(212,132,92,0.04)'}"
       onmouseout="if(!${selected}){this.style.borderColor='${OB_C.border}';this.style.background='${OB_C.bgCard}'}">
       ${selected ? `<span style="position:absolute;top:8px;right:10px;background:${OB_C.badge};color:${OB_C.badgeText};width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;box-shadow:0 2px 6px rgba(184,92,56,0.4);">${rank+1}</span>` : ''}
-      <div style="font-size:1.6rem;margin-bottom:6px;">${pref.icon}</div>
+      <div style="font-size:1.6rem;margin-bottom:6px;color:var(--terra);line-height:1;">${pref.icon}</div>
       <div style="font-size:0.82rem;color:${selected ? OB_C.accent : OB_C.textSoft};font-weight:${selected ? '700' : '500'};line-height:1.3;transition:color 0.2s;">${pref.label}</div>
     </button>`;
   }).join('');
@@ -595,14 +595,14 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
   let badge = document.getElementById('personalizedBadge');
   if (!badge) { badge = document.createElement('div'); badge.id = 'personalizedBadge'; badge.style.cssText = 'grid-column:1/-1;'; container.parentNode.insertBefore(badge, container); }
   const topPrefs = ranking.slice(0, 3).map(id => { const p = OB_PREFS.find(x => x.id === id); return p ? p.icon + ' ' + p.label : ''; }).filter(Boolean);
-  badge.innerHTML = `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 18px;background:rgba(42,33,24,0.04);border-bottom:1px solid rgba(184,92,56,0.08);"><span style="font-size:0.78rem;color:var(--parch2);">✨ Personalizado para:</span><span style="font-size:0.82rem;color:var(--gold);font-weight:600;">${topPrefs.join(' · ')}</span><button onclick="openOnboarding()" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(184,92,56,0.08);border:1px solid rgba(201,168,76,0.35);border-radius:6px;color:var(--gold);cursor:pointer;font-size:0.75rem;font-weight:600;transition:all 0.2s;" onmouseover="this.style.background='rgba(42,33,24,0.14)'" onmouseout="this.style.background='rgba(184,92,56,0.08)'">🎯 Cambiar gustos</button></div>`;
+  badge.innerHTML = `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 18px;background:rgba(42,33,24,0.04);border-bottom:1px solid rgba(184,92,56,0.08);"><span style="font-size:0.78rem;color:var(--parch2);">✨ Personalizado para:</span><span style="font-size:0.82rem;color:var(--gold);font-weight:600;">${topPrefs.join(' · ')}</span><button onclick="openOnboarding()" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(184,92,56,0.08);border:1px solid rgba(184,92,56,0.35);border-radius:6px;color:var(--gold);cursor:pointer;font-size:0.75rem;font-weight:600;transition:all 0.2s;" onmouseover="this.style.background='rgba(42,33,24,0.14)'" onmouseout="this.style.background='rgba(184,92,56,0.08)'">🎯 Cambiar gustos</button></div>`;
   const _allScores = [...dia1, ...dia2].map(i => scoreItem(i, ranking));
   const _maxScore = Math.max(..._allScores, 1);
   const renderItem = (item) => {
     const mk = item.marker;
     const photo = item.photo || mk?.photo || '';
     const cat = mk ? (catLabel[mk.cat] || mk.cat) : '';
-    const icon = mk ? (catIcon[mk.cat] || '📍') : '📍';
+    const icon = mk ? (catIcon[mk.cat] || catIcon.default) : catIcon.default;
     const score = scoreItem(item, ranking);
     const matchPct = _maxScore > 0 ? score / _maxScore : 0;
     const matchBadge = matchPct >= 0.75
