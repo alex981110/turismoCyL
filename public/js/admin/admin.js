@@ -24,21 +24,21 @@ function renderAdminMarkers() {
 
   const tbody = document.getElementById('adminMarkersBody');
   if (!slice.length) {
-    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--ink-muted);padding:20px;font-style:italic;">${q ? 'Sin resultados para "' + q + '"' : 'Sin marcadores aún'}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--ink-muted);padding:20px;font-style:italic;">${q ? 'Sin resultados para "' + escHTML(q) + '"' : 'Sin marcadores aún'}</td></tr>`;
   } else {
   tbody.innerHTML = slice.map(m => `
       <tr>
         <td style="font-family:'Instrument Serif',serif;">
-          ${m.photo ? `<img src="${m.photo}" style="width:32px;height:32px;object-fit:cover;vertical-align:middle;margin-right:6px;border:1px solid rgba(42,33,24,0.20);cursor:zoom-in;" onclick="openPhotoModal('${m.photo.replace(/'/g,"\\'")}','${m.name.replace(/'/g,"\\'")}')">` : ''}
-          ${m.name}
+          ${m.photo ? `<img src="${escHTML(m.photo)}" style="width:32px;height:32px;object-fit:cover;vertical-align:middle;margin-right:6px;border:1px solid rgba(42,33,24,0.20);cursor:zoom-in;" data-action="photo-zoom" data-src="${escHTML(m.photo)}" data-caption="${escHTML(m.name)}">` : ''}
+          ${escHTML(m.name)}
         </td>
-        <td>${m.province}</td>
-        <td><span class="badge badge-cyl badge-outline-gold">${m.cat}</span></td>
+        <td>${escHTML(m.province)}</td>
+        <td><span class="badge badge-cyl badge-outline-gold">${escHTML(m.cat)}</span></td>
         <td style="min-width:200px;">
           <div class="input-group input-group-sm input-group-cyl">
-            <input type="text" class="form-control form-control-cyl" placeholder="URL de foto..." value="${m.photo||''}"
-              id="photoInput_${m._id}" style="font-size:0.82rem;" />
-            <button class="btn btn-sm" onclick="setMarkerPhoto('${m._id}',document.getElementById('photoInput_${m._id}').value);refreshAdminData();"
+            <input type="text" class="form-control form-control-cyl" placeholder="URL de foto..." value="${escHTML(m.photo||'')}"
+              id="photoInput_${escHTML(m._id)}" style="font-size:0.82rem;" />
+            <button type="button" class="btn btn-sm" data-action="admin-photo" data-id="${escHTML(m._id)}"
               style="background:rgba(184,92,56,0.08);border:1px solid rgba(42,33,24,0.20);color:var(--terra);white-space:nowrap;">
               🖼️
             </button>
@@ -46,13 +46,13 @@ function renderAdminMarkers() {
         </td>
         <td>
           <div class="d-flex gap-1 align-items-center">
-            <button onclick="openMarkerEditModal('${m._id}')"
+            <button type="button" data-action="admin-edit" data-id="${escHTML(m._id)}"
               class="btn btn-sm"
               style="background:none;border:1px solid rgba(42,33,24,0.20);color:var(--terra);font-size:0.72rem;padding:3px 8px;font-family:'Instrument Serif',serif;" title="Editar">✏️</button>
-            <button onclick="openReviewsDrawer('${m.name.replace(/'/g,"\\'")}');hideAdmin();"
+            <button type="button" data-action="admin-place" data-name="${escHTML(m.name)}"
               class="btn btn-sm"
               style="background:none;border:1px solid rgba(42,33,24,0.20);color:var(--terra);font-size:0.72rem;padding:3px 8px;font-family:'Instrument Serif',serif;">★</button>
-            <button onclick="deleteMarker('${m._id}')" class="btn btn-sm"
+            <button type="button" data-action="admin-delete" data-id="${escHTML(m._id)}" class="btn btn-sm"
               style="background:none;border:none;color:#d44;font-size:0.85rem;" title="Eliminar">✕</button>
           </div>
         </td>
@@ -95,9 +95,9 @@ function refreshAdminData() {
       if (countEl) countEl.textContent = users.length;
       if (ubody) ubody.innerHTML = users.map(u => `
         <tr>
-          <td>${u.name}</td>
-          <td>${u.email}</td>
-          <td><span class="tag ${u.role==='admin'?'tag-castle':'tag-nature'}">${u.role}</span></td>
+          <td>${escHTML(u.name)}</td>
+          <td>${escHTML(u.email)}</td>
+          <td><span class="tag ${u.role==='admin'?'tag-castle':'tag-nature'}">${escHTML(u.role)}</span></td>
           <td>${new Date(u.date || u.createdAt).toLocaleDateString('es-ES')}</td>
         </tr>
       `).join('');
@@ -105,7 +105,7 @@ function refreshAdminData() {
     .catch(err => {
       const ubody = document.getElementById('usersBody');
       if (ubody) ubody.innerHTML =
-        `<tr><td colspan="4" style="color:var(--ink-muted);text-align:center;">${err.message}</td></tr>`;
+        `<tr><td colspan="4" style="color:var(--ink-muted);text-align:center;">${escHTML(err.message)}</td></tr>`;
     });
 
   // Stats
@@ -142,20 +142,27 @@ function refreshAdminData() {
         <tbody>
           ${ranked.map(({name,rs,avg})=>`
             <tr>
-              <td style="font-family:'Instrument Serif',serif;">${name}</td>
+              <td style="font-family:'Instrument Serif',serif;">${escHTML(name)}</td>
               <td>
                 <span style="color:var(--terra);letter-spacing:1px;">${[1,2,3,4,5].map(i=>`<span style="color:${i<=Math.round(avg)?'var(--terra)':'rgba(42,33,24,0.13)'};font-size:0.85rem;">★</span>`).join('')}</span>
                 <span style="color:var(--terra);font-weight:700;margin-left:4px;">${avg.toFixed(1)}</span>
               </td>
               <td>${rs.length}</td>
-              <td style="color:var(--ink-muted);font-size:0.82rem;">${rs[rs.length-1].date} — ${rs[rs.length-1].userName}</td>
-              <td><button onclick="openReviewsDrawer('${name.replace(/'/g,"\\'")}');hideAdmin();" style="background:none;border:1px solid rgba(42,33,24,0.20);color:var(--terra);cursor:pointer;font-size:0.75rem;padding:3px 10px;font-family:'Instrument Serif',serif;transition:all 0.2s;" onmouseover="this.style.background='rgba(184,92,56,0.08)'" onmouseout="this.style.background='none'">Ver →</button></td>
+              <td style="color:var(--ink-muted);font-size:0.82rem;">${escHTML(rs[rs.length-1].date)} — ${escHTML(rs[rs.length-1].userName)}</td>
+              <td><button type="button" class="admin-link-btn" data-action="admin-place" data-name="${escHTML(name)}">Ver →</button></td>
             </tr>
           `).join('')}
         </tbody>
       </table>`;
   }
 }
+
+registerActions({
+  'admin-photo':  d => { setMarkerPhoto(d.id, document.getElementById('photoInput_' + d.id).value); refreshAdminData(); },
+  'admin-edit':   d => openMarkerEditModal(d.id),
+  'admin-place':  d => { openReviewsDrawer(d.name); hideAdmin(); },
+  'admin-delete': d => deleteMarker(d.id),
+});
 
 function deleteMarker(id) {
   appState.markers = appState.markers.filter(m => m._id !== id);

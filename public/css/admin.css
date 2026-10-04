@@ -38,3 +38,10 @@
 .tag-castle { border-color: var(--terra); color: var(--terra); }
 .tag-nature { border-color: var(--sage); color: var(--sage); }
 
+
+/* Botón «Ver →» de la tabla de valoraciones (antes estilos en línea y onmouseover) */
+.admin-link-btn {
+  background: none; border: 1px solid rgba(42,33,24,0.20); color: var(--terra); cursor: pointer;
+  font-size: 0.75rem; padding: 3px 10px; font-family: 'Instrument Serif', serif; transition: all 0.2s;
+}
+.admin-link-btn:hover { background: rgba(184,92,56,0.08); }
