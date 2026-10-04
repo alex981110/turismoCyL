@@ -132,7 +132,7 @@ function updateDayPlanner(province) {
     const cat   = mk ? (catLabel[mk.cat] || mk.cat) : '';
     const icon  = mk ? (catIcon[mk.cat] || catIcon.default) : catIcon.default;
     return `
-      <div class="timeline-item has-marker plan-item" data-map-action="focus" data-lat="${mk?.lat||0}" data-lng="${mk?.lng||0}">
+      <div class="timeline-item has-marker plan-item" data-action="focus" data-lat="${mk?.lat||0}" data-lng="${mk?.lng||0}">
         <div class="time-badge">${item.time}</div>
         <div class="timeline-content">
           <div class="plan-item-row">
@@ -173,8 +173,8 @@ function updateDayPlanner(province) {
           <p class="plan-gate-title">El domingo, con tu cuenta</p>
           <p>Regístrate gratis para ver el segundo día, guardar el itinerario y descargarlo en PDF.</p>
           <div class="plan-gate-actions">
-            <button type="button" class="btn" data-map-action="open-modal" data-modal="register">Crear cuenta gratis</button>
-            <button type="button" class="plan-gate-login" data-map-action="open-modal" data-modal="login">Ya tengo cuenta</button>
+            <button type="button" class="btn" data-action="open-modal" data-modal="register">Crear cuenta gratis</button>
+            <button type="button" class="plan-gate-login" data-action="open-modal" data-modal="login">Ya tengo cuenta</button>
           </div>
         </div>
       </div>

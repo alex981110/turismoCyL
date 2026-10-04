@@ -90,7 +90,7 @@ function renderFavDrawer() {
     const mk = appState.markers.find(m => String(m._id) === f.markerId);
     const photo = f.photo || (mk && mk.photo) || '';
     return `
-    <div class="fav-row" data-map-action="fav-go" data-lat="${mk?.lat||0}" data-lng="${mk?.lng||0}" data-province="${escHTML(f.province)}">
+    <div class="fav-row" data-action="fav-go" data-lat="${mk?.lat||0}" data-lng="${mk?.lng||0}" data-province="${escHTML(f.province)}">
       <div class="fav-row-thumb">
         ${photo ? `<img src="${escHTML(photo)}" alt="" onerror="this.hidden = true">` : `<div class="fav-row-icon">${catIcon[f.cat] || catIcon.default}</div>`}
       </div>
@@ -98,7 +98,7 @@ function renderFavDrawer() {
         <div class="fav-row-name">${escHTML(f.name)}</div>
         <div class="fav-row-meta">${escHTML(f.province)} · ${escHTML(catLabel[f.cat]||f.cat||'')}</div>
       </div>
-      <button type="button" data-map-action="fav" data-id="${escHTML(f.markerId)}" data-name="${escHTML(f.name)}"
+      <button type="button" data-action="fav" data-id="${escHTML(f.markerId)}" data-name="${escHTML(f.name)}"
         class="mc-fav" title="Quitar favorito" aria-label="Quitar favorito">${favIcon(true)}</button>
     </div>`;
   }).join('');

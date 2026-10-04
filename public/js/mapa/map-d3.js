@@ -180,7 +180,7 @@ function renderProvinceList() {
     if (!list) return;
     list.innerHTML = provinces.map(p => {
       const active = p === appState.selectedProvince ? 'active' : '';
-      return `<button type="button" class="province-pill ${active}" data-map-action="province" data-province="${p}">${p}</button>`;
+      return `<button type="button" class="province-pill ${active}" data-action="province" data-province="${p}">${p}</button>`;
     }).join('');
   });
 }
@@ -190,7 +190,7 @@ function renderProvinceListExplore() {
   if (!list) return;
   list.innerHTML = provinces.map(p => {
     const active = p === appState.selectedProvince ? 'active' : '';
-    return `<button type="button" class="province-pill ${active}" data-map-action="province" data-province="${p}">${p}</button>`;
+    return `<button type="button" class="province-pill ${active}" data-action="province" data-province="${p}">${p}</button>`;
   }).join('');
 }
 

@@ -128,11 +128,11 @@ function loadProvinceMarkers(province) {
   const filterBar = document.getElementById('catFilterBar');
   if (filterBar) {
     filterBar.innerHTML = `
-      <button type="button" data-map-action="cat-filter" data-cat="" data-province="${escHTML(province)}" class="cat-chip${!activeCat ? ' is-active' : ''}">
+      <button type="button" data-action="cat-filter" data-cat="" data-province="${escHTML(province)}" class="cat-chip${!activeCat ? ' is-active' : ''}">
         Todos (${pMarkers.length})
       </button>
       ${Object.entries(catCounts).sort((a, b) => b[1] - a[1]).map(([c, n]) => `
-        <button type="button" data-map-action="cat-filter" data-cat="${escHTML(c)}" data-province="${escHTML(province)}" class="cat-chip${activeCat === c ? ' is-active' : ''}">
+        <button type="button" data-action="cat-filter" data-cat="${escHTML(c)}" data-province="${escHTML(province)}" class="cat-chip${activeCat === c ? ' is-active' : ''}">
           ${catIcon[c] || catIcon.default} ${escHTML(catLabel[c] || c)} (${n})
         </button>
       `).join('')}
@@ -169,7 +169,7 @@ function renderMarkerCards() {
       ? `<span class="mc-stars">${'★'.repeat(Math.round(avg))}${'☆'.repeat(5 - Math.round(avg))}</span>`
       : '';
     return `
-    <div class="mc-row" id="card-${escHTML(mk.id)}" data-map-action="open-place"
+    <div class="mc-row" id="card-${escHTML(mk.id)}" data-action="open-place"
          data-name="${escHTML(mk.name)}" data-province="${escHTML(mk.province)}" data-lat="${mk.lat}" data-lng="${mk.lng}">
       <div class="mc-thumb">
         <div class="mc-thumb-fallback">${icon}</div>
@@ -181,7 +181,7 @@ function renderMarkerCards() {
           ${starsHtml}
         </div>
       </div>
-      <button type="button" class="mc-fav" id="fav-card-${escHTML(mk._id)}" data-map-action="fav"
+      <button type="button" class="mc-fav" id="fav-card-${escHTML(mk._id)}" data-action="fav"
               data-id="${escHTML(mk._id)}" data-name="${escHTML(mk.name)}"
               title="${isFav ? 'Quitar favorito' : 'Añadir favorito'}">
         ${favIcon(isFav)}
@@ -195,12 +195,12 @@ function renderMarkerCards() {
   if (!showMoreEl.hidden) {
     let html = '';
     if (remaining > 0) {
-      html += `<button type="button" class="msb-more-btn" data-map-action="more" data-step="${Math.min(remaining, 8)}">
+      html += `<button type="button" class="msb-more-btn" data-action="more" data-step="${Math.min(remaining, 8)}">
         Ver más <span class="msb-more-count">(${remaining} restantes)</span> ▼
       </button>`;
     }
     if (visible > 8) {
-      html += `<button type="button" class="msb-more-btn" data-map-action="less">
+      html += `<button type="button" class="msb-more-btn" data-action="less">
         Ver menos ▲
       </button>`;
     }
@@ -208,46 +208,16 @@ function renderMarkerCards() {
   }
 }
 
-// Acciones del mapa, el planificador y los favoritos por delegación:
-// los datos viajan en atributos data-*, sin construir JavaScript dentro de cadenas
-document.addEventListener('click', e => {
-  const el = e.target.closest('[data-map-action]');
-  if (!el) return;
-  const d = el.dataset;
-  switch (d.mapAction) {
-    case 'cat-filter':
-      setCatFilter(d.cat || null, d.province);
-      break;
-    case 'open-place':
-      flyToMarker(+d.lat, +d.lng);
-      openReviewsDrawer(d.name, d.province);
-      break;
-    case 'fav':
-      e.stopPropagation();
-      toggleFavorite(d.id, d.name);
-      break;
-    case 'more':
-      appState.visibleCards += +d.step;
-      renderMarkerCards();
-      break;
-    case 'less':
-      appState.visibleCards = 8;
-      renderMarkerCards();
-      break;
-    case 'focus':
-      focusMarkerFromPlanner(+d.lat, +d.lng);
-      break;
-    case 'province':
-      selectProvince(d.province);
-      break;
-    case 'fav-go':
-      closeFavDrawer();
-      goToMarker(+d.lat, +d.lng, d.province);
-      break;
-    case 'open-modal':
-      openModal(d.modal);
-      break;
-  }
+// Acciones del mapa, el planificador y los favoritos (ver registerActions en actions.js)
+registerActions({
+  'cat-filter': d => setCatFilter(d.cat || null, d.province),
+  'open-place': d => { flyToMarker(+d.lat, +d.lng); openReviewsDrawer(d.name, d.province); },
+  'fav':        d => toggleFavorite(d.id, d.name),
+  'more':       d => { appState.visibleCards += +d.step; renderMarkerCards(); },
+  'less':       () => { appState.visibleCards = 8; renderMarkerCards(); },
+  'focus':      d => focusMarkerFromPlanner(+d.lat, +d.lng),
+  'province':   d => selectProvince(d.province),
+  'fav-go':     d => { closeFavDrawer(); goToMarker(+d.lat, +d.lng, d.province); },
 });
 
 function loadAllMarkersOnMap() {
