@@ -193,256 +193,6 @@
   50% { transform: translateX(-50%) translateY(8px); }
 }
 
-/* ═══════════════════════════════════════════
-   TRAVEL ANIMATION 3D
-   ═══════════════════════════════════════════ */
-.travel-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-  overflow: hidden;
-}
-.travel-overlay.active {
-  pointer-events: all;
-  opacity: 1;
-}
-
-/* Sky */
-.travel-sky {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, #0a1628 0%, #1a2a4a 30%, #d4845c 70%, #f0a060 90%, #f7d9a0 100%);
-}
-
-/* Mountains silhouette */
-.travel-mountains {
-  position: absolute;
-  bottom: 38%;
-  left: 0;
-  width: 100%;
-  height: 220px;
-  z-index: 1;
-}
-
-/* 3D scene */
-.travel-scene {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 45%;
-  perspective: 400px;
-  z-index: 2;
-}
-
-/* Road */
-.travel-road {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-}
-.road-surface {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(180deg, #555 0%, #444 40%, #333 100%);
-  transform: rotateX(60deg);
-  transform-origin: bottom center;
-}
-
-/* Road dashed lines */
-.road-line {
-  position: absolute;
-  left: 50%;
-  width: 6px;
-  height: 40px;
-  margin-left: -3px;
-  background: #f0d060;
-  border-radius: 3px;
-  opacity: 0;
-}
-.travel-overlay.active .road-line {
-  animation: roadLineZoom 1.2s linear infinite;
-}
-.road-line-1 { bottom: 5%;  animation-delay: 0s !important; }
-.road-line-2 { bottom: 15%; animation-delay: 0.2s !important; }
-.road-line-3 { bottom: 25%; animation-delay: 0.4s !important; }
-.road-line-4 { bottom: 35%; animation-delay: 0.6s !important; }
-.road-line-5 { bottom: 45%; animation-delay: 0.8s !important; }
-.road-line-6 { bottom: 55%; animation-delay: 1.0s !important; }
-
-@keyframes roadLineZoom {
-  0%   { opacity: 0; transform: translateY(-200px) scale(0.2); }
-  20%  { opacity: 1; }
-  80%  { opacity: 1; }
-  100% { opacity: 0; transform: translateY(100px) scale(2.5); }
-}
-
-/* Trees */
-.travel-trees {
-  position: absolute;
-  bottom: 0;
-  z-index: 3;
-  font-size: 2.5rem;
-}
-.travel-trees-left  { left: 5%; }
-.travel-trees-right { right: 5%; }
-.tree {
-  position: absolute;
-  opacity: 0;
-  filter: brightness(0.3);
-}
-.travel-overlay.active .tree {
-  animation: treePass 2s ease-in infinite;
-}
-.travel-trees-left  .tree-1 { bottom: 60px; animation-delay: 0s !important; }
-.travel-trees-left  .tree-2 { bottom: 120px; left: 40px; animation-delay: 0.7s !important; font-size: 2rem; }
-.travel-trees-left  .tree-3 { bottom: 180px; left: 10px; animation-delay: 1.4s !important; font-size: 1.5rem; }
-.travel-trees-right .tree-1 { bottom: 80px; animation-delay: 0.3s !important; }
-.travel-trees-right .tree-2 { bottom: 140px; right: 30px; animation-delay: 1s !important; font-size: 2rem; }
-.travel-trees-right .tree-3 { bottom: 200px; right: 10px; animation-delay: 1.7s !important; font-size: 1.5rem; }
-
-@keyframes treePass {
-  0%   { opacity: 0; transform: scale(0.3) translateY(-60px); }
-  20%  { opacity: 0.7; }
-  80%  { opacity: 0.9; }
-  100% { opacity: 0; transform: scale(1.8) translateY(80px); }
-}
-
-/* Caravan / Van */
-.travel-van {
-  position: absolute;
-  bottom: 12%;
-  left: 50%;
-  transform: translateX(-50%) scale(0) perspective(800px) rotateY(0deg);
-  z-index: 10;
-  width: 220px;
-  transition: transform 1.4s cubic-bezier(0.34, 1.56, 0.64, 1), bottom 2s ease;
-  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.5));
-}
-.travel-van.driving {
-  transform: translateX(-50%) scale(1) perspective(800px) rotateY(0deg);
-  animation: vanBounce 0.4s ease-in-out infinite alternate;
-}
-
-@keyframes vanBounce {
-  0%   { transform: translateX(-50%) scale(1) translateY(0px); }
-  100% { transform: translateX(-50%) scale(1) translateY(-4px); }
-}
-
-/* Travel text */
-.travel-text {
-  position: absolute;
-  top: 18%;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  text-align: center;
-  opacity: 0;
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-.travel-text.visible {
-  opacity: 1;
-}
-.travel-text-line {
-  display: block;
-  font-family: var(--bs-font-sans-serif);
-  font-size: 2rem;
-  font-weight: 700;
-  color: #F2ECE0;
-  text-shadow: 0 2px 20px rgba(0,0,0,0.5);
-  letter-spacing: 1px;
-}
-.travel-dots span {
-  display: inline-block;
-  font-size: 2.5rem;
-  color: var(--terra-light);
-  animation: dotPulse 1.4s ease-in-out infinite;
-}
-.travel-dots span:nth-child(2) { animation-delay: 0.2s; }
-.travel-dots span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes dotPulse {
-  0%, 80%, 100% { opacity: 0.2; transform: translateY(0); }
-  40% { opacity: 1; transform: translateY(-6px); }
-}
-
-/* Welcome sign */
-.travel-sign {
-  position: absolute;
-  top: 28%;
-  left: 50%;
-  transform: translateX(-50%) scale(0) rotateX(20deg);
-  z-index: 12;
-  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
-  opacity: 0;
-}
-.travel-sign.visible {
-  transform: translateX(-50%) scale(1) rotateX(0deg);
-  opacity: 1;
-}
-.sign-post {
-  width: 8px;
-  height: 50px;
-  background: #888;
-  margin: 0 auto;
-  border-radius: 2px;
-}
-.sign-board {
-  background: linear-gradient(135deg, #1a5c1a, #2a7a2a);
-  border: 3px solid #fff;
-  border-radius: 8px;
-  padding: 14px 32px;
-  text-align: center;
-  box-shadow: 0 6px 30px rgba(0,0,0,0.4);
-}
-.sign-board span {
-  display: block;
-  font-family: var(--bs-font-sans-serif);
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: 1px;
-}
-.sign-board small {
-  display: block;
-  font-size: 0.85rem;
-  color: rgba(255,255,255,0.8);
-  margin-top: 4px;
-}
-
-/* Flash transition */
-.travel-overlay.flash {
-  background: #fff;
-  transition: background 0.5s ease;
-}
-.travel-overlay.flash .travel-sky,
-.travel-overlay.flash .travel-mountains,
-.travel-overlay.flash .travel-scene,
-.travel-overlay.flash .travel-van,
-.travel-overlay.flash .travel-text,
-.travel-overlay.flash .travel-sign {
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-/* Mobile adjustments */
-@media (max-width: 600px) {
-  .travel-van { width: 150px; bottom: 15%; }
-  .travel-text-line { font-size: 1.3rem; }
-  .sign-board { padding: 10px 20px; }
-  .sign-board span { font-size: 1.1rem; }
-  .travel-trees { display: none; }
-}
-
 /* Hero layout variants */
 .hero-two-col {
   display: flex !important; align-items: center; justify-content: center;
@@ -527,19 +277,125 @@
   .hero-immersive-btn { padding: 13px 28px; font-size: 0.85rem; }
   .hero-immersive-badge { font-size: 0.62rem; }
 
-  /* Animación de viaje: simplificada en móvil */
-  .travel-section { height: 220px; }
-  .travel-scene { height: 220px; }
-  .travel-van { width: 120px; bottom: 20%; }
-  .travel-text-line { font-size: 1.1rem; }
-  .travel-trees { display: none; }
-  .sign-board { padding: 8px 16px; }
-  .sign-board span { font-size: 0.95rem; }
-
   /* Section titles */
   .section-title { font-size: 2rem; }
   .section-subtitle { font-size: 0.95rem; }
 
   /* Hero cards: 1 columna */
   .hero-cards { grid-template-columns: 1fr; max-width: 100%; padding: 0 16px; }
+}
+
+/* ═══════════════════════════════════════════
+   TRANSICIÓN "RUTA TRAZADA" HACIA EL MAPA
+   ═══════════════════════════════════════════ */
+.route-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: grid;
+  place-items: center;
+  padding: clamp(24px, 6vh, 72px) clamp(16px, 5vw, 64px) clamp(72px, 12vh, 120px);
+  background: var(--cream);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.route-intro[hidden] { display: none; }
+.route-intro.is-visible { opacity: 1; }
+.route-intro.is-leaving { opacity: 0; transition-duration: 0.45s; }
+
+.route-intro-svg {
+  width: min(100%, 980px);
+  max-height: 100%;
+  overflow: visible;
+  transform: scale(0.97);
+  transition: transform 2.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.route-intro.is-visible .route-intro-svg { transform: scale(1); }
+.route-intro.is-leaving .route-intro-svg { transform: scale(1.04); transition-duration: 0.45s; }
+
+.ri-provinces path {
+  fill: var(--sand);
+  stroke: rgba(42,33,24,0.22);
+  stroke-width: 1;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.ri-route,
+.ri-route-shadow {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ri-route { stroke: var(--terra); stroke-width: 3.5; }
+/* Rastro punteado que anticipa el recorrido */
+.ri-route-shadow { stroke: rgba(184,92,56,0.28); stroke-width: 1.5; stroke-dasharray: 2 7; }
+
+.ri-head {
+  fill: var(--terra);
+  stroke: var(--cream);
+  stroke-width: 3;
+  filter: drop-shadow(0 2px 4px rgba(42,33,24,0.3));
+}
+
+.ri-city circle {
+  fill: var(--cream);
+  stroke: rgba(42,33,24,0.35);
+  stroke-width: 1.5;
+  transition: fill 0.3s, stroke 0.3s;
+}
+.ri-city text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 19px;
+  font-weight: 500;
+  fill: var(--ink-soft);
+  paint-order: stroke;
+  stroke: var(--sand);
+  stroke-width: 5px;
+  stroke-linejoin: round;
+  opacity: 0;
+  transform: translateY(6px);
+  transform-box: fill-box;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ri-city.is-reached circle { fill: var(--terra); stroke: var(--cream); stroke-width: 2.5; }
+.ri-city.is-reached text { opacity: 1; transform: none; }
+
+.route-intro-caption {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(28px, 6vh, 56px);
+  transform: translateX(-50%);
+  margin: 0;
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.route-intro-skip {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  padding: 8px 16px;
+  border: 1px solid rgba(42,33,24,0.18);
+  border-radius: 999px;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.route-intro-skip:hover { color: var(--terra); border-color: var(--terra); background: rgba(184,92,56,0.06); }
+
+@media (max-width: 600px) {
+  .route-intro { padding-left: 0; padding-right: 0; }
+  /* El contorno ocupa ~80% del viewBox: se amplía para que llene el ancho del móvil */
+  .route-intro-svg { width: 116vw; max-width: none; }
+  .ri-city text { font-size: 30px; stroke-width: 7px; }
+  .ri-route { stroke-width: 5; }
+  .ri-city circle { r: 8; }
 }
