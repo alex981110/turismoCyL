@@ -111,20 +111,47 @@
   }
 })();
 
-/* ── Transición "ruta trazada" hacia el mapa ── */
+/* ── Transición "viaje por las nueve provincias" hacia el mapa ──
+   Se dibujan las provincias, una caravana recorre las capitales parándose en
+   cada una (con su tarjeta) y el contorno aterriza sobre el mapa de Leaflet.
+   Solo la primera vez por sesión; se puede saltar con clic, Esc, Intro o Espacio. */
 (function() {
-  var DRAW_MS = 2000;   // trazado de la ruta
-  var HOLD_MS = 350;    // pausa con la ruta completa
-  var FADE_MS = 450;    // fundido hacia el mapa (igual que en home.css)
+  var INTRO_MS = 900, FIRST_MS = 650, LEG_MS = 560, DWELL_MS = 260, LAND_MS = 850;
+  var FADE_MS  = 450;   // igual que .is-leaving en home.css
   var SEEN_KEY = 'cylRouteIntroSeen';
 
-  var overlay = document.getElementById('routeIntro');
-  var path    = document.getElementById('routeIntroPath');
-  var head    = document.getElementById('routeIntroHead');
-  var skipBtn = document.getElementById('routeIntroSkip');
-  var cities  = overlay ? Array.prototype.slice.call(overlay.querySelectorAll('.ri-city')) : [];
-  var running = false, raf = 0, holdTimer = 0, total = 0, cityAt = [];
+  // Paradas en el orden de la ruta
+  var STOPS = {
+    'León':       { img: 'leon',       place: 'Las Médulas' },
+    'Palencia':   { img: 'palencia',   place: 'San Martín de Frómista' },
+    'Burgos':     { img: 'burgos',     place: 'Catedral' },
+    'Soria':      { img: 'soria',      place: 'Laguna Negra' },
+    'Segovia':    { img: 'segovia',    place: 'Acueducto romano' },
+    'Ávila':      { img: 'avila',      place: 'Murallas medievales' },
+    'Salamanca':  { img: 'salamanca',  place: 'Plaza Mayor' },
+    'Zamora':     { img: 'zamora',     place: 'Catedral' },
+    'Valladolid': { img: 'valladolid', place: 'Iglesia de San Pablo' }
+  };
 
+  var overlay = document.getElementById('routeIntro');
+  if (!overlay) { window.launchTravelAnimation = function() { navigateTo('/mapa'); }; return; }
+
+  var svg    = overlay.querySelector('.route-intro-svg');
+  var path   = document.getElementById('routeIntroPath');
+  var head   = document.getElementById('routeIntroHead');
+  var card   = document.getElementById('routeIntroCard');
+  var img    = card.querySelector('.ri-card-img');
+  var count  = card.querySelector('.ri-card-count');
+  var name   = card.querySelector('.ri-card-name');
+  var place  = card.querySelector('.ri-card-place');
+  var cities = Array.prototype.slice.call(overlay.querySelectorAll('.ri-city'));
+  var provs  = Array.prototype.slice.call(overlay.querySelectorAll('.ri-provinces path'));
+
+  var running = false, raf = 0, timers = [], total = 0, cityAt = [], heading = 0;
+
+  function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
+  function seen() { try { return sessionStorage.getItem(SEEN_KEY) === '1'; } catch (e) { return false; } }
+  function markSeen() { try { sessionStorage.setItem(SEEN_KEY, '1'); } catch (e) {} }
   function easeInOutCubic(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
 
   // Distancia a lo largo de la ruta a la que queda cada capital
@@ -145,62 +172,145 @@
     });
   }
 
-  function seen() { try { return sessionStorage.getItem(SEEN_KEY) === '1'; } catch (e) { return false; } }
-  function markSeen() { try { sessionStorage.setItem(SEEN_KEY, '1'); } catch (e) {} }
+  // Coloca la caravana en la ruta y la orienta según la tangente: se inclina
+  // como mucho 40° y, si va hacia la izquierda, se refleja en vez de girar
+  // para no quedar boca abajo
+  function placeHead(len, snap) {
+    var pt = path.getPointAtLength(len);
+    var a = path.getPointAtLength(Math.max(0, len - 2));
+    var b = path.getPointAtLength(Math.min(total, len + 2));
+    var target = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
+    var diff = ((target - heading + 540) % 360) - 180;
+    heading = snap ? target : heading + diff * 0.25;
+    var left = Math.cos(heading * Math.PI / 180) < 0;
+    var tilt = left ? heading - 180 : heading;
+    tilt = ((tilt + 540) % 360) - 180;
+    tilt = Math.max(-40, Math.min(40, tilt));
+    head.setAttribute('transform', 'translate(' + pt.x.toFixed(1) + ' ' + pt.y.toFixed(1) + ') rotate(' + tilt.toFixed(1) + ')' + (left ? ' scale(-1 1)' : ''));
+  }
+
+  // Transformación que lleva el contorno del SVG sobre Castilla y León en el mapa
+  // de Leaflet. Ambos usan Mercator, así que basta escalar y desplazar a partir de
+  // dos capitales: León (primera ciudad) y Soria (cuarta).
+  function fitToLeaflet() {
+    if (typeof map === 'undefined' || !map || !svg.getScreenCTM) return null;
+    var ctm = svg.getScreenCTM(), box = svg.getBoundingClientRect();
+    function screen(el) {
+      var pt = svg.createSVGPoint(); pt.x = +el.dataset.x; pt.y = +el.dataset.y;
+      return pt.matrixTransform(ctm);
+    }
+    var sa = screen(cities[0]), sb = screen(cities[3]);
+    var mc = map.getContainer().getBoundingClientRect();
+    var ma = map.latLngToContainerPoint([42.5987, -5.5671]);
+    var mb = map.latLngToContainerPoint([41.7666, -2.4637]);
+    var s = Math.hypot(mb.x - ma.x, mb.y - ma.y) / Math.hypot(sb.x - sa.x, sb.y - sa.y);
+    if (!isFinite(s) || s <= 0) return null;
+    return { ox: sa.x - box.left, oy: sa.y - box.top, dx: mc.left + ma.x - sa.x, dy: mc.top + ma.y - sa.y, s: s };
+  }
+
+  function reset() {
+    provs.forEach(function(p) { p.style.cssText = ''; p.classList.remove('is-current', 'is-visited'); });
+    svg.style.transform = svg.style.transformOrigin = '';
+    card.classList.remove('is-in');
+  }
 
   function finish() {
     if (!running) return;
     running = false;
     cancelAnimationFrame(raf);
-    clearTimeout(holdTimer);
+    timers.forEach(clearTimeout); timers = [];
     document.removeEventListener('keydown', onKey);
-    navigateTo('/mapa');
+    if (location.pathname !== '/mapa') navigateTo('/mapa');
     overlay.classList.add('is-leaving');
     setTimeout(function() {
       overlay.hidden = true;
-      overlay.classList.remove('is-visible', 'is-leaving');
+      overlay.classList.remove('is-visible', 'is-leaving', 'is-drawn', 'is-landing');
       document.body.style.overflow = '';
+      reset();
     }, FADE_MS);
   }
-
   function onKey(e) { if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') { e.preventDefault(); finish(); } }
+
+  function arrive(i) {
+    var c = cities[i], n = c.dataset.name, stop = STOPS[n] || {};
+    c.classList.add('is-reached');
+    provs.forEach(function(p) {
+      if (p.classList.contains('is-current')) { p.classList.remove('is-current'); p.classList.add('is-visited'); }
+      if (p.dataset.name === n) p.classList.add('is-current');
+    });
+    card.classList.remove('is-in');
+    later(function() {
+      img.style.backgroundImage = "url('/hero/" + stop.img + ".jpg')";
+      count.textContent = (i + 1) + ' de ' + cities.length;
+      name.textContent = n;
+      place.textContent = stop.place || '';
+      card.classList.add('is-in');
+    }, i === 0 ? 0 : 180);
+  }
+
+  // Tramo i: de la capital i a la i+1
+  function leg(i) {
+    if (i >= cities.length - 1) { later(land, DWELL_MS + 500); return; }
+    var from = cityAt[i], to = cityAt[i + 1], start = performance.now();
+    function frame(now) {
+      var t = Math.min(1, (now - start) / LEG_MS);
+      var len = from + (to - from) * easeInOutCubic(t);
+      path.style.strokeDashoffset = total - len;
+      placeHead(len);
+      if (t < 1) { raf = requestAnimationFrame(frame); return; }
+      arrive(i + 1);
+      later(function() { leg(i + 1); }, DWELL_MS + 120);
+    }
+    raf = requestAnimationFrame(frame);
+  }
+
+  // El mapa se abre debajo y el contorno vuela hasta su sitio antes del fundido
+  function land() {
+    card.classList.remove('is-in');
+    navigateTo('/mapa');
+    later(function() {
+      var fit = fitToLeaflet();
+      if (fit) {
+        svg.style.transformOrigin = fit.ox + 'px ' + fit.oy + 'px';
+        svg.style.transform = 'translate(' + fit.dx + 'px,' + fit.dy + 'px) scale(' + fit.s + ')';
+      }
+      overlay.classList.add('is-landing');
+    }, 150);
+    later(finish, LAND_MS);
+  }
 
   window.launchTravelAnimation = function() {
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // Solo la primera vez por sesión; con movimiento reducido, directo al mapa
-    if (!overlay || reduce || seen()) { navigateTo('/mapa'); return; }
+    // Con movimiento reducido, o si ya se vio en esta sesión, directo al mapa
+    if (reduce || seen()) { navigateTo('/mapa'); return; }
     if (running) return;
     running = true;
     markSeen();
 
-    overlay.hidden = false;
-    document.body.style.overflow = 'hidden';
     if (!total) measure();
     path.style.strokeDasharray = total + ' ' + total;
     path.style.strokeDashoffset = total;
     cities.forEach(function(c) { c.classList.remove('is-reached'); });
-    void overlay.offsetWidth;            // fuerza el estado inicial antes del fundido
+    provs.forEach(function(p, i) {
+      var len = p.getTotalLength();
+      p.style.strokeDasharray = len + ' ' + len;
+      p.style.strokeDashoffset = len;
+      p.style.transitionDelay = (i * 60) + 'ms';
+    });
+
+    overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+    placeHead(0, true);
+    void overlay.offsetWidth;            // estado inicial antes de animar
     overlay.classList.add('is-visible');
     document.addEventListener('keydown', onKey);
-    skipBtn.focus({ preventScroll: true });
+    document.getElementById('routeIntroSkip').focus({ preventScroll: true });
 
-    var start = performance.now() + 250;  // deja entrar el fondo antes de trazar
-    function frame(now) {
-      var t = Math.min(1, Math.max(0, (now - start) / DRAW_MS));
-      var len = total * easeInOutCubic(t);
-      path.style.strokeDashoffset = total - len;
-      var pt = path.getPointAtLength(len);
-      head.setAttribute('cx', pt.x);
-      head.setAttribute('cy', pt.y);
-      cities.forEach(function(c, i) { if (len >= cityAt[i] - 1) c.classList.add('is-reached'); });
-      if (t < 1) raf = requestAnimationFrame(frame);
-      else holdTimer = setTimeout(finish, HOLD_MS);
-    }
-    raf = requestAnimationFrame(frame);
+    later(function() { overlay.classList.add('is-drawn'); }, 20);
+    later(function() { arrive(0); }, INTRO_MS);
+    later(function() { leg(0); }, INTRO_MS + FIRST_MS);
   };
 
-  if (overlay) {
-    overlay.addEventListener('click', finish);
-  }
+  overlay.addEventListener('click', finish);
 })();
 </script>
