@@ -7,7 +7,12 @@ function placeHeroError(img) {
   const failed = img.getAttribute('src');
   const next = ((_placeCurrent && _placeCurrent.gphotos) || []).find(u => u !== failed && !hero.dataset.tried.includes(u));
   hero.dataset.tried += failed + '|';
-  if (next) { img.src = next; return; }
+  if (next) {
+    img.src = next;
+    // La foto que pasa a la cabecera no se repite en las miniaturas
+    document.querySelectorAll('#placeGoogle .place-photos [data-src]').forEach(b => { if (b.dataset.src === next) b.remove(); });
+    return;
+  }
   hero.classList.remove('has-photo');
   hero.innerHTML = `<div class="place-hero-fallback">${catIcon[hero.dataset.cat] || catIcon.default}</div>`;
 }
@@ -171,7 +176,7 @@ function renderPlaceGoogle(data, name) {
   }
   if (photos.length) {
     parts.push(`<div class="place-photos">${photos.slice(0, 6).map(url =>
-      `<button type="button" onclick="openPhotoModal('${jsArg(url)}','${jsArg(name)}')" aria-label="Ampliar foto"><img src="${escHTML(url)}" alt="" loading="lazy" onerror="this.parentElement.remove()"></button>`).join('')}</div>`);
+      `<button type="button" data-src="${escHTML(url)}" onclick="openPhotoModal('${jsArg(url)}','${jsArg(name)}')" aria-label="Ampliar foto"><img src="${escHTML(url)}" alt="" loading="lazy" onerror="this.parentElement.remove()"></button>`).join('')}</div>`);
   }
   if ((data.reviews || []).length) {
     parts.push(data.reviews.map(r => `
