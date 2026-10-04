@@ -1,9 +1,11 @@
 function initLeafletMap() {
   if (map) return; // Ya inicializado
   map = L.map('map', { zoomControl: true }).setView([41.5, -4.0], 7);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '©OpenStreetMap ©CARTO',
-    maxZoom: 18
+  // CARTO exige ya clave de API; teselas OSM con un filtro cálido en CSS (.tiles-warm)
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 19,
+    className: 'tiles-warm'
   }).addTo(map);
   loadProvinceBoundaries();
 
@@ -47,8 +49,8 @@ function loadProvinceMarkers(province) {
     iconCreateFunction: cluster => {
       const count = cluster.getChildCount();
       return L.divIcon({
-        html: `<div style="background:rgba(201,168,76,0.9);color:#1a1209;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:0.85rem;border:2px solid #1a1209;box-shadow:0 2px 8px rgba(0,0,0,0.4);">${count}</div>`,
-        className: '', iconSize: [36,36], iconAnchor: [18,18]
+        html: `<div class="cyl-cluster">${count}</div>`,
+        className: '', iconSize: [38,38], iconAnchor: [19,19]
       });
     }
   });
@@ -216,7 +218,7 @@ function loadAllMarkersOnMap() {
     iconCreateFunction: function(cluster) {
       const count = cluster.getChildCount();
       return L.divIcon({
-        html: `<div style="background:rgba(201,168,76,0.92);color:#1a1209;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:900;font-size:0.85rem;border:2px solid rgba(255,255,255,0.3);box-shadow:0 2px 8px rgba(0,0,0,0.4);">${count}</div>`,
+        html: `<div class="cyl-cluster">${count}</div>`,
         className: '', iconSize: [38,38], iconAnchor: [19,19]
       });
     }

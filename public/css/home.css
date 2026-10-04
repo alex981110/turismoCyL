@@ -19,20 +19,26 @@
   background-size: cover;
   background-position: center 30%;
   opacity: 0;
-  transition: opacity 1.8s ease-in-out;
+  transform: scale(1.06);
+  transition: opacity 1.8s ease-in-out, transform 9s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 0;
 }
-.hero-slide.active { opacity: 1; z-index: 1; }
+.hero-slide.active { opacity: 1; z-index: 1; transform: scale(1); }
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide, .hero-slide.active { transform: none; transition: opacity 0.6s linear; }
+}
 
 .hero-bg-overlay {
   position: absolute; inset: 0; z-index: 2;
-  background: linear-gradient(
-    to bottom,
-    rgba(28,24,20,0.3) 0%,
-    rgba(28,24,20,0.2) 35%,
-    rgba(28,24,20,0.55) 75%,
-    rgba(28,24,20,0.88) 100%
-  );
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 50%, rgba(28,24,20,0.55) 0%, rgba(28,24,20,0.25) 60%, transparent 100%),
+    linear-gradient(
+      to bottom,
+      rgba(28,24,20,0.6) 0%,
+      rgba(28,24,20,0.2) 22%,
+      rgba(28,24,20,0.25) 55%,
+      rgba(28,24,20,0.85) 100%
+    );
 }
 
 .hero-immersive-content {
@@ -41,16 +47,23 @@
   padding: 0 28px;
 }
 
-.hero-eyebrow {
+.hero-caption {
+  position: absolute;
+  left: clamp(20px, 4vw, 56px);
+  bottom: clamp(20px, 4vh, 40px);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--terra-light);
-  margin-bottom: 20px;
-  opacity: 0.9;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  color: rgba(253,251,247,0.88);
+  text-shadow: 0 1px 8px rgba(28,24,20,0.6);
 }
+.hero-caption svg { width: 16px; height: 16px; color: var(--terra-light); flex-shrink: 0; }
+#heroSlideLabel { transition: opacity 0.4s ease; }
 
 .hero-immersive-title {
   font-family: 'Instrument Serif', serif;
@@ -60,6 +73,8 @@
   color: #FDFBF7;
   margin-bottom: 22px;
   letter-spacing: -0.02em;
+  text-wrap: balance;
+  text-shadow: 0 2px 30px rgba(28,24,20,0.35);
 }
 .hero-immersive-title em {
   display: inline;
@@ -70,7 +85,7 @@
 .hero-immersive-sub {
   font-family: 'DM Sans', sans-serif;
   font-size: clamp(0.95rem, 1.8vw, 1.1rem);
-  color: rgba(242,236,224,0.7);
+  color: rgba(253,251,247,0.9);
   line-height: 1.7;
   margin-bottom: 40px;
   font-weight: 300;
@@ -123,7 +138,7 @@
   gap: 12px;
   font-family: 'DM Sans', sans-serif;
   font-size: 0.82rem;
-  color: rgba(242,236,224,0.5);
+  color: rgba(253,251,247,0.78);
   flex-wrap: wrap;
 }
 .hero-immersive-steps strong {
@@ -131,28 +146,40 @@
   font-weight: 600;
   font-size: 0.85rem;
 }
-.hero-step-dot { opacity: 0.3; }
+.hero-step-dot { opacity: 0.5; }
 
 .hero-carousel-dots {
-  display: flex; gap: 8px;
+  display: flex; gap: 2px;
   justify-content: center;
   margin-top: 28px;
 }
+/* El botón es el área táctil (24px); el punto visible es ::before */
 .hero-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
+  position: relative;
+  width: 24px; height: 24px;
+  min-height: 0 !important;
   border: none;
-  background: rgba(242,236,224,0.25);
+  background: transparent;
   cursor: pointer;
   padding: 0;
-  transition: all 0.3s;
+  border-radius: 50%;
 }
-.hero-dot.active {
-  background: var(--terra);
-  transform: scale(1.4);
-  box-shadow: 0 0 12px rgba(184,92,56,0.5);
+.hero-dot::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 8px; height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 4px;
+  background: rgba(253,251,247,0.4);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;
 }
-.hero-dot:hover { background: rgba(184,92,56,0.6); }
+.hero-dot:hover::before { background: rgba(253,251,247,0.75); }
+.hero-dot.active::before {
+  transform: scaleX(2.5);
+  background: var(--terra-light);
+}
+.hero-dot:focus-visible { outline: 2px solid var(--terra-light); outline-offset: 0; }
 
 .hero-scroll-hint {
   position: absolute; bottom: 28px; left: 50%;

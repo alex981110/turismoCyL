@@ -556,3 +556,23 @@
   .map-sidebar-fab { display: flex !important; }
   .map-sidebar-fab.fab-hidden { display: none !important; }
 }
+
+/* Teselas OSM atenuadas hacia la paleta arena/terracota */
+.tiles-warm { filter: grayscale(0.75) sepia(0.18) brightness(1.04) contrast(0.92); }
+
+/* Agrupaciones de marcadores */
+.cyl-cluster {
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: var(--terra);
+  color: var(--cream);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  border: 3px solid rgba(253,251,247,0.9);
+  box-shadow: 0 3px 10px rgba(42,33,24,0.28);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s;
+}
+.cyl-cluster:hover { transform: scale(1.08); background: var(--terra-dark); }
