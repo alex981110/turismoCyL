@@ -108,17 +108,27 @@
 
 <!-- REVIEWS DRAWER -->
 <div id="drawerOverlay" onclick="closeReviewsDrawer()"></div>
-<div id="reviewsDrawer">
-  <div class="drawer-header" style="position:relative;">
-    <button class="drawer-close" onclick="closeReviewsDrawer()">✕</button>
-    <h3 id="drawerTitle">Valoraciones</h3>
-    <p id="drawerSubtitle"></p>
-    <!-- Botón de favorito (se inyecta desde JS) -->
-    <div id="drawerFavBtn" style="position:absolute;top:14px;right:48px;display:none;"></div>
+<!-- Ficha del lugar: se rellena desde openReviewsDrawer() en reviews.js -->
+<aside id="reviewsDrawer" role="dialog" aria-modal="true" aria-labelledby="placeTitle">
+  <button class="place-close" onclick="closeReviewsDrawer()" aria-label="Cerrar ficha">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>
+  <div class="place-scroll">
+    <div class="place-hero" id="placeHero"></div>
+    <div class="place-body">
+      <div class="place-meta" id="placeMeta"></div>
+      <h3 class="place-title" id="placeTitle"></h3>
+      <p class="place-desc" id="placeDesc"></p>
+      <div class="place-actions" id="placeActions"></div>
+      <ul class="place-links" id="placeLinks"></ul>
+      <section class="place-section" id="placeGoogle" hidden></section>
+      <section class="place-section" aria-labelledby="placeRatingsTitle">
+        <h4 class="place-section-title" id="placeRatingsTitle">Valoraciones</h4>
+        <div id="placeRatings"></div>
+      </section>
+    </div>
   </div>
-  <div class="drawer-avg" id="drawerAvg"></div>
-  <div class="drawer-reviews" id="drawerReviews"></div>
-</div>
+</aside>
 
 <!-- FAVORITES DRAWER -->
 <div id="favDrawerOverlay" onclick="closeFavDrawer()"></div>
