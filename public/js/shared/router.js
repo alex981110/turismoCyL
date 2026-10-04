@@ -45,7 +45,8 @@ function _activateSection(targetId) {
 
   const target = document.getElementById(targetId);
   if (target) {
-    target.style.display = 'block';
+    // La portada centra su contenido con flex; el resto de secciones son bloques
+    target.style.display = target.classList.contains('spa-hero') ? 'flex' : 'block';
     if (targetId === 'spa-mapa') {
       initLeafletMap();
       setTimeout(() => {

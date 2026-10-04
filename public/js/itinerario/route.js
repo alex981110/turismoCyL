@@ -76,8 +76,11 @@ function openRouteMap(places, title, days) {
   container.innerHTML = '<div id="routeMapLeaflet" style="width:100%;height:100%;"></div>';
 
   _routeMap = L.map('routeMapLeaflet', { zoomControl: true }).setView([41.5, -4.0], 7);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '©OpenStreetMap ©CARTO', maxZoom: 18
+  // CARTO exige ya clave de API; teselas OSM con un filtro cálido en CSS (.tiles-warm)
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 19,
+    className: 'tiles-warm'
   }).addTo(_routeMap);
 
   const allLatLngs = [];

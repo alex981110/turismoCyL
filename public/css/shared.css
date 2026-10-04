@@ -52,6 +52,13 @@
 /* ── RESET ── */
 *, *::before, *::after { box-sizing: border-box; }
 
+/* ── Superficies del navegador ── */
+::selection { background: rgba(184,92,56,0.22); color: var(--ink); }
+:root { accent-color: var(--terra); caret-color: var(--terra); scrollbar-color: rgba(107,92,78,0.35) var(--sand); }
+:focus-visible { outline: 2px solid var(--terra); outline-offset: 2px; border-radius: 4px; }
+.navbar-toggler:focus-visible { box-shadow: none; outline: 2px solid var(--terra); }
+a { text-underline-offset: 0.2em; }
+
 html { scroll-behavior: smooth; }
 
 body {
@@ -162,14 +169,17 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Navbar transparent on hero */
 .navbar-cyl.navbar-on-hero {
-  background: linear-gradient(to bottom, rgba(28,24,20,0.65) 0%, transparent 100%) !important;
+  background: transparent !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   border-bottom-color: transparent !important;
 }
-.navbar-cyl.navbar-on-hero .logo { color: var(--parch); }
+.navbar-cyl.navbar-on-hero .logo { color: var(--cream); }
 .navbar-cyl.navbar-on-hero .logo span { color: var(--terra-light); }
 .navbar-cyl.navbar-on-hero .nav-link-cyl { color: rgba(242,236,224,0.75) !important; }
 .navbar-cyl.navbar-on-hero .nav-link-cyl:hover { color: white !important; }
-.navbar-cyl.navbar-on-hero .nav-slogan { color: rgba(242,236,224,0.45); }
+.navbar-cyl.navbar-on-hero .nav-slogan { color: rgba(253,251,247,0.72); }
+.navbar-cyl.navbar-on-hero .navbar-toggler { color: var(--cream) !important; background: rgba(253,251,247,0.12) !important; }
 
 /* ═══════════════════════════════════════════
    BUTTONS
@@ -535,12 +545,28 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
   border: none; cursor: pointer;
   font-size: 1rem; font-weight: 600;
   display: none; align-items: center; justify-content: center;
+  padding: 0;
   z-index: 999; transition: all 0.25s;
   box-shadow: 0 4px 16px rgba(184,92,56,0.3);
   border-radius: 50%;
 }
 #backToTop.visible { display: flex; }
 #backToTop:hover { background: var(--terra-dark); transform: translateY(-2px); }
+#backToTop svg { width: 18px; height: 18px; }
+
+/* Botón mostrar/ocultar contraseña */
+.pw-toggle {
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 14px;
+  background: var(--sand);
+  border: 1px solid rgba(42,33,24,0.16);
+  border-left: none;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--ink-muted);
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+.pw-toggle:hover { color: var(--terra); background: var(--sand-deep); }
 
 /* Badge variants */
 .badge-cyl { font-family: 'DM Sans', sans-serif; font-size: 0.68rem; letter-spacing: 0.06em; border-radius: var(--radius-xl); padding: 4px 10px; font-weight: 600; }
@@ -561,7 +587,7 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
    SPA ROUTER
    ═══════════════════════════════════════════ */
 .spa-section { display: none; }
-.spa-section.spa-hero { min-height: calc(100vh - 70px); }
+.spa-section.spa-hero { min-height: 100vh; min-height: 100svh; }
 
 /* ═══════════════════════════════════════════
    ITINERARY SECTION
