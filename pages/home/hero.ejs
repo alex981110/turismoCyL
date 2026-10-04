@@ -1,17 +1,17 @@
 <div class="spa-section" id="spa-home">
 <section class="hero-immersive">
 
-  <!-- Carrusel de fondo -->
+  <!-- Carrusel de fondo: las fotos se cargan desde JS (la visible y la siguiente) -->
   <div class="hero-bg" id="heroBg">
-    <div class="hero-slide active" style="background-image:url('/hero/segovia.jpg')"></div>
-    <div class="hero-slide" style="background-image:url('/hero/burgos.jpg')"></div>
-    <div class="hero-slide" style="background-image:url('/hero/salamanca.jpg')"></div>
-    <div class="hero-slide" style="background-image:url('/hero/leon.jpg')"></div>
-    <div class="hero-slide" style="background-image:url('/hero/avila.jpg')"></div>
-    <div class="hero-slide" style="background-image:url('/hero/soria.jpg')"></div>
-    <div class="hero-slide" style="background-image:url('/hero/palencia.jpg')"></div>
-    <div class="hero-slide" style="background-image:url('/hero/valladolid.jpg')"></div>
-    <div class="hero-slide" style="background-image:url('/hero/zamora.jpg')"></div>
+    <div class="hero-slide active" data-img="segovia"></div>
+    <div class="hero-slide" data-img="burgos"></div>
+    <div class="hero-slide" data-img="salamanca"></div>
+    <div class="hero-slide" data-img="leon"></div>
+    <div class="hero-slide" data-img="avila"></div>
+    <div class="hero-slide" data-img="soria"></div>
+    <div class="hero-slide" data-img="palencia"></div>
+    <div class="hero-slide" data-img="valladolid"></div>
+    <div class="hero-slide" data-img="zamora"></div>
     <div class="hero-bg-overlay"></div>
   </div>
 
@@ -81,6 +81,20 @@
   if (labelEl) labelEl.style.transition = 'opacity 0.4s ease';
   var current = 0;
 
+  // WebP a 1920 px en pantallas grandes y a 1080 px en el resto (densidad máx. 2)
+  function heroSrc(name) {
+    var w = (window.innerWidth || 1440) * Math.min(window.devicePixelRatio || 1, 2);
+    return '/hero/' + name + '-' + (w > 1400 ? 1920 : 1080) + '.webp';
+  }
+  function loadSlide(i) {
+    var el = slides[i];
+    if (!el || el.dataset.loaded) return;
+    el.style.backgroundImage = "url('" + heroSrc(el.dataset.img) + "')";
+    el.dataset.loaded = '1';
+  }
+  loadSlide(0);
+  window.addEventListener('load', function() { loadSlide(1); });
+
   slides.forEach(function(_, i) {
     var dot = document.createElement('button');
     dot.className = 'hero-dot' + (i === 0 ? ' active' : '');
@@ -93,6 +107,8 @@
     slides[current].classList.remove('active');
     dotsWrap.children[current].classList.remove('active');
     current = idx;
+    loadSlide(current);
+    loadSlide((current + 1) % slides.length);
     slides[current].classList.add('active');
     dotsWrap.children[current].classList.add('active');
     if (labelEl) {
@@ -256,7 +272,7 @@
     });
     card.classList.remove('is-in');
     later(function() {
-      img.style.backgroundImage = "url('/hero/" + stop.img + ".jpg')";
+      img.style.backgroundImage = "url('/hero/" + stop.img + "-1080.webp')";
       count.textContent = (i + 1) + ' de ' + cities.length;
       name.textContent = n;
       place.textContent = stop.place || '';

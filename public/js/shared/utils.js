@@ -1,3 +1,20 @@
+// Librerías que solo se cargan cuando se usan
+const LIB_JSPDF   = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+const LIB_ROUTING = 'https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js';
+const _scriptLoads = {};
+function loadScriptOnce(src) {
+  if (!_scriptLoads[src]) {
+    _scriptLoads[src] = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = () => { delete _scriptLoads[src]; reject(new Error('No se pudo cargar ' + src)); };
+      document.head.appendChild(s);
+    });
+  }
+  return _scriptLoads[src];
+}
+
 // Promesa global resuelta cuando la sesión está verificada
 let _sessionReadyResolve;
 const sessionReady = new Promise(resolve => { _sessionReadyResolve = resolve; });

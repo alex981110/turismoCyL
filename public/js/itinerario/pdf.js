@@ -4,6 +4,12 @@
 // ================================================================
 
 function downloadItinerarioPDF() {
+  loadScriptOnce(LIB_JSPDF)
+    .then(_downloadItinerarioPDF)
+    .catch(() => showToast('No se pudo cargar el generador de PDF. Revisa la conexión.'));
+}
+
+function _downloadItinerarioPDF() {
 
   // ── Normalizar fuente de datos ───────────────────────────────
   // itinResult (dinámico): { province, dateStr, days:[{date:Date, dayName, places:[{name,cat,desc,time}]}] }

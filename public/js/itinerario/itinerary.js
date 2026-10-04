@@ -664,6 +664,13 @@ function itinReset() {
 
 function itinDownloadPDF() {
   if (!itinResult) return;
+  loadScriptOnce(LIB_JSPDF)
+    .then(_itinDownloadPDF)
+    .catch(() => showToast('No se pudo cargar el generador de PDF. Revisa la conexión.'));
+}
+
+function _itinDownloadPDF() {
+  if (!itinResult) return;
 
   const allPlaces = itinResult.days.flatMap((day, di) =>
     day.places.map(p => ({ ...p, dayIndex: di }))

@@ -35,7 +35,7 @@ async function initD3Map() {
 
   let geojson;
   try {
-    geojson = await d3.json('https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/spain-provinces.geojson');
+    geojson = await d3.json('/assets/data/cyl-provinces.geojson');
   } catch(e) {
     // Fallback: draw simplified shapes
     drawFallbackMap(svg, W, H);
@@ -127,7 +127,7 @@ let provinceBoundariesLayer = null;
 
 async function loadProvinceBoundaries() {
   try {
-    const geojson = await fetch('https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/spain-provinces.geojson').then(r => r.json());
+    const geojson = await fetch('/assets/data/cyl-provinces.geojson').then(r => r.json());
     const CYL = new Set(['León','Zamora','Salamanca','Valladolid','Palencia','Burgos','Ávila','Segovia','Soria','Avila']);
     const cylFeatures = geojson.features.filter(f => CYL.has(f.properties.name));
 

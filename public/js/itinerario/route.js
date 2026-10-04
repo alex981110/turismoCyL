@@ -13,6 +13,13 @@ function buildGoogleMapsUrl(dayGroups) {
 }
 
 function openRouteMap(places, title, days) {
+  // Routing Machine se descarga la primera vez; si falla, la ruta queda como línea recta
+  if (typeof L !== 'undefined' && !L.Routing && !openRouteMap._routingRequested) {
+    openRouteMap._routingRequested = true;
+    loadScriptOnce(LIB_ROUTING).catch(() => {}).then(() => openRouteMap(places, title, days));
+    return;
+  }
+
   // Normalizar: si no hay días, crear uno solo
   const dayGroups = days || [{ label: null, places }];
 

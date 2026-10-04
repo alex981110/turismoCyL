@@ -25,6 +25,7 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.error('❌ Error MongoDB:', err));
 
 // ── Middleware ───────────────────────────────────────────────
+app.use(require('compression')());   // gzip para HTML, CSS, JS y JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

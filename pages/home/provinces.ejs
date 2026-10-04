@@ -21,7 +21,10 @@
     <% provincias.forEach(function(p, i) { %>
     <a class="province-tile<%= i === 0 ? ' province-tile--feature' : '' %>" href="/mapa"
        onclick="event.preventDefault();goToProvince('<%= p.name %>')">
-      <img src="/hero/<%= p.img %>.jpg" alt="" loading="lazy" decoding="async">
+      <img src="/hero/<%= p.img %>-640.webp"
+           srcset="/hero/<%= p.img %>-640.webp 640w, /hero/<%= p.img %>-1080.webp 1080w"
+           sizes="<%= i === 0 ? '(max-width: 760px) 100vw, 50vw' : '(max-width: 760px) 50vw, 33vw' %>"
+           alt="" loading="lazy" decoding="async">
       <span class="province-tile-text">
         <strong><%= p.name %></strong>
         <span><%= p.place %></span>
