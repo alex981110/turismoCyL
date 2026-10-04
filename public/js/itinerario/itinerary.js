@@ -9,6 +9,14 @@ let itinResult   = null;
 const DAYS_ES  = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
 const DAY_EMOJIS = ['🌅','🌄','🌇'];
 
+registerActions({
+  'myitin-open':   d => openMyItinerary(d.id),
+  'myitin-delete': d => deleteMyItinerary(d.id),
+  'itin-toggle':   d => itinToggle(+d.id),
+  'itin-fav':      async d => { await Promise.resolve(toggleFavorite(d.id, d.name)); itinRenderResult(); },
+  'itin-route':    () => itinDrawRoute(),
+});
+
 function itinUpdateLock() {
   const overlay = document.getElementById('itinerarioLockedOverlay');
   if (!overlay) return;
@@ -27,110 +35,8 @@ function itinUpdateLock() {
   }
 }
 
-function itinLoadSaved() {
-  if (!appState.currentUser) {
-    itinRenderSavedList([]);
-    return;
-  }
-  fetch('/api/itineraries', { headers: authHeaders() })
-    .then(r => r.ok ? r.json() : [])
-    .then(items => {
-      appState.savedItineraries = items;
-      itinRenderSavedList(items);
-    })
-    .catch(() => itinRenderSavedList([]));
-}
-
 // ── Itinerarios guardados (máximo 3 por usuario) ────────────────────────
 const ITIN_MAX = 3;
-
-function itinRenderSavedList(items) {
-  const wrap = document.getElementById('itinSavedWrap');
-  if (!wrap) return;
-  if (!appState.currentUser) { wrap.style.display = 'none'; return; }
-  wrap.style.display = 'block';
-
-  if (!items || items.length === 0) {
-    wrap.innerHTML = `
-      <div style="padding:14px 16px;border:1px dashed rgba(184,92,56,0.25);border-radius:10px;color:var(--ink-muted);font-size:0.85rem;text-align:center;margin-bottom:24px;">
-        Aún no has guardado ningún itinerario. Genera uno y pulsa <strong>💾 Guardar</strong> para tenerlo siempre a mano.
-      </div>`;
-    return;
-  }
-
-  const cards = items.map(it => {
-    const dateLabel = it.dateStr
-      ? new Date(it.dateStr + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })
-      : '';
-    const created = new Date(it.createdAt).toLocaleDateString('es-ES', { day:'numeric', month:'short' });
-    return `
-      <div style="background:rgba(184,92,56,0.06);border:1px solid rgba(184,92,56,0.2);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
-        <div style="flex:1;min-width:200px;">
-          <div style="font-family:'Instrument Serif',serif;color:var(--terra);font-size:1rem;font-weight:700;">${it.title || it.province}</div>
-          <div style="font-size:0.78rem;color:var(--ink-muted);margin-top:3px;">
-            📍 ${it.province} · ${it.numDays} día${it.numDays!==1?'s':''} ${dateLabel ? ' · '+dateLabel : ''}
-            <span style="opacity:0.6;margin-left:6px;">· guardado ${created}</span>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;">
-          <button class="btn btn-outline" onclick="itinLoad('${it._id}')" style="font-size:0.78rem;padding:7px 14px;">📂 Abrir</button>
-          <button onclick="itinDelete('${it._id}')" title="Eliminar" style="background:transparent;border:1px solid rgba(255,80,80,0.4);color:#ff8080;border-radius:6px;cursor:pointer;padding:7px 10px;font-size:0.85rem;">🗑️</button>
-        </div>
-      </div>`;
-  }).join('');
-
-  const limitInfo = items.length >= ITIN_MAX
-    ? `<div style="font-size:0.75rem;color:var(--ink-muted);font-style:italic;margin-top:8px;">⚠️ Has alcanzado el máximo de ${ITIN_MAX} itinerarios. Elimina alguno para guardar otro.</div>`
-    : `<div style="font-size:0.75rem;color:var(--ink-muted);margin-top:8px;">Tienes ${items.length} de ${ITIN_MAX} itinerarios guardados.</div>`;
-
-  wrap.innerHTML = `
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
-      <span style="font-size:0.78rem;letter-spacing:0.12em;color:var(--terra);font-weight:600;">📚 MIS ITINERARIOS GUARDADOS</span>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:8px;">${cards}</div>
-    ${limitInfo}
-    <hr style="border:none;border-top:1px solid rgba(184,92,56,0.15);margin:24px 0 18px;">
-  `;
-}
-
-async function itinLoad(id) {
-  try {
-    const res = await fetch('/api/itineraries/' + id, { headers: authHeaders() });
-    if (!res.ok) { showToast('❌ No se pudo cargar el itinerario'); return; }
-    const item = await res.json();
-    itinResult = {
-      province: item.province,
-      dateStr:  item.dateStr,
-      numDays:  item.numDays,
-      days:     (item.days || []).map(d => ({ ...d, date: new Date(d.date) })),
-      warnings: item.warnings || [],
-      _savedId: item._id,
-      _title:   item.title
-    };
-    itinRenderResult();
-    showToast(`✦ Itinerario "${item.title}" cargado`);
-    document.getElementById('itin-step2').scrollIntoView({ behavior:'smooth', block:'start' });
-  } catch(e) {
-    showToast('❌ Error al cargar');
-  }
-}
-
-async function itinDelete(id) {
-  if (!confirm('¿Eliminar este itinerario guardado? Esta acción no se puede deshacer.')) return;
-  try {
-    const res = await fetch('/api/itineraries/' + id, { method:'DELETE', headers: authHeaders() });
-    if (!res.ok) { showToast('❌ No se pudo eliminar'); return; }
-    showToast('🗑️ Itinerario eliminado');
-    // Si el itinerario actual es el que se ha borrado, lo limpiamos
-    if (itinResult && itinResult._savedId === id) {
-      itinResult = null;
-      itinReset();
-    }
-    itinLoadSaved();  // refrescar lista
-  } catch(e) {
-    showToast('❌ Error al eliminar');
-  }
-}
 
 async function itinSaveCurrent() {
   if (!itinResult) { showToast('⚠️ No hay itinerario que guardar'); return; }
@@ -170,7 +76,6 @@ async function itinSaveCurrent() {
     itinResult._savedId = data._id;
     itinResult._title   = data.title;
     showToast('💾 Itinerario guardado');
-    itinLoadSaved();  // refrescar lista (legacy, no rompe nada)
     if (typeof loadMyItineraries === 'function') loadMyItineraries();  // refrescar vista dedicada
   } catch(e) {
     showToast('❌ Error al guardar');
@@ -231,15 +136,13 @@ function renderMyItineraries(items) {
 
     return `
       <div class="col-12 col-md-6 col-lg-4">
-        <div style="background:linear-gradient(180deg,rgba(184,92,56,0.06),rgba(184,92,56,0.02));border:1px solid rgba(184,92,56,0.25);border-radius:14px;padding:22px;height:100%;display:flex;flex-direction:column;gap:14px;transition:all 0.2s;cursor:default;"
-             onmouseover="this.style.borderColor='rgba(184,92,56,0.5)';this.style.transform='translateY(-2px)'"
-             onmouseout="this.style.borderColor='rgba(184,92,56,0.25)';this.style.transform=''">
+        <div class="myitin-card">
           <div>
             <div style="font-family:'Instrument Serif',serif;color:var(--terra);font-size:1.15rem;font-weight:700;line-height:1.3;margin-bottom:6px;">
-              ${it.title || provinces}
+              ${escHTML(it.title || provinces)}
             </div>
             <div style="font-size:0.78rem;color:var(--ink-muted);line-height:1.6;">
-              📍 ${provinces}<br>
+              📍 ${escHTML(provinces)}<br>
               📅 ${it.numDays} día${it.numDays!==1?'s':''}${dateLabel ? ' · '+dateLabel : ''}<br>
               📌 ${totalPlaces} lugar${totalPlaces!==1?'es':''}
             </div>
@@ -248,12 +151,10 @@ function renderMyItineraries(items) {
             Guardado el ${created}
           </div>
           <div style="display:flex;gap:8px;margin-top:auto;">
-            <button class="btn" onclick="openMyItinerary('${it._id}')" style="flex:1;font-size:0.8rem;padding:8px 14px;">
+            <button type="button" class="btn myitin-open-btn" data-action="myitin-open" data-id="${escHTML(it._id)}">
               📂 Abrir
             </button>
-            <button onclick="deleteMyItinerary('${it._id}')" title="Eliminar" style="background:transparent;border:1px solid rgba(255,80,80,0.4);color:#ff8080;border-radius:8px;cursor:pointer;padding:8px 12px;font-size:0.9rem;transition:all 0.2s;"
-                    onmouseover="this.style.background='rgba(255,80,80,0.12)'"
-                    onmouseout="this.style.background='transparent'">
+            <button type="button" class="itin-del-btn" data-action="myitin-delete" data-id="${escHTML(it._id)}" title="Eliminar">
               🗑️
             </button>
           </div>
@@ -388,12 +289,12 @@ function itinRenderDayColumns(query) {
       const disabled = !isOpen ? 'opacity:0.45;cursor:not-allowed;' : 'cursor:pointer;';
       const bg       = sel ? 'rgba(184,92,56,0.15)' : 'rgba(245,237,216,0.03)';
       const border   = sel ? 'var(--terra)' : isOpen ? 'rgba(184,92,56,0.2)' : 'rgba(184,92,56,0.1)';
-      const click    = isOpen ? `onclick="itinToggle(${m.id})"` : '';
+      const click    = isOpen ? `data-action="itin-toggle" data-id="${m.id}"` : '';
       return `<div class="itin-marker-chip" id="chip-${m.id}-d${d}" ${click}
         style="border:1px solid ${border};padding:9px 11px;transition:all 0.18s;background:${bg};display:flex;align-items:center;gap:8px;${disabled}">
         <span style="font-size:0.75rem;color:var(--terra);">${catEmoji(m.cat)}</span>
         <div style="flex:1;min-width:0;">
-          <div style="font-size:0.8rem;color:${isOpen?'var(--ink)':'var(--ink-muted)'};line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.name}</div>
+          <div style="font-size:0.8rem;color:${isOpen?'var(--ink)':'var(--ink-muted)'};line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHTML(m.name)}</div>
           ${!isOpen ? `<div style="font-size:0.68rem;color:#e57373;margin-top:2px;">No disponible este día</div>` : ''}
         </div>
       </div>`;
@@ -578,18 +479,15 @@ function itinRenderResult() {
           const mk = appState.markers.find(m => m.name === p.name && m.province === province)
                   || appState.markers.find(m => m.name === p.name);
           const favBtn = (mk && mk._id) ? `
-            <button onclick="event.stopPropagation();toggleFavorite('${mk._id}','${p.name.replace(/'/g,"\\'")}');itinRenderResult();"
-              title="${isFavorite(mk._id) ? 'Quitar de favoritos' : 'Añadir a favoritos'}"
-              style="position:absolute;top:6px;right:6px;background:transparent;border:none;cursor:pointer;font-size:1rem;padding:4px;line-height:1;opacity:0.8;transition:transform 0.15s;"
-              onmouseover="this.style.transform='scale(1.2)';this.style.opacity='1'"
-              onmouseout="this.style.transform='';this.style.opacity='0.8'">
+            <button type="button" class="itin-fav-btn" data-action="itin-fav" data-id="${escHTML(mk._id)}" data-name="${escHTML(p.name)}"
+              title="${isFavorite(mk._id) ? 'Quitar de favoritos' : 'Añadir a favoritos'}">
               ${favIcon(isFavorite(mk._id))}
             </button>` : '';
           return `
             <div class="timeline-item" style="position:relative;">
               <div class="time-badge">${p.time}</div>
               <div class="timeline-content" style="padding-right:30px;">
-                <h4>${p.name} ${p.rating ? `<span style="font-size:0.72rem;color:var(--terra);font-family:'DM Sans',sans-serif;">★ ${p.rating}</span>` : ''}</h4>
+                <h4>${escHTML(p.name)} ${p.rating ? `<span style="font-size:0.72rem;color:var(--terra);font-family:'DM Sans',sans-serif;">★ ${p.rating}</span>` : ''}</h4>
                 <p style="margin:2px 0 0;">${p.parsedHours ? `Abierto: ${p.parsedHours.text}` : p.desc || p.cat || ''}</p>
               </div>
               ${favBtn}
@@ -612,7 +510,7 @@ function itinRenderResult() {
       <div style="background:rgba(229,115,115,0.08);border:1px solid rgba(229,115,115,0.25);padding:14px 18px;">
         <div style="font-size:0.75rem;letter-spacing:0.1em;color:#e57373;margin-bottom:8px;">⚠ LUGARES NO DISPONIBLES ESTE DÍA</div>
         <div style="font-size:0.82rem;color:var(--ink-muted);">
-          ${warnings.map(w => `<span style="display:inline-block;margin:3px 8px 3px 0;"><b style="color:var(--ink);">${w.name}</b> — cerrado el ${w.day}</span>`).join('')}
+          ${warnings.map(w => `<span style="display:inline-block;margin:3px 8px 3px 0;"><b style="color:var(--ink);">${escHTML(w.name)}</b> — cerrado el ${w.day}</span>`).join('')}
         </div>
       </div>`;
   } else {
@@ -626,9 +524,8 @@ function itinRenderResult() {
   const routeWrap = document.getElementById('itinRouteWrap');
   if (routeWrap) {
     routeWrap.innerHTML = `
-      <button class="btn" onclick="itinDrawRoute()"
-        style="background:var(--terra);box-shadow:0 4px 16px rgba(184,92,56,0.35);margin-left:8px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;">
+      <button type="button" class="btn planner-route-btn" data-action="itin-route">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/>
         </svg>&nbsp;Ver ruta en mapa
       </button>`;

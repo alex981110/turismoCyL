@@ -596,3 +596,22 @@
 .plan-item-cat { font-size: 0.65rem; background: rgba(184,92,56,0.10); border: 1px solid rgba(42,33,24,0.16); color: var(--terra); padding: 1px 6px; margin-left: 6px; vertical-align: middle; }
 .plan-item .timeline-content .plan-item-desc { margin: 0; font-size: 0.82rem; color: var(--ink-muted); line-height: 1.45; }
 .planner-route-btn, .planner-route-btn:hover { margin-left: 8px; background: var(--terra); box-shadow: 0 4px 16px rgba(184,92,56,0.35); }
+
+/* ── Itinerarios (antes estilos en línea y onmouseover en itinerary.js) ── */
+.itin-del-btn {
+  background: transparent; border: 1px solid rgba(255,80,80,0.4); color: #ff8080;
+  border-radius: 8px; cursor: pointer; padding: 8px 12px; font-size: 0.9rem; transition: all 0.2s;
+}
+.itin-del-btn:hover { background: rgba(255,80,80,0.12); }
+.myitin-card {
+  background: linear-gradient(180deg, rgba(184,92,56,0.06), rgba(184,92,56,0.02));
+  border: 1px solid rgba(184,92,56,0.25); border-radius: 14px; padding: 22px; height: 100%;
+  display: flex; flex-direction: column; gap: 14px; transition: all 0.2s; cursor: default;
+}
+.myitin-card:hover { border-color: rgba(184,92,56,0.5); transform: translateY(-2px); }
+.btn.myitin-open-btn { flex: 1; font-size: 0.8rem; padding: 8px 14px; }
+.itin-fav-btn {
+  position: absolute; top: 6px; right: 6px; background: transparent; border: none; cursor: pointer;
+  font-size: 1rem; padding: 4px; line-height: 1; opacity: 0.8; transition: transform 0.15s;
+}
+.itin-fav-btn:hover { transform: scale(1.2); opacity: 1; }

@@ -97,7 +97,6 @@ function loginSuccess(user, token) {
 function updateAuthUI() {
   const u = appState.currentUser;
   if (typeof itinUpdateLock === 'function') itinUpdateLock();
-  if (typeof itinLoadSaved === 'function') itinLoadSaved();
   const area = document.getElementById('authArea');
   const areaMobile = document.getElementById('authAreaMobile');
   const adminLink = document.getElementById('adminNavLink');

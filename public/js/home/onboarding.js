@@ -746,7 +746,6 @@ async function savePlannerItinerary() {
     cp._savedId = data._id;
     showToast('💾 Itinerario guardado en "Mis Itinerarios"');
     // Refrescar listas si están visibles
-    if (typeof itinLoadSaved === 'function') itinLoadSaved();
     if (typeof loadMyItineraries === 'function') loadMyItineraries();
   } catch(e) {
     showToast('❌ Error al guardar');
