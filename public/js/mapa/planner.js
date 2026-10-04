@@ -150,17 +150,17 @@ function updateDayPlanner(province) {
                 <span style="font-size:0.65rem;background:rgba(184,92,56,0.10);border:1px solid rgba(42,33,24,0.16);color:var(--gold);padding:1px 6px;margin-left:6px;vertical-align:middle;">${icon} ${cat}</span>
               </h4>
               <p style="margin:0;font-size:0.82rem;color:var(--parch2);line-height:1.45;">${item.desc}</p>
-              <span style="font-size:0.7rem;color:var(--terra);margin-top:4px;display:inline-block;">📍 Ver en mapa →</span>
+              <span class="plan-map-link">${catIcon.default} Ver en el mapa</span>
             </div>
           </div>
         </div>
       </div>`;
   };
 
-  const renderDay = (items, dayLabel, emoji) => `
+  const renderDay = (items, dayLabel) => `
     <div class="col-12 col-md-6">
       <div class="day-plan-card h-100">
-        <h3>${emoji} ${dayLabel} en ${province}</h3>
+        <h3>${dayLabel} en ${province}</h3>
         <div class="timeline">
           ${items.length ? items.map(renderItem).join('') : '<p style="color:var(--parch2);font-style:italic;font-size:0.85rem;">Sin lugares disponibles.</p>'}
         </div>
@@ -168,9 +168,26 @@ function updateDayPlanner(province) {
     </div>
   `;
 
+  // Sin cuenta: el sábado completo y un adelanto del domingo con la invitación a registrarse
+  const renderGatedDay = (items, dayLabel) => `
+    <div class="col-12 col-md-6">
+      <div class="day-plan-card h-100 plan-gated">
+        <h3>${dayLabel} en ${province}</h3>
+        <div class="timeline plan-gated-preview" aria-hidden="true">${items.slice(0, 2).map(renderItem).join('')}</div>
+        <div class="plan-gate">
+          <p class="plan-gate-title">El domingo, con tu cuenta</p>
+          <p>Regístrate gratis para ver el segundo día, guardar el itinerario y descargarlo en PDF.</p>
+          <div class="plan-gate-actions">
+            <button type="button" class="btn" onclick="openModal('register')">Crear cuenta gratis</button>
+            <button type="button" class="plan-gate-login" onclick="openModal('login')">Ya tengo cuenta</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
   container.innerHTML =
-    renderDay(plan.dia1, 'Sábado', '🌅') +
-    renderDay(plan.dia2, 'Domingo', '🌄');
+    renderDay(plan.dia1, 'Sábado') +
+    (appState.currentUser || !plan.dia2.length ? renderDay(plan.dia2, 'Domingo') : renderGatedDay(plan.dia2, 'Domingo'));
 
   // Guardar para ruta y PDF
   appState.currentPlan = { province, dia1: plan.dia1, dia2: plan.dia2 };

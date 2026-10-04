@@ -131,12 +131,12 @@ function doLogout() {
   showToast(_t('toast.loggedOut', null, '✦ Sesión cerrada'));
 }
 
-function unlockFeatures() {
-  const overlay = document.getElementById('lockedOverlay');
-  if (overlay) overlay.style.display = 'none';
+// El planificador muestra u oculta el segundo día según la sesión: se vuelve a pintar
+function refreshPlannerForSession() {
+  if (appState.personalizedPlan || !appState.selectedProvince) return;
+  if (typeof updateDayPlanner === 'function' && document.getElementById('dayPlanContainer')) {
+    updateDayPlanner(appState.selectedProvince);
+  }
 }
-
-function lockFeatures() {
-  const overlay = document.getElementById('lockedOverlay');
-  if (overlay) overlay.style.display = 'flex';
-}
+function unlockFeatures() { refreshPlannerForSession(); }
+function lockFeatures() { refreshPlannerForSession(); }

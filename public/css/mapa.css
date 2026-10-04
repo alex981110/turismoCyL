@@ -613,3 +613,47 @@
 .cat-chip.is-active .cat-ico { color: var(--cream); }
 
 .lf-popup-pill .cat-ico, .mc-pill .cat-ico { font-size: 0.95em; }
+
+/* ── Planificador: adelanto del segundo día sin cuenta ── */
+.plan-map-link { display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; font-size: 0.72rem; color: var(--terra); }
+.plan-gated { position: relative; }
+.plan-gated-preview {
+  max-height: 150px;
+  overflow: hidden;
+  filter: blur(3px);
+  opacity: 0.55;
+  pointer-events: none;
+  user-select: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 30%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 30%, transparent 100%);
+}
+.plan-gate {
+  position: relative;
+  margin-top: -40px;
+  padding: 18px 18px 20px;
+  background: var(--cream);
+  border: 1px solid rgba(184,92,56,0.25);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 24px rgba(42,33,24,0.1);
+  text-align: left;
+}
+.plan-gate p { margin: 0 0 12px; font-size: 0.86rem; line-height: 1.55; color: var(--ink-soft); }
+.plan-gate .plan-gate-title { margin-bottom: 4px; font-family: 'Instrument Serif', serif; font-size: 1.3rem; line-height: 1.15; color: var(--ink); }
+.plan-gate-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.plan-gate-actions .btn { font-size: 0.82rem; padding: 9px 18px; }
+.plan-gate-login {
+  background: none; border: none; padding: 4px 0;
+  font-family: 'DM Sans', sans-serif; font-size: 0.84rem; font-weight: 600;
+  color: var(--terra); text-decoration: underline; text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+.plan-gate-login:hover { color: var(--terra-dark); }
+
+/* Las capas internas de Leaflet (z-index 400+) quedan contenidas en el mapa;
+   sin esto tapaban la barra lateral en móvil, que se superpone al mapa */
+.leaflet-container { isolation: isolate; }
+@media (max-width: 960px) {
+  /* En móvil la barra lateral se superpone al mapa: por encima de sus controles
+     flotantes (z-index 1000) y por debajo de la barra de navegación (1040) */
+  .map-shell .map-sidebar { z-index: 1030; }
+}
