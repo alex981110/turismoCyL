@@ -1,13 +1,6 @@
 // ============================================================
 // FICHA DEL LUGAR (drawer lateral)
 // ============================================================
-// Escapa texto de usuarios y de Google antes de insertarlo como HTML
-function escHTML(s) {
-  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
-// Para pasar un texto como argumento '...' dentro de un onclick
-function jsArg(s) { return escHTML(String(s == null ? '' : s).replace(/\\/g, '\\\\').replace(/'/g, "\\'")); }
-
 // Si la foto de cabecera falla, usa otra de Google si la hay y si no el icono de la categoría
 function placeHeroError(img) {
   const hero = img.parentElement;

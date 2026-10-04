@@ -1,3 +1,10 @@
+// Escapa texto de usuarios y de Google antes de insertarlo como HTML
+function escHTML(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+// Para pasar un texto como argumento '...' dentro de un onclick
+function jsArg(s) { return escHTML(String(s == null ? '' : s).replace(/\\/g, '\\\\').replace(/'/g, "\\'")); }
+
 // Librerías que solo se cargan cuando se usan
 const LIB_JSPDF   = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
 const LIB_ROUTING = 'https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js';
