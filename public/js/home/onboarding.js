@@ -149,6 +149,16 @@ function openOnboarding() {
   else renderObStep();
 }
 
+registerActions({
+  'ob-change-prefs': () => { obRanking = []; renderObStep(); document.getElementById('obBtnNext').onclick = obNext; },
+  'ob-reset':        () => obResetRanking(),
+  'ob-pref':         d => obTogglePref(d.pref),
+  'ob-days':         d => obSelectDays(+d.days),
+  'ob-province':     d => obToggleProvince(d.province),
+  'ob-register':     () => { closeOnboarding(); openModal('register'); },
+  'ob-open':         () => openOnboarding(),
+});
+
 function closeOnboarding() { document.getElementById('onboardingModal').style.display = 'none'; }
 
 function _obTag(icon, label) {
@@ -176,9 +186,7 @@ function renderObResumeStep() {
     <h3 style="font-family:'Instrument Serif',serif;color:${OB_C.text};font-size:1.15rem;margin:0 0 6px;font-weight:700;">¿Mantenemos tus gustos?</h3>
     <p style="color:${OB_C.textMuted};font-size:0.85rem;margin:0 0 18px;line-height:1.6;">Tienes ${obRanking.length} preferencias guardadas.</p>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;">${topLabels}</div>
-    <button onclick="obRanking=[];renderObStep();document.getElementById('obBtnNext').onclick=obNext;"
-      style="background:none;border:none;color:${OB_C.textMuted};font-size:0.82rem;cursor:pointer;text-decoration:underline;padding:0;transition:color 0.2s;"
-      onmouseover="this.style.color='${OB_C.accent}'" onmouseout="this.style.color='${OB_C.textMuted}'">
+    <button type="button" class="ob-link-btn" data-action="ob-change-prefs">
       Cambiar mis gustos
     </button>`;
 }
@@ -204,9 +212,7 @@ function renderObStep() {
       <div id="obRankingList" style="margin-top:20px;display:none;">
         <p style="font-size:0.72rem;color:${OB_C.textMuted};letter-spacing:0.09em;text-transform:uppercase;margin-bottom:8px;font-weight:600;">Tu orden:</p>
         <div id="obRankItems" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
-        <button onclick="obResetRanking()"
-          style="margin-top:10px;background:none;border:none;color:${OB_C.textMuted};font-size:0.78rem;cursor:pointer;text-decoration:underline;padding:0;transition:color 0.2s;"
-          onmouseover="this.style.color='${OB_C.accent}'" onmouseout="this.style.color='${OB_C.textMuted}'">
+        <button type="button" class="ob-link-btn ob-link-btn--sm" data-action="ob-reset">
           Reiniciar
         </button>
       </div>`;
@@ -232,29 +238,20 @@ function renderObStep() {
         ${dayOpts.map(opt => {
           const locked = !opt.free && !isLogged;
           const sel    = window._obSelectedDays === opt.d;
-          return `<button
+          return `<button type="button"
             id="obDay_${opt.d}"
-            onclick="${locked ? "closeOnboarding();openModal('register')" : `obSelectDays(${opt.d})`}"
-            style="padding:18px 6px;background:${sel ? OB_C.bgCardSel : OB_C.bgCard};
-                   border:2px solid ${sel ? OB_C.borderSel : OB_C.border};border-radius:12px;
-                   cursor:${locked ? 'default' : 'pointer'};transition:all 0.2s;position:relative;
-                   opacity:${locked ? '0.45' : '1'};box-shadow:${sel ? '0 4px 16px rgba(184,92,56,0.15)' : '0 1px 4px rgba(42,33,24,0.06)'};"
-            ${!locked ? `onmouseover="if(window._obSelectedDays!==${opt.d}){this.style.borderColor='${OB_C.accentLight}';this.style.background='rgba(212,132,92,0.05)'}"
-              onmouseout="if(window._obSelectedDays!==${opt.d}){this.style.borderColor='${OB_C.border}';this.style.background='${OB_C.bgCard}'}"` : ''}>
-            ${locked ? `<span style="position:absolute;top:5px;right:7px;opacity:0.6;"><svg class="cat-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>` : ''}
-            <div style="font-family:'Instrument Serif',serif;font-size:2rem;font-weight:900;color:${OB_C.accent};">${opt.d}</div>
-            <div style="font-size:0.7rem;color:${OB_C.textMuted};margin-top:3px;line-height:1.4;font-weight:500;">${opt.label}</div>
+            class="ob-day${sel ? ' is-selected' : ''}${locked ? ' is-locked' : ''}"
+            ${locked ? 'data-action="ob-register"' : `data-action="ob-days" data-days="${opt.d}"`}>
+            ${locked ? `<span class="ob-day-lock"><svg class="cat-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>` : ''}
+            <div class="ob-day-num">${opt.d}</div>
+            <div class="ob-day-label">${opt.label}</div>
           </button>`;
         }).join('')}
       </div>
       ${!isLogged ? `<div style="margin-top:16px;padding:12px 16px;background:${OB_C.lockBg};border:1px solid ${OB_C.lockBorder};border-radius:10px;font-size:0.8rem;color:${OB_C.textMuted};line-height:1.6;">
         <svg class="cat-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Itinerarios de 3-7 días disponibles con cuenta gratuita.
-        <a href="#" onclick="closeOnboarding();openModal('register');return false;" style="color:${OB_C.accent};margin-left:4px;font-weight:600;">Registrarse →</a>
+        <a href="#" class="ob-lock-link" data-action="ob-register">Registrarse →</a>
       </div>` : ''}`;
-    setTimeout(() => {
-      const b = document.getElementById('obDay_' + window._obSelectedDays);
-      if (b) { b.style.borderColor = OB_C.borderSel; b.style.background = OB_C.bgCardSel; }
-    }, 30);
 
   } else {
     // ── PASO 3: Selector de provincias (multi-selección) ──────────────────
@@ -272,14 +269,9 @@ function renderObStep() {
       </p>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
         ${provs.map(p => `
-          <button onclick="obToggleProvince('${p}')" id="obProv_${p.replace(/\s/g,'_')}"
-            style="padding:16px 8px;background:${OB_C.bgCard};border:1.5px solid ${OB_C.border};
-                   border-radius:12px;color:${OB_C.textSoft};font-family:'Instrument Serif',serif;font-size:0.85rem;
-                   cursor:pointer;transition:all 0.2s;box-shadow:0 1px 4px rgba(42,33,24,0.06);position:relative;"
-            onmouseover="if(!this.classList.contains('ob-prov-selected')){this.style.borderColor='${OB_C.accentLight}';this.style.background='rgba(212,132,92,0.06)';this.style.color='${OB_C.text}'}"
-            onmouseout="if(!this.classList.contains('ob-prov-selected')){this.style.borderColor='${OB_C.border}';this.style.background='${OB_C.bgCard}';this.style.color='${OB_C.textSoft}'}">
-            <span class="obProvBadge" id="obProvBadge_${p.replace(/\s/g,'_')}" style="display:none;position:absolute;top:6px;right:8px;background:${OB_C.badge};color:${OB_C.badgeText};width:20px;height:20px;border-radius:50%;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;box-shadow:0 2px 6px rgba(184,92,56,0.4);"></span>
-            <div style="font-size:1.2rem;margin-bottom:4px;">${provIcons[p] || '🗺️'}</div>
+          <button type="button" class="ob-prov" data-action="ob-province" data-province="${p}" id="obProv_${p.replace(/\s/g,'_')}">
+            <span class="ob-prov-badge" id="obProvBadge_${p.replace(/\s/g,'_')}"></span>
+            <div class="ob-prov-icon">${provIcons[p] || '🗺️'}</div>
             ${p}
           </button>`).join('')}
       </div>
@@ -298,16 +290,10 @@ function renderObPrefGrid() {
   if (!grid) return;
   grid.innerHTML = OB_PREFS.map(pref => {
     const rank = obRanking.indexOf(pref.id); const selected = rank !== -1;
-    return `<button onclick="obTogglePref('${pref.id}')" id="obCard_${pref.id}"
-      style="padding:16px 14px;background:${selected ? OB_C.bgCardSel : OB_C.bgCard};
-             border:1.5px solid ${selected ? OB_C.borderSel : OB_C.border};
-             border-radius:12px;text-align:left;cursor:pointer;position:relative;transition:all 0.2s;
-             box-shadow:${selected ? '0 4px 16px rgba(184,92,56,0.15)' : '0 1px 4px rgba(42,33,24,0.05)'};"
-      onmouseover="if(!${selected}){this.style.borderColor='${OB_C.accentLight}';this.style.background='rgba(212,132,92,0.04)'}"
-      onmouseout="if(!${selected}){this.style.borderColor='${OB_C.border}';this.style.background='${OB_C.bgCard}'}">
-      ${selected ? `<span style="position:absolute;top:8px;right:10px;background:${OB_C.badge};color:${OB_C.badgeText};width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;box-shadow:0 2px 6px rgba(184,92,56,0.4);">${rank+1}</span>` : ''}
-      <div style="font-size:1.6rem;margin-bottom:6px;color:var(--terra);line-height:1;">${pref.icon}</div>
-      <div style="font-size:0.82rem;color:${selected ? OB_C.accent : OB_C.textSoft};font-weight:${selected ? '700' : '500'};line-height:1.3;transition:color 0.2s;">${pref.label}</div>
+    return `<button type="button" class="ob-card${selected ? ' is-selected' : ''}" data-action="ob-pref" data-pref="${pref.id}" id="obCard_${pref.id}">
+      ${selected ? `<span class="ob-card-rank">${rank+1}</span>` : ''}
+      <div class="ob-card-icon">${pref.icon}</div>
+      <div class="ob-card-label">${pref.label}</div>
     </button>`;
   }).join('');
 
@@ -333,25 +319,8 @@ function _obPaintProvince(name, selected) {
   const btn   = document.getElementById('obProv_' + name.replace(/\s/g, '_'));
   const badge = document.getElementById('obProvBadge_' + name.replace(/\s/g, '_'));
   if (!btn) return;
-  if (selected) {
-    btn.classList.add('ob-prov-selected');
-    btn.style.borderColor = OB_C.borderSel;
-    btn.style.background  = OB_C.bgCardSel;
-    btn.style.color       = OB_C.accent;
-    btn.style.boxShadow   = '0 4px 16px rgba(184,92,56,0.15)';
-    if (badge) {
-      const idx = window._obSelectedProvinces.indexOf(name);
-      badge.textContent = (idx + 1).toString();
-      badge.style.display = 'flex';
-    }
-  } else {
-    btn.classList.remove('ob-prov-selected');
-    btn.style.borderColor = OB_C.border;
-    btn.style.background  = OB_C.bgCard;
-    btn.style.color       = OB_C.textSoft;
-    btn.style.boxShadow   = '0 1px 4px rgba(42,33,24,0.06)';
-    if (badge) badge.style.display = 'none';
-  }
+  btn.classList.toggle('is-selected', selected);
+  if (badge && selected) badge.textContent = (window._obSelectedProvinces.indexOf(name) + 1).toString();
 }
 
 function _obUpdateProvSummary() {
@@ -408,18 +377,8 @@ function obPrev() { if (obStep > 1) { obStep--; renderObStep(); } }
 function obSelectDays(d) {
   window._obSelectedDays = d;
   document.querySelectorAll('[id^="obDay_"]').forEach(btn => {
-    btn.classList.remove('ob-day-selected');
-    btn.style.borderColor = OB_C.border;
-    btn.style.background  = OB_C.bgCard;
-    btn.style.boxShadow   = '0 1px 4px rgba(42,33,24,0.06)';
+    btn.classList.toggle('is-selected', btn.id === 'obDay_' + d);
   });
-  const btn = document.getElementById('obDay_' + d);
-  if (btn) {
-    btn.classList.add('ob-day-selected');
-    btn.style.borderColor = OB_C.borderSel;
-    btn.style.background  = OB_C.bgCardSel;
-    btn.style.boxShadow   = '0 4px 16px rgba(184,92,56,0.15)';
-  }
 }
 
 function obNext() {
@@ -585,7 +544,7 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
   let badge = document.getElementById('personalizedBadge');
   if (!badge) { badge = document.createElement('div'); badge.id = 'personalizedBadge'; badge.style.cssText = 'grid-column:1/-1;'; container.parentNode.insertBefore(badge, container); }
   const topPrefs = ranking.slice(0, 3).map(id => { const p = OB_PREFS.find(x => x.id === id); return p ? p.icon + ' ' + p.label : ''; }).filter(Boolean);
-  badge.innerHTML = `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 18px;background:rgba(42,33,24,0.04);border-bottom:1px solid rgba(184,92,56,0.08);"><span style="font-size:0.78rem;color:var(--ink-muted);">✨ Personalizado para:</span><span style="font-size:0.82rem;color:var(--terra);font-weight:600;">${topPrefs.join(' · ')}</span><button onclick="openOnboarding()" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(184,92,56,0.08);border:1px solid rgba(184,92,56,0.35);border-radius:6px;color:var(--terra);cursor:pointer;font-size:0.75rem;font-weight:600;transition:all 0.2s;" onmouseover="this.style.background='rgba(42,33,24,0.14)'" onmouseout="this.style.background='rgba(184,92,56,0.08)'">🎯 Cambiar gustos</button></div>`;
+  badge.innerHTML = `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 18px;background:rgba(42,33,24,0.04);border-bottom:1px solid rgba(184,92,56,0.08);"><span style="font-size:0.78rem;color:var(--ink-muted);">✨ Personalizado para:</span><span style="font-size:0.82rem;color:var(--terra);font-weight:600;">${topPrefs.join(' · ')}</span><button type="button" class="plan-prefs-btn" data-action="ob-open">🎯 Cambiar gustos</button></div>`;
   const _allScores = [...dia1, ...dia2].map(i => scoreItem(i, ranking));
   const _maxScore = Math.max(..._allScores, 1);
   const renderItem = (item) => {
@@ -610,19 +569,19 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
       return w.length ? `<div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:3px;">${w.map(x => `<span style="font-size:0.68rem;background:rgba(42,33,24,0.06);border:1px solid rgba(42,33,24,0.15);border-radius:20px;color:var(--ink-soft);padding:1px 6px;">🕐 ${x}</span>`).join('')}</div>` : '';
     })();
     const lat = mk?.lat || 0; const lng = mk?.lng || 0;
-    return `<div class="timeline-item has-marker" onclick="focusMarkerFromPlanner(${lat},${lng})" style="cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='rgba(184,92,56,0.05)'" onmouseout="this.style.background=''">
+    return `<div class="timeline-item has-marker plan-item" data-action="focus" data-lat="${lat}" data-lng="${lng}">
       ${isLogged ? `<div class="time-badge">${item.time}</div>` : `<div class="time-badge" style="opacity:0.3;filter:blur(3px);user-select:none;font-size:0.68rem;">--:--</div>`}
       <div class="timeline-content" style="flex:1;">
         <div style="display:flex;gap:8px;align-items:flex-start;">
           ${photo ? `<div style="width:44px;height:44px;flex-shrink:0;overflow:hidden;border-radius:6px;border:1px solid rgba(42,33,24,0.14);"><img src="${photo}" alt="" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentNode.style.display='none'"></div>` : ''}
           <div style="flex:1;min-width:0;">
-            <h4 style="margin:0 0 2px;font-size:0.85rem;color:var(--ink);line-height:1.3;">${item.place}
+            <h4 style="margin:0 0 2px;font-size:0.85rem;color:var(--ink);line-height:1.3;">${escHTML(item.place)}
               <span style="font-size:0.62rem;background:rgba(184,92,56,0.08);border:1px solid rgba(42,33,24,0.14);border-radius:4px;color:var(--terra);padding:1px 5px;margin-left:4px;vertical-align:middle;">${icon} ${cat}</span>
               ${matchBadge}${lowNote}
             </h4>
             <p style="margin:0;font-size:0.78rem;color:var(--ink-soft);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${item.desc}</p>
             ${sched}
-            ${!isLogged ? `<span style="font-size:0.68rem;color:var(--ink-muted);margin-top:3px;display:inline-block;">🔒 <a href="#" onclick="openModal('register');return false;" style="color:var(--terra);text-decoration:none;font-weight:600;">Regístrate</a> para ver horarios</span>` : ''}
+            ${!isLogged ? `<span style="font-size:0.68rem;color:var(--ink-muted);margin-top:3px;display:inline-block;">🔒 <a href="#" class="plan-register-link" data-action="open-modal" data-modal="register">Regístrate</a> para ver horarios</span>` : ''}
             <span style="font-size:0.68rem;color:var(--terra);margin-top:2px;display:inline-block;">🗺️ Ver en mapa</span>
           </div>
         </div>

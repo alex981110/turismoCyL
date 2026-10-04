@@ -1070,3 +1070,60 @@ select.form-control-cyl option { background-color: var(--cream) !important; colo
 /* ── Zona de sesión de la barra (antes estilos en línea en auth.js) ── */
 .user-status-name { color: var(--ink-muted); font-size: 0.85rem; }
 .user-status .btn-logout { font-size: 0.75rem; padding: 7px 16px; }
+
+/* ── «Mis gustos» (antes estilos en línea y onmouseover en onboarding.js) ── */
+.ob-link-btn {
+  background: none; border: none; color: #8C7E6E; font-size: 0.82rem; cursor: pointer;
+  text-decoration: underline; padding: 0; transition: color 0.2s;
+}
+.ob-link-btn:hover { color: #B85C38; }
+.ob-link-btn--sm { margin-top: 10px; font-size: 0.78rem; }
+
+.ob-card {
+  padding: 16px 14px; background: #FFFFFF; border: 1.5px solid rgba(184,92,56,0.18);
+  border-radius: 12px; text-align: left; cursor: pointer; position: relative; transition: all 0.2s;
+  box-shadow: 0 1px 4px rgba(42,33,24,0.05);
+}
+.ob-card.is-selected { background: rgba(184,92,56,0.07); border-color: #B85C38; box-shadow: 0 4px 16px rgba(184,92,56,0.15); }
+.ob-card:not(.is-selected):hover { border-color: #D4845C; background: rgba(212,132,92,0.04); }
+.ob-card-rank, .ob-prov-badge {
+  position: absolute; background: #B85C38; color: #FFFFFF; width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700;
+  box-shadow: 0 2px 6px rgba(184,92,56,0.4);
+}
+.ob-card-rank { top: 8px; right: 10px; }
+.ob-card-icon { font-size: 1.6rem; margin-bottom: 6px; color: var(--terra); line-height: 1; }
+.ob-card-label { font-size: 0.82rem; color: #5A4D3E; font-weight: 500; line-height: 1.3; transition: color 0.2s; }
+.ob-card.is-selected .ob-card-label { color: #B85C38; font-weight: 700; }
+
+.ob-day {
+  padding: 18px 6px; background: #FFFFFF; border: 2px solid rgba(184,92,56,0.18); border-radius: 12px;
+  cursor: pointer; transition: all 0.2s; position: relative; opacity: 1; box-shadow: 0 1px 4px rgba(42,33,24,0.06);
+}
+.ob-day.is-selected { background: rgba(184,92,56,0.07); border-color: #B85C38; box-shadow: 0 4px 16px rgba(184,92,56,0.15); }
+.ob-day.is-locked { cursor: default; opacity: 0.45; }
+.ob-day:not(.is-selected):not(.is-locked):hover { border-color: #D4845C; background: rgba(212,132,92,0.05); }
+.ob-day-lock { position: absolute; top: 5px; right: 7px; opacity: 0.6; }
+.ob-day-num { font-family: 'Instrument Serif', serif; font-size: 2rem; font-weight: 900; color: #B85C38; }
+.ob-day-label { font-size: 0.7rem; color: #8C7E6E; margin-top: 3px; line-height: 1.4; font-weight: 500; }
+.ob-lock-link { color: #B85C38; margin-left: 4px; font-weight: 600; }
+
+.ob-prov {
+  padding: 16px 8px; background: #FFFFFF; border: 1.5px solid rgba(184,92,56,0.18); border-radius: 12px;
+  color: #5A4D3E; font-family: 'Instrument Serif', serif; font-size: 0.85rem; cursor: pointer;
+  transition: all 0.2s; box-shadow: 0 1px 4px rgba(42,33,24,0.06); position: relative;
+}
+.ob-prov.is-selected { border-color: #B85C38; background: rgba(184,92,56,0.07); color: #B85C38; box-shadow: 0 4px 16px rgba(184,92,56,0.15); }
+.ob-prov:not(.is-selected):hover { border-color: #D4845C; background: rgba(212,132,92,0.06); color: #2A2118; }
+.ob-prov-badge { display: none; top: 6px; right: 8px; }
+.ob-prov.is-selected .ob-prov-badge { display: flex; }
+.ob-prov-icon { font-size: 1.2rem; margin-bottom: 4px; }
+
+/* Plan personalizado en la barra lateral */
+.plan-prefs-btn {
+  margin-left: auto; display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px;
+  background: rgba(184,92,56,0.08); border: 1px solid rgba(184,92,56,0.35); border-radius: 6px;
+  color: var(--terra); cursor: pointer; font-size: 0.75rem; font-weight: 600; transition: all 0.2s;
+}
+.plan-prefs-btn:hover { background: rgba(42,33,24,0.14); }
+.plan-register-link { color: var(--terra); text-decoration: none; font-weight: 600; }
