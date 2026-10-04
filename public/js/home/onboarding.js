@@ -393,136 +393,28 @@ function obNext() {
     obSavePrefs();
     closeOnboarding();
     const days = window._obSelectedDays || 2;
-    if (provList.length === 1) {
-      launchPersonalizedPlan(provList[0], obRanking, days);
-    } else {
-      launchMultiProvincePlan(provList, obRanking, days);
-    }
+    launchTripPlan(provList, obRanking, days);
   }
 }
 
-function scoreItem(item, ranking) {
-  const text = ((item.place || '') + ' ' + (item.desc || '')).toLowerCase();
-  let score = 0;
-  ranking.forEach((prefId, rankPos) => {
-    const weight = ranking.length - rankPos;
-    (OB_KEYWORDS[prefId] || []).forEach(kw => { if (text.includes(kw)) score += weight * 2; });
-    ((OB_PREFS.find(p => p.id === prefId) || {}).cats || []).forEach(cat => {
-      if ((item.marker?.cat || '') === cat) score += weight * 3;
-    });
-  });
-  return score;
-}
-
-function launchPersonalizedPlan(province, ranking, numDays) {
-  numDays = numDays || 2;
-  // Usar itinerarios enriquecidos con extras temáticos si están disponibles
-  const base = (typeof buildEnrichedDayPlans === 'function')
-    ? buildEnrichedDayPlans(province, ranking)
-    : dayPlans[province];
-  if (!base) { showToast('⚠️ No hay itinerario para ' + province); return; }
-  const isLogged = !!appState.currentUser;
-  const enrich = item => {
-    let marker = appState.markers.find(m => m.name === item.place)
-              || appState.markers.find(m => m.name.toLowerCase() === (item.place || '').toLowerCase());
-    const photo = item.photo || (marker && marker.photo) || null;
-    if (marker) { marker = { ...marker, photo }; } else { marker = { name: item.place, photo, cat: null, lat: 0, lng: 0 }; }
-    return { ...item, marker };
-  };
-
-  const EMOJIS     = ['🌅','🌄','🌇','🌆','🌃','🌉','🌁'];
-  const DAY_LABELS = ['Sábado','Domingo','Día 3','Día 4','Día 5','Día 6','Día 7'];
-  const allDays = [];
-  for (let d = 1; d <= numDays; d++) {
-    const key = 'dia' + d;
-    if (base[key] && base[key].length > 0) {
-      allDays.push({
-        key, label: DAY_LABELS[d - 1] || ('Día ' + d),
-        emoji: EMOJIS[d - 1] || '📅',
-        items: base[key].map(enrich)
-      });
-    }
-  }
-
-  const dia1 = allDays[0]?.items || (base.dia1 || []).map(enrich);
-  const dia2 = allDays[1]?.items || (base.dia2 || []).map(enrich);
-  appState.currentPlan = { province, dia1, dia2, allDays, numDays };
-  appState.personalizedPlan = { ranking, isLogged };
-  appState.selectedProvince = province;
-  const plannerProv = document.getElementById('plannerProvince');
-  if (plannerProv) plannerProv.textContent = province;
-  selectProvince(province, true);
-  navigateTo('/mapa');
-  setTimeout(() => {
-    const tabsWrap = document.getElementById('mapTabsWrap');
-    if (tabsWrap) tabsWrap.style.display = 'block';
-    const emptyState = document.getElementById('mapEmptyState');
-    if (emptyState) emptyState.style.display = 'none';
-    switchMapTab('planificador');
-    setTimeout(() => renderPersonalizedDayPlanner(province, dia1, dia2, ranking, isLogged, appState.currentPlan.allDays), 100);
-  }, 300);
-}
-
-// Itinerario multi-provincia: reparte los días entre las provincias elegidas
-function launchMultiProvincePlan(provincesList, ranking, numDays) {
+// Monta el plan con plan-builder.js y lo muestra en la pestaña «Itinerario» del mapa
+function launchTripPlan(provincesList, ranking, numDays) {
   numDays = numDays || 2;
   const isLogged = !!appState.currentUser;
-  const split = _obSplitDays(numDays, provincesList.length);
+  const allDays = buildTripPlan(provincesList, ranking, numDays);
+  if (!allDays.length) { showToast('⚠️ No se pudo generar el itinerario'); return; }
 
-  const enrich = item => {
-    let marker = appState.markers.find(m => m.name === item.place)
-              || appState.markers.find(m => m.name.toLowerCase() === (item.place || '').toLowerCase());
-    const photo = item.photo || (marker && marker.photo) || null;
-    if (marker) { marker = { ...marker, photo }; } else { marker = { name: item.place, photo, cat: null, lat: 0, lng: 0 }; }
-    return { ...item, marker };
-  };
-
-  const EMOJIS = ['🌅','🌄','🌇','🌆','🌃','🌉','🌁'];
-  const allDays = [];
-  let dayIdx = 0;
-
-  // Para cada provincia, coge los primeros N días de su itinerario base/enriquecido
-  for (let pi = 0; pi < provincesList.length; pi++) {
-    const prov     = provincesList[pi];
-    const daysHere = split[pi];
-    const base = (typeof buildEnrichedDayPlans === 'function')
-      ? buildEnrichedDayPlans(prov, ranking)
-      : dayPlans[prov];
-    if (!base) continue;
-    for (let d = 1; d <= daysHere; d++) {
-      const key = 'dia' + d;
-      if (base[key] && base[key].length > 0) {
-        allDays.push({
-          key: `${prov}_dia${d}`,
-          label: `${prov} · Día ${d}`,
-          emoji: EMOJIS[dayIdx] || '📅',
-          province: prov,
-          items: base[key].map(enrich)
-        });
-        dayIdx++;
-      }
-    }
-  }
-
-  if (!allDays.length) { showToast('⚠️ No se pudo generar itinerario'); return; }
-
+  const mainProv = provincesList[0];
+  const multi = provincesList.length > 1;
   const dia1 = allDays[0]?.items || [];
   const dia2 = allDays[1]?.items || [];
-
-  // Provincia "principal" para el header del planificador (la primera elegida)
-  const mainProv = provincesList[0];
-  appState.currentPlan = {
-    province: mainProv,
-    provincesList,
-    dia1, dia2, allDays, numDays,
-    isMultiProvince: true
-  };
+  appState.currentPlan = { province: mainProv, dia1, dia2, allDays, numDays, ...(multi ? { provincesList, isMultiProvince: true } : {}) };
   appState.personalizedPlan = { ranking, isLogged };
   appState.selectedProvince = mainProv;
 
+  const title = provincesList.join(' · ');
   const plannerProv = document.getElementById('plannerProvince');
-  if (plannerProv) plannerProv.textContent = provincesList.join(' · ');
-
+  if (plannerProv) plannerProv.textContent = title;
   selectProvince(mainProv, true);
   navigateTo('/mapa');
   setTimeout(() => {
@@ -531,7 +423,7 @@ function launchMultiProvincePlan(provincesList, ranking, numDays) {
     const emptyState = document.getElementById('mapEmptyState');
     if (emptyState) emptyState.style.display = 'none';
     switchMapTab('planificador');
-    setTimeout(() => renderPersonalizedDayPlanner(provincesList.join(' · '), dia1, dia2, ranking, isLogged, allDays), 100);
+    setTimeout(() => renderPersonalizedDayPlanner(title, dia1, dia2, ranking, isLogged, allDays), 100);
   }, 300);
 }
 
@@ -545,14 +437,14 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
   if (!badge) { badge = document.createElement('div'); badge.id = 'personalizedBadge'; badge.style.cssText = 'grid-column:1/-1;'; container.parentNode.insertBefore(badge, container); }
   const topPrefs = ranking.slice(0, 3).map(id => { const p = OB_PREFS.find(x => x.id === id); return p ? p.icon + ' ' + p.label : ''; }).filter(Boolean);
   badge.innerHTML = `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 18px;background:rgba(42,33,24,0.04);border-bottom:1px solid rgba(184,92,56,0.08);"><span style="font-size:0.78rem;color:var(--ink-muted);">✨ Personalizado para:</span><span style="font-size:0.82rem;color:var(--terra);font-weight:600;">${topPrefs.join(' · ')}</span><button type="button" class="plan-prefs-btn" data-action="ob-open">🎯 Cambiar gustos</button></div>`;
-  const _allScores = [...dia1, ...dia2].map(i => scoreItem(i, ranking));
+  const _allScores = (allDays && allDays.length ? allDays.flatMap(d => d.items) : [...dia1, ...dia2]).map(i => planAffinity(i, ranking));
   const _maxScore = Math.max(..._allScores, 1);
   const renderItem = (item) => {
     const mk = item.marker;
     const photo = item.photo || mk?.photo || '';
     const cat = mk ? (catLabel[mk.cat] || mk.cat) : '';
     const icon = mk ? (catIcon[mk.cat] || catIcon.default) : catIcon.default;
-    const score = scoreItem(item, ranking);
+    const score = planAffinity(item, ranking);
     const matchPct = _maxScore > 0 ? score / _maxScore : 0;
     const matchBadge = matchPct >= 0.75
       ? `<span style="font-size:0.62rem;background:rgba(184,92,56,0.12);border:1px solid rgba(184,92,56,0.4);border-radius:20px;color:var(--terra-dark);padding:1px 6px;margin-left:5px;vertical-align:middle;">★ Para ti</span>`

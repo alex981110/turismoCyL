@@ -559,59 +559,6 @@ const dayPlansExtra = {
   },
 };
 
-// Función helper: combina dayPlans base + extras temáticos según preferencias
-function buildEnrichedDayPlans(province, ranking) {
-  const base   = dayPlans[province];
-  const extras = dayPlansExtra[province];
-  if (!base || !extras) return base;
-
-  // Mapa de preferencia → categoria extra
-  const prefToCat = {
-    gastro:    extras.gastro    || [],
-    naturaleza:extras.naturaleza|| [],
-    pueblos:   extras.pueblos   || [],
-    teatro:    extras.teatro    || [],
-    religioso: extras.pueblos   || [],   // fallback a pueblos
-    museos:    [],
-    monumentos:[],
-  };
-
-  // Reúne todos los extras relevantes ordenados por peso del ranking
-  const relevantExtras = [];
-  ranking.forEach(prefId => {
-    const items = prefToCat[prefId] || [];
-    items.forEach(item => {
-      if (!relevantExtras.find(e => e.place === item.place)) {
-        relevantExtras.push(item);
-      }
-    });
-  });
-
-  if (!relevantExtras.length) return base;
-
-  // Intercala extras en los días, distribuyendo equitativamente
-  const enriched = {};
-  let eIdx = 0;
-  for (let d = 1; d <= 7; d++) {
-    const key = 'dia' + d;
-    if (!base[key]) continue;
-    const dayItems = [...base[key]];
-    // Insertar hasta 1 extra por día (para no saturar)
-    if (eIdx < relevantExtras.length) {
-      const extra = { ...relevantExtras[eIdx++] };
-      // Asignar hora al final del día
-      const lastTime = dayItems[dayItems.length - 1]?.time || '18:00';
-      const [h, m] = lastTime.split(':').map(Number);
-      const newH = Math.min(h + 2, 21);
-      extra.time = `${String(newH).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
-      dayItems.push(extra);
-    }
-    enriched[key] = dayItems;
-  }
-
-  return enriched;
-}
-
 const provinces = ['León','Zamora','Salamanca','Valladolid','Palencia','Burgos','Ávila','Segovia','Soria'];
 const provinceCenters = {
   'León': [42.60, -5.57],
