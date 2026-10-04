@@ -4,7 +4,6 @@ const PLACE_COORDS = {
   "Restaurante El Fogón de Santa Teresa": [40.65533, -4.69819],
   "Mercado Grande (tapas)": [40.65438, -4.69627],
   "Bodega El Lagar de Gredos": [40.343, -5.175],
-  "Ruta del Calvitero (Béjar)": [40.279, -5.735],
   "Laguna Grande de Gredos": [40.253, -5.275],
   "Reserva Natural del Valle de Iruelas": [40.385, -4.565],
   "Madrigal de las Altas Torres": [41.08953, -4.99949],
@@ -15,6 +14,7 @@ const PLACE_COORDS = {
   "Mercado del Carrillo (Burgos)": [42.3433, -3.7008],
   "Bodegas Peñalba López (Aranda)": [41.67, -3.689],
   "Barrio de San Juan (tapeo)": [42.35597, -4.23392],
+  "Sabinares del Arlanza": [41.86, -3.17],
   "Parque Natural Hoces del Alto Ebro": [42.834, -3.792],
   "Laguna de Sotillo (Lagunas de Neila)": [42.04345, -3.03979],
   "Cañón del Río Arlanza": [41.99, -3.56],
@@ -22,22 +22,17 @@ const PLACE_COORDS = {
   "Lerma": [42.02623, -3.75593],
   "Frías": [42.74792, -3.29613],
   "Teatro Principal de Burgos": [42.34056, -3.7002],
-  "Festival de Música Medieval de Burgo Osma": [41.58687, -3.06743],
   "Barrio Húmedo de León": [42.59581, -5.56787],
-  "D.O. Bierzo - Bodega Palacios Remondo": [42.69526, -6.79307],
+  "Enoturismo D.O. Bierzo (Villafranca del Bierzo)": [42.606, -6.811],
   "Barrio Romántico de León (tapeo)": [42.49993, -5.41703],
   "Picos de Europa (Posada de Valdeón)": [43.15147, -4.91896],
   "Hoces de Vegacervera": [42.90352, -5.53975],
-  "Lago de Sanabria (desde León)": [42.12173, -6.71616],
   "Castrillo de los Polvazares": [42.46464, -6.12797],
   "Molinaseca": [42.52181, -6.44612],
-  "Teatro de San Francisco (León)": [42.5987, -5.5671],
-  "Restaurante Casa Lucio (Palencia)": [42.0097, -4.5288],
-  "Bodega Valdecuevas (Cigales)": [41.757, -4.698],
   "Quesos de Cervera de Pisuerga": [42.86355, -4.49722],
+  "Laguna de la Nava (Fuentes de Nava)": [42.087, -4.73],
   "Parque Natural Fuentes Carrionas": [42.98, -4.55],
   "Canal de Castilla (ruta en bici)": [42.26353, -4.39944],
-  "Hoces de Valverde de Campos": [41.975, -5.055],
   "Aguilar de Campoo": [42.79563, -4.30365],
   "Cervera de Pisuerga": [42.86355, -4.49722],
   "Astudillo": [42.19272, -4.29387],
@@ -46,7 +41,7 @@ const PLACE_COORDS = {
   "Mercado Central de Salamanca": [40.96463, -5.6631],
   "Bodega Hacienda Zorita (Valverdón)": [41.04, -5.775],
   "Plaza Mayor (tapeo nocturno)": [40.96503, -5.66406],
-  "Arribes del Duero (Fermoselle)": [41.31741, -6.39492],
+  "Arribes del Duero (Aldeadávila de la Ribera)": [41.218, -6.618],
   "Sierra de Francia (Las Batuecas)": [40.46059, -6.14523],
   "Laguna de Béjar": [40.41402, -5.81582],
   "Miranda del Castañar": [40.48438, -5.99881],
@@ -68,16 +63,15 @@ const PLACE_COORDS = {
   "Calle del Collado (tapeo soria)": [41.76414, -2.46627],
   "Cañón del Río Lobos": [41.78412, -3.09209],
   "Laguna Negra y Circos de Urbión": [41.99911, -2.84732],
-  "Sabinares del Arlanza": [41.86, -3.17],
   "El Burgo de Osma": [41.58687, -3.06743],
   "Medinaceli": [41.16311, -2.43522],
   "Berlanga de Duero": [41.46619, -2.86088],
-  "Teatro Coliseum (Soria)": [41.764, -2.4688],
+  "Palacio de la Audiencia (Soria)": [41.7636, -2.4649],
   "Festival Internacional de Música de Soria": [41.60125, -2.72194],
+  "Enoturismo D.O. Cigales (Cigales)": [41.757, -4.698],
   "Mercado del Val (Valladolid)": [41.65366, -4.72849],
   "Museo del Vino Castilla (Peñafiel)": [41.59638, -4.11403],
   "Zona Francisco Suárez (tapeo)": [41.64341, -4.73741],
-  "Laguna de la Nava (Fuentes de Nava)": [42.087, -4.73],
   "Montes Torozos": [41.75234, -5.09571],
   "Riberas del Duero (Tudela)": [41.58375, -4.57965],
   "Urueña": [41.72717, -5.20356],
@@ -89,6 +83,7 @@ const PLACE_COORDS = {
   "Bodega Vinos de Toro (Morales de Toro)": [41.53656, -5.30684],
   "Barrio de San Frontis (tapeo)": [41.49197, -5.75368],
   "Lago de Sanabria": [42.12173, -6.71616],
+  "Arribes del Duero (Fermoselle)": [41.31741, -6.39492],
   "Sierra de la Culebra": [41.93852, -6.72464],
   "Toro": [41.5217, -5.39398],
   "Alcañices": [41.69797, -6.36569],
@@ -98,12 +93,4 @@ const PLACE_COORDS = {
 // Lugares curados cuya ubicación cae fuera de la provincia de su plan (clave «Provincia|Lugar»):
 // el plan personalizado no los usa
 const PLACES_OUTSIDE_PROVINCE = new Set([
-  "Ávila|Ruta del Calvitero (Béjar)", // está fuera de Castilla y León
-  "Burgos|Festival de Música Medieval de Burgo Osma", // está en Soria
-  "León|Lago de Sanabria (desde León)", // está en Zamora
-  "Palencia|Bodega Valdecuevas (Cigales)", // está en Valladolid
-  "Palencia|Hoces de Valverde de Campos", // está en Valladolid
-  "Salamanca|Arribes del Duero (Fermoselle)", // está en Zamora
-  "Soria|Sabinares del Arlanza", // está en Burgos
-  "Valladolid|Laguna de la Nava (Fuentes de Nava)", // está en Palencia
 ]);

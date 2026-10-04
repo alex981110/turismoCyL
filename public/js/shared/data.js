@@ -359,7 +359,6 @@ const dayPlansExtra = {
       { time: '11:00', place: 'Bodega El Lagar de Gredos',           cat: 'gastronomia', desc: 'Cata de vinos de la D.O. Cebreros en plena Sierra de Gredos, con maridaje de quesos locales.' },
     ],
     naturaleza: [
-      { time: '09:00', place: 'Ruta del Calvitero (Béjar)',          cat: 'naturaleza', desc: 'Ascenso al pico más alto del Sistema Central a 2.401 m. Vistas hacia Extremadura y Salamanca.' },
       { time: '10:00', place: 'Laguna Grande de Gredos',            cat: 'naturaleza', desc: 'El circo glaciar más espectacular de la Sierra de Gredos. Acceso desde el Refugio Elola.' },
       { time: '16:00', place: 'Reserva Natural del Valle de Iruelas',cat: 'naturaleza', desc: 'Hogar del buitre negro ibérico. Rutas de senderismo entre pinos y encinas milenarios.' },
     ],
@@ -382,6 +381,7 @@ const dayPlansExtra = {
       { time: '20:30', place: 'Barrio de San Juan (tapeo)',          cat: 'gastronomia', desc: 'Ruta de pinchos por el barrio más animado de Burgos. Morcilla con piñones, queso y tostas de jamón.' },
     ],
     naturaleza: [
+      { time: '15:30', place: 'Sabinares del Arlanza',           cat: 'naturaleza', desc: 'Bosques de sabinas albares milenarias en el Cañón del Arlanza, un paisaje de otro planeta.' },
       { time: '09:30', place: 'Parque Natural Hoces del Alto Ebro', cat: 'naturaleza', desc: 'Espectacular cañón del Ebro en su nacimiento. Buitres leonados, orquídeas silvestres y pueblos rupestres.' },
       { time: '10:00', place: 'Laguna de Sotillo (Lagunas de Neila)',cat: 'naturaleza', desc: 'Lagunas glaciares en los Picos de Urbión. Paisajes alpinos únicos en la Serranía Suroriental.' },
       { time: '15:00', place: 'Cañón del Río Arlanza',             cat: 'naturaleza', desc: 'Senderismo entre monasterios medievales y cortados de roca caliza en plena Castilla.' },
@@ -393,7 +393,6 @@ const dayPlansExtra = {
     ],
     teatro: [
       { time: '19:30', place: 'Teatro Principal de Burgos',         cat: 'teatro', desc: 'El más veterano de Castilla, con temporada de ópera, ballet y teatro clásico en un edificio neoclásico.' },
-      { time: '20:00', place: 'Festival de Música Medieval de Burgo Osma', cat: 'teatro', desc: 'Festival de música antigua y medieval en el espectacular conjunto catedralicio de El Burgo de Osma.' },
     ],
   },
 
@@ -401,36 +400,32 @@ const dayPlansExtra = {
   'León': {
     gastro: [
       { time: '13:30', place: 'Barrio Húmedo de León',              cat: 'gastronomia', desc: 'El tapeo más famoso de España. Cada caña viene con su tapa gratuita: cecina, botillo, lacón o morcilla.' },
-      { time: '11:00', place: 'D.O. Bierzo - Bodega Palacios Remondo', cat: 'gastronomia', desc: 'Enoturismo en el Bierzo. La mención cata de Mencía entre viñedos de pizarra y castaños centenarios.' },
+      { time: '11:00', place: 'Enoturismo D.O. Bierzo (Villafranca del Bierzo)', cat: 'gastronomia', desc: 'Catas de mencía entre viñedos de pizarra en la D.O. Bierzo, con Villafranca como base.' },
       { time: '20:30', place: 'Barrio Romántico de León (tapeo)',   cat: 'gastronomia', desc: 'Calle Ancha y alrededores: bacalao al ajoarriero, pimientos del Bierzo y queso de Valdeón.' },
     ],
     naturaleza: [
       { time: '09:00', place: 'Picos de Europa (Posada de Valdeón)', cat: 'naturaleza', desc: 'La vertiente leonesa del Parque Nacional. Ruta a los Lagos de Covadonga desde el Puerto del Pontón.' },
       { time: '10:00', place: 'Hoces de Vegacervera',               cat: 'naturaleza', desc: 'Impresionante desfiladero de caliza en la montaña leonesa, con puentes romanos y fauna rapaz.' },
-      { time: '15:30', place: 'Lago de Sanabria (desde León)',      cat: 'naturaleza', desc: 'El lago glaciar más grande de la Península Ibérica, en el límite con Zamora. Aguas cristalinas.' },
     ],
     pueblos: [
       { time: '10:00', place: 'Castrillo de los Polvazares',        cat: 'historia', desc: 'Pueblo de arriero maragato declarado Conjunto Histórico. Adoquines centenarios y cocido maragato.' },
       { time: '11:30', place: 'Molinaseca',                         cat: 'historia', desc: 'Medieval villa templaria en el Camino de Santiago del Bierzo, junto al río Meruelo.' },
-      { time: '16:00', place: 'Puebla de Sanabria',                 cat: 'historia', desc: 'Castillo medieval y conjunto histórico en el extremo occidental de la provincia zamorana.' },
     ],
     teatro: [
       { time: '20:00', place: 'Auditorio Ciudad de León',           cat: 'teatro', desc: 'Espacio para conciertos sinfónicos, ópera y grandes espectáculos en un moderno auditorio.' },
-      { time: '19:30', place: 'Teatro de San Francisco (León)',     cat: 'teatro', desc: 'El teatro más clásico de León con programación de teatro, zarzuela y música en vivo.' },
+      { time: '19:30', place: 'Auditorio Ciudad de León',     cat: 'teatro', desc: 'El principal escenario de León, junto a San Marcos: teatro, danza y música en vivo.' },
     ],
   },
 
   // ── PALENCIA ───────────────────────────────────────────────────────────
   'Palencia': {
     gastro: [
-      { time: '13:30', place: 'Restaurante Casa Lucio (Palencia)',  cat: 'gastronomia', desc: 'Cocina palentina clásica: menestra de verduras de Tierra de Campos, lechazo al horno y torreznos.' },
-      { time: '11:00', place: 'Bodega Valdecuevas (Cigales)',       cat: 'gastronomia', desc: 'Enoturismo en la D.O. Cigales, conocida por sus rosados. Bodega con viñedos a 850 m de altitud.' },
       { time: '12:30', place: 'Quesos de Cervera de Pisuerga',     cat: 'gastronomia', desc: 'Los queserías artesanales de la Montaña Palentina elaboran quesos de oveja churra únicos.' },
     ],
     naturaleza: [
+      { time: '09:30', place: 'Laguna de la Nava (Fuentes de Nava)', cat: 'naturaleza', desc: 'Paraíso ornitológico recuperado: flamencos, ánsares y avutardas en la antigua laguna de la Tierra de Campos.' },
       { time: '09:00', place: 'Parque Natural Fuentes Carrionas',  cat: 'naturaleza', desc: 'El corazón verde de la Montaña Palentina. Osos pardos, rebecos y urogallos en sus valles.' },
       { time: '10:00', place: 'Canal de Castilla (ruta en bici)',  cat: 'naturaleza', desc: '100 km de vía verde junto al canal ilustrado del s.XVIII entre esclusas y molinos de harina.' },
-      { time: '16:00', place: 'Hoces de Valverde de Campos',      cat: 'naturaleza', desc: 'Espectaculares hoces del Pisuerga con colonias de buitres leonados y aves esteparias.' },
     ],
     pueblos: [
       { time: '10:00', place: 'Aguilar de Campoo',                 cat: 'historia', desc: 'La capital del románico palentino: Colegiata, castillo, monasterios y una villa medieval perfecta.' },
@@ -451,7 +446,7 @@ const dayPlansExtra = {
       { time: '20:30', place: 'Plaza Mayor (tapeo nocturno)',      cat: 'gastronomia', desc: 'La plaza barroca más bella de España. Tapas en los bares del entorno: farinato, caldo de castañas.' },
     ],
     naturaleza: [
-      { time: '09:30', place: 'Arribes del Duero (Fermoselle)',    cat: 'naturaleza', desc: 'Los cañones del Duero: 200 m de profundidad, buitres leonados y viñas en terrazas de pizarra.' },
+      { time: '09:30', place: 'Arribes del Duero (Aldeadávila de la Ribera)',    cat: 'naturaleza', desc: 'Los cañones del Duero desde el lado salmantino: miradores sobre gargantas de 200 m y buitres leonados.' },
       { time: '10:00', place: 'Sierra de Francia (Las Batuecas)',  cat: 'naturaleza', desc: 'El valle más aislado de España. Pinturas rupestres, buitres negros y bosques mediterráneos.' },
       { time: '15:00', place: 'Laguna de Béjar',                  cat: 'naturaleza', desc: 'Pequeño lago glaciar en el macizo de Béjar con rutas de senderismo por el Sistema Central.' },
     ],
@@ -499,7 +494,6 @@ const dayPlansExtra = {
     naturaleza: [
       { time: '09:00', place: 'Cañón del Río Lobos',             cat: 'naturaleza', desc: 'Parque Natural con el templo rupestre de San Bartolomé y colonias de buitres leonados.' },
       { time: '10:00', place: 'Laguna Negra y Circos de Urbión', cat: 'naturaleza', desc: 'Acceso regulado al lago glaciar más fotogénico de Castilla, rodeado de pinos centenarios.' },
-      { time: '15:30', place: 'Sabinares del Arlanza',           cat: 'naturaleza', desc: 'Bosques de sabinas albares milenarias en el Cañón del Arlanza, un paisaje de otro planeta.' },
     ],
     pueblos: [
       { time: '10:00', place: 'El Burgo de Osma',                cat: 'historia', desc: 'Ciudad episcopal con catedral, castillo y un casco histórico barroco impecable junto al Ucero.' },
@@ -507,7 +501,7 @@ const dayPlansExtra = {
       { time: '16:00', place: 'Berlanga de Duero',               cat: 'historia', desc: 'Castillo del s.XV, colegiata plateresca y muralla: uno de los conjuntos medievales más completos de Soria.' },
     ],
     teatro: [
-      { time: '20:00', place: 'Teatro Coliseum (Soria)',         cat: 'teatro', desc: 'El principal espacio cultural de Soria: teatro, ciclos de ópera en versión concierto y música en vivo.' },
+      { time: '20:00', place: 'Palacio de la Audiencia (Soria)',         cat: 'teatro', desc: 'Centro cultural de la Plaza Mayor de Soria, con teatro, conciertos y exposiciones.' },
       { time: '21:00', place: 'Festival Internacional de Música de Soria', cat: 'teatro', desc: 'Ciclo estival de música clásica con conciertos en el claustro de Santo Domingo de Silos.' },
     ],
   },
@@ -515,12 +509,12 @@ const dayPlansExtra = {
   // ── VALLADOLID ─────────────────────────────────────────────────────────
   'Valladolid': {
     gastro: [
+      { time: '11:00', place: 'Enoturismo D.O. Cigales (Cigales)',       cat: 'gastronomia', desc: 'Bodegas de la D.O. Cigales, conocida por sus rosados, y las bodegas subterráneas del pueblo.' },
       { time: '13:30', place: 'Mercado del Val (Valladolid)',     cat: 'gastronomia', desc: 'El mejor mercado de Castilla en un edificio modernista. Bacalao, lechazo y quesos de Castilla.' },
       { time: '11:00', place: 'Museo del Vino Castilla (Peñafiel)',cat: 'gastronomia', desc: 'En el castillo-barco: cata de Ribera del Duero con maridaje de quesos y charcutería de la zona.' },
       { time: '20:30', place: 'Zona Francisco Suárez (tapeo)',   cat: 'gastronomia', desc: 'El barrio gastronómico de Valladolid. Pinchos creativos, vinos de la Ribera y ambiente universitario.' },
     ],
     naturaleza: [
-      { time: '09:30', place: 'Laguna de la Nava (Fuentes de Nava)', cat: 'naturaleza', desc: 'Paraíso ornitológico recuperado: flamencos, ánsares y avutardas en la antigua laguna de la Tierra de Campos.' },
       { time: '10:00', place: 'Montes Torozos',                  cat: 'naturaleza', desc: 'Páramo de encinas y quejigos con ermitas románicas y buitres leonados sobrevolando las dehesas.' },
       { time: '15:00', place: 'Riberas del Duero (Tudela)',      cat: 'naturaleza', desc: 'Senderismo por las riberas del Duero entre álamos y sotos fluviales, con nutrias y martines pescadores.' },
     ],
