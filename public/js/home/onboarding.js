@@ -460,7 +460,7 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
       return w.length ? `<div class="plan-sched">${w.map(x => `<span>${escHTML(x)}</span>`).join('')}</div>` : '';
     })();
     const lat = mk?.lat || 0; const lng = mk?.lng || 0;
-    return `<div class="timeline-item has-marker plan-item${matchPct >= 0.75 ? ' is-match' : ''}" data-action="focus" data-lat="${lat}" data-lng="${lng}">
+    return `<div class="timeline-item has-marker plan-item${matchPct >= 0.75 ? ' is-match' : ''}${lat ? '' : ' is-unlocated'}" data-action="focus" data-lat="${lat}" data-lng="${lng}">
       ${isLogged ? `<div class="time-badge">${item.time}</div>` : `<div class="time-badge is-hidden" aria-label="Hora visible con cuenta">--:--</div>`}
       <div class="timeline-content">
         <div class="plan-item-row">

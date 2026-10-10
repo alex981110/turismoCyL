@@ -132,7 +132,7 @@ function updateDayPlanner(province) {
     const cat   = mk ? (catLabel[mk.cat] || mk.cat) : '';
     const icon  = mk ? (catIcon[mk.cat] || catIcon.default) : catIcon.default;
     return `
-      <div class="timeline-item has-marker plan-item" data-action="focus" data-lat="${mk?.lat||0}" data-lng="${mk?.lng||0}">
+      <div class="timeline-item has-marker plan-item${mk?.lat ? '' : ' is-unlocated'}" data-action="focus" data-lat="${mk?.lat||0}" data-lng="${mk?.lng||0}">
         <div class="time-badge">${item.time}</div>
         <div class="timeline-content">
           <div class="plan-item-row">

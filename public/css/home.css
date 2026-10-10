@@ -204,8 +204,10 @@
   .dep-row.is-empty { padding: 0 14px; }
   .dep-cols, .dep-head, .dep-foot { padding-left: 14px; padding-right: 14px; }
   .hero-bottom { flex-direction: column; align-items: flex-start; }
-  .hero-controls { align-items: flex-start; }
-  .hero-carousel-dots { flex-wrap: wrap; }
+  /* Pausa + nueve códigos en dos filas iguales de cinco */
+  .hero-controls { display: grid; grid-template-columns: repeat(5, 44px); gap: 4px; }
+  .hero-carousel-dots { display: contents; }
+  .hero-pause, .hero-dot { width: 44px; min-width: 0; }
 }
 
 /* ═══════════════════════════════════════════

@@ -252,6 +252,27 @@
 }
 .timeline-item:last-child { border-bottom: none; }
 .timeline-item.has-marker { cursor: pointer; transition: background-color 0.12s ease; }
+/* Línea de trayecto entre la hora y la parada: continua si la parada está situada en el mapa,
+   discontinua si no tiene coordenadas y no se puede trazar en la ruta */
+.day-plan-card .timeline-item { --tl-pad: 18px; --tl-time: 58px; position: relative; column-gap: 28px; }
+.msb-dayplan .day-plan-card .timeline-item { --tl-pad: 14px; --tl-time: 50px; }
+/* Línea de la ruta entre las horas y las paradas, con un punto por parada */
+.day-plan-card .timeline-item::before {
+  content: ''; position: absolute; top: 0; bottom: 0;
+  left: calc(var(--tl-pad) + var(--tl-time) + 13px);
+  border-left: 2px solid var(--signal);
+}
+.day-plan-card .timeline-item::after {
+  content: ''; position: absolute; top: 17px;
+  left: calc(var(--tl-pad) + var(--tl-time) + 9px);
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--ink); border: 2px solid var(--signal);
+}
+.day-plan-card .timeline-item.is-unlocated::before { border-left-style: dashed; border-left-color: var(--board-muted); }
+.day-plan-card .timeline-item.is-unlocated::after { border-color: var(--board-muted); }
+.day-plan-card .timeline-item:first-child::before { top: 22px; }
+.day-plan-card .timeline-item:last-child::before { bottom: calc(100% - 22px); }
+.day-plan-card .timeline-item:only-child::before { display: none; }
 .timeline-item.has-marker:hover { background: rgba(255,255,255,0.05); }
 .timeline-item.has-marker:hover h4 { color: var(--signal); }
 .time-badge {
@@ -498,7 +519,13 @@
 }
 #routeMapCloseBtn:hover { background: rgba(255,255,255,0.08); border-color: #fff; }
 #routeMapBody { display: flex; flex: 1; overflow: hidden; }
-#routeMapSidebar { width: 300px; flex-shrink: 0; overflow-y: auto; display: flex; flex-direction: column; background: var(--slate); color: var(--board-text); border-right: none; }
+/* Lista de paradas en claro: los colores de cada día (tinta, azul, naranja…) se leen igual que sobre el mapa */
+#routeMapSidebar { width: 300px; flex-shrink: 0; overflow-y: auto; display: flex; flex-direction: column; background: var(--surface); color: var(--ink); border-right: 1px solid var(--line); }
+#routeMapSidebar .route-stop-item { border-bottom-color: var(--line); }
+#routeMapSidebar .route-stop-item:hover { background: var(--ground); }
+#routeMapSidebar .route-stop-name { color: var(--ink); }
+#routeMapSidebar .route-stop-cat { color: var(--steel); }
+#routeMapSidebar .route-stop-num { color: #fff; }
 #routeMapStopList { display: flex; flex-direction: column; padding: 8px 0; }
 .route-stop-item {
   display: grid; grid-template-columns: 30px 1fr; align-items: start; gap: 12px;
