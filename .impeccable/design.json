@@ -1,0 +1,610 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-10T13:59:04.204Z",
+  "title": "Design System: Castilla y León · Billete y panel de salidas",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "primary",
+        "displayName": "Tinta de panel",
+        "canonical": "oklch(17.6% 0.008 248.3)",
+        "tonalRamp": [
+          "#090B0E",
+          "#212428",
+          "#3D4044",
+          "#5A5E62",
+          "#7A7E82",
+          "#9B9FA3",
+          "#C0C5C9",
+          "#EAEFF4"
+        ]
+      },
+      "signal": {
+        "role": "primary",
+        "displayName": "Amarillo señal",
+        "canonical": "oklch(88.1% 0.181 94.0)",
+        "tonalRamp": [
+          "#120A00",
+          "#2D2300",
+          "#4D3E00",
+          "#6F5C06",
+          "#947B0A",
+          "#B99C27",
+          "#E7C11E",
+          "#FEEFB9"
+        ]
+      },
+      "signal-deep": {
+        "role": "primary",
+        "displayName": "Amarillo señal hundido",
+        "canonical": "oklch(82.5% 0.169 93.8)",
+        "tonalRamp": [
+          "#110A00",
+          "#2D2300",
+          "#4C3E05",
+          "#6E5C14",
+          "#937B1D",
+          "#BB9C1C",
+          "#E5C137",
+          "#FEEEB7"
+        ]
+      },
+      "signal-wash": {
+        "role": "primary",
+        "displayName": "Lavado señal"
+      },
+      "cat-patrimonio": {
+        "role": "secondary",
+        "displayName": "Rojo ladrillo patrimonio",
+        "canonical": "oklch(53.0% 0.149 33.9)",
+        "tonalRamp": [
+          "#210000",
+          "#480700",
+          "#761600",
+          "#A0331B",
+          "#C5563D",
+          "#EC785E",
+          "#FCAD9A",
+          "#FFE9E4"
+        ]
+      },
+      "cat-cultura": {
+        "role": "secondary",
+        "displayName": "Azul museo",
+        "canonical": "oklch(47.2% 0.136 258.2)",
+        "tonalRamp": [
+          "#000038",
+          "#002153",
+          "#023B86",
+          "#275CA9",
+          "#477DCD",
+          "#679FF2",
+          "#A0C6FE",
+          "#E5EFFE"
+        ]
+      },
+      "cat-escena": {
+        "role": "secondary",
+        "displayName": "Violeta escena",
+        "canonical": "oklch(48.6% 0.126 298.9)",
+        "tonalRamp": [
+          "#12002B",
+          "#2F0857",
+          "#4A2B78",
+          "#684A9A",
+          "#886ABD",
+          "#A98CE2",
+          "#CDB6FE",
+          "#F0EBFE"
+        ]
+      },
+      "cat-naturaleza": {
+        "role": "secondary",
+        "displayName": "Verde monte",
+        "canonical": "oklch(51.9% 0.105 154.0)",
+        "tonalRamp": [
+          "#001003",
+          "#002D14",
+          "#004E27",
+          "#1F6E41",
+          "#448F60",
+          "#66B280",
+          "#8CD8A5",
+          "#C7FED7"
+        ]
+      },
+      "cat-mesa": {
+        "role": "secondary",
+        "displayName": "Naranja mesón",
+        "canonical": "oklch(57.2% 0.137 55.6)",
+        "tonalRamp": [
+          "#1B0400",
+          "#3B1A00",
+          "#623001",
+          "#8C4A0F",
+          "#B96416",
+          "#DE8541",
+          "#FCB17C",
+          "#FEEADD"
+        ]
+      },
+      "cat-cama": {
+        "role": "secondary",
+        "displayName": "Verde azulado posada",
+        "canonical": "oklch(50.7% 0.078 204.4)",
+        "tonalRamp": [
+          "#000F12",
+          "#002A2E",
+          "#00494F",
+          "#106A72",
+          "#3B8B93",
+          "#5FADB5",
+          "#85D3DC",
+          "#C7F9FF"
+        ]
+      },
+      "slate": {
+        "role": "neutral",
+        "displayName": "Pizarra",
+        "canonical": "oklch(24.5% 0.014 253.1)",
+        "tonalRamp": [
+          "#070C11",
+          "#1F252B",
+          "#3B4047",
+          "#585E65",
+          "#787E85",
+          "#999FA7",
+          "#BEC5CD",
+          "#E8EFF8"
+        ]
+      },
+      "slate-2": {
+        "role": "neutral",
+        "displayName": "Pizarra clara",
+        "canonical": "oklch(30.7% 0.017 255.6)",
+        "tonalRamp": [
+          "#070B12",
+          "#1F242C",
+          "#3A4049",
+          "#585E67",
+          "#777E87",
+          "#989FA9",
+          "#BDC5CF",
+          "#E7EFFA"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Tinta suave",
+        "canonical": "oklch(32.6% 0.017 251.8)",
+        "tonalRamp": [
+          "#060C12",
+          "#1E252C",
+          "#394149",
+          "#575E67",
+          "#767E87",
+          "#979FA9",
+          "#BCC5CF",
+          "#E6F0FA"
+        ]
+      },
+      "steel": {
+        "role": "neutral",
+        "displayName": "Acero",
+        "canonical": "oklch(49.6% 0.021 253.5)",
+        "tonalRamp": [
+          "#060C14",
+          "#1D252E",
+          "#38414B",
+          "#565F69",
+          "#757E8A",
+          "#969FAB",
+          "#BBC5D2",
+          "#E5F0FD"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Gris panel",
+        "canonical": "oklch(90.2% 0.006 255.5)",
+        "tonalRamp": [
+          "#090B0E",
+          "#222427",
+          "#3D4043",
+          "#5B5E61",
+          "#7B7D81",
+          "#9C9FA2",
+          "#C1C4C8",
+          "#ECEFF3"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Suelo",
+        "canonical": "oklch(93.0% 0.005 258.3)",
+        "tonalRamp": [
+          "#0A0B0D",
+          "#232426",
+          "#3E4042",
+          "#5C5E60",
+          "#7B7D80",
+          "#9D9EA1",
+          "#C2C4C7",
+          "#EDEFF2"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Papel de billete",
+        "canonical": "oklch(99.1% 0.001 106.4)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242423",
+          "#40403F",
+          "#5E5E5D",
+          "#7D7D7C",
+          "#9E9E9D",
+          "#C4C4C3",
+          "#EEEEED"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Filete"
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Filete marcado"
+      },
+      "board-text": {
+        "role": "neutral",
+        "displayName": "Texto de panel",
+        "canonical": "oklch(95.4% 0.003 247.9)",
+        "tonalRamp": [
+          "#0A0B0D",
+          "#232426",
+          "#3E4041",
+          "#5C5E5F",
+          "#7C7D7F",
+          "#9D9FA0",
+          "#C2C4C6",
+          "#EDEFF1"
+        ]
+      },
+      "board-muted": {
+        "role": "neutral",
+        "displayName": "Texto de panel atenuado",
+        "canonical": "oklch(74.1% 0.019 253.4)",
+        "tonalRamp": [
+          "#060C13",
+          "#1E252D",
+          "#39404A",
+          "#565E68",
+          "#767E89",
+          "#969FAA",
+          "#BCC5D0",
+          "#E6F0FB"
+        ]
+      },
+      "board-line": {
+        "role": "neutral",
+        "displayName": "Filete de panel"
+      },
+      "ok": {
+        "role": "neutral",
+        "displayName": "Abierto",
+        "canonical": "oklch(51.4% 0.117 154.1)",
+        "tonalRamp": [
+          "#001003",
+          "#002D14",
+          "#004E27",
+          "#0B703E",
+          "#3A915D",
+          "#5EB47D",
+          "#84DBA2",
+          "#C7FED8"
+        ]
+      },
+      "danger": {
+        "role": "neutral",
+        "displayName": "Peligro",
+        "canonical": "oklch(50.0% 0.182 29.5)",
+        "tonalRamp": [
+          "#210000",
+          "#4C0000",
+          "#7B0602",
+          "#AD1A10",
+          "#D44536",
+          "#FB6957",
+          "#FDADA0",
+          "#FFE9E5"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Solo el titular-trayecto de la portada, en mayúsculas."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Títulos de sección y de la ficha, en mayúsculas."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Nombres de provincia en billete, secciones de la ficha y cabeceras de panel."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Texto corrido; descripciones a 65ch como máximo."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Botones, pestañas y navegación en mayúsculas."
+      },
+      "data-label": {
+        "displayName": "Data label",
+        "purpose": "Cabeceras de columna, etiquetas de formulario, códigos y tipos en mono mayúscula."
+      },
+      "data-time": {
+        "displayName": "Data time",
+        "purpose": "Horas, notas, recuentos y kilómetros con cifras tabulares."
+      }
+    },
+    "shadows": [
+      {
+        "name": "shadow-sm",
+        "value": "0 1px 2px rgba(14,17,20,0.08), 0 1px 1px rgba(14,17,20,0.05)",
+        "purpose": "Billetes de itinerario guardado en reposo."
+      },
+      {
+        "name": "shadow-md",
+        "value": "0 6px 18px rgba(14,17,20,0.12), 0 2px 4px rgba(14,17,20,0.08)",
+        "purpose": "Controles sobre el mapa, tooltip, plan del día, hover de billetes."
+      },
+      {
+        "name": "shadow-lg",
+        "value": "0 16px 40px rgba(14,17,20,0.18), 0 4px 10px rgba(14,17,20,0.08)",
+        "purpose": "Popups del mapa y avisos."
+      },
+      {
+        "name": "shadow-xl",
+        "value": "0 28px 70px rgba(14,17,20,0.28)",
+        "purpose": "Modales y panel de salidas sobre la foto."
+      },
+      {
+        "name": "drawer-edge",
+        "value": "-20px 0 50px rgba(14,17,20,0.18)",
+        "purpose": "Borde de los cajones laterales (ficha, favoritos)."
+      },
+      {
+        "name": "pin",
+        "value": "0 2px 6px rgba(14,17,20,0.35)",
+        "purpose": "Marcadores del mapa."
+      },
+      {
+        "name": "focus-ring",
+        "value": "0 0 0 5px #FFD400",
+        "purpose": "Halo de foco global, junto con outline 2px tinta y offset 2px."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Transiciones de estado, pulsación y tablillas."
+      },
+      {
+        "name": "ease-in-out",
+        "value": "cubic-bezier(0.77, 0, 0.175, 1)",
+        "purpose": "Movimientos simétricos."
+      },
+      {
+        "name": "ease-drawer",
+        "value": "cubic-bezier(0.32, 0.72, 0, 1)",
+        "purpose": "Cajones, hojas inferiores y panel lateral móvil."
+      },
+      {
+        "name": "duration-state",
+        "value": "0.15s",
+        "purpose": "Cambios de color y borde."
+      },
+      {
+        "name": "duration-press",
+        "value": "0.16s",
+        "purpose": "Escala a 0.97 al pulsar botones y controles."
+      },
+      {
+        "name": "duration-flap",
+        "value": "0.42s",
+        "purpose": "Volteo rotateX(-92deg) a 0 de las celdas del panel de salidas al cambiar de provincia."
+      },
+      {
+        "name": "duration-drawer",
+        "value": "0.36s",
+        "purpose": "Entrada de la ficha (0.32s favoritos y panel lateral)."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "compact",
+        "value": "390px"
+      },
+      {
+        "name": "tickets-1col",
+        "value": "560px"
+      },
+      {
+        "name": "hero-mobile",
+        "value": "600px"
+      },
+      {
+        "name": "mobile",
+        "value": "768px"
+      },
+      {
+        "name": "structure",
+        "value": "960px"
+      },
+      {
+        "name": "bootstrap-lg",
+        "value": "991.98px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botón principal",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción neutra en tinta.",
+      "html": "<button class=\"ds-btn\">Guardar itinerario</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 22px;font-family:var(--font-display);font-weight:600;font-size:1.02rem;letter-spacing:.06em;text-transform:uppercase;line-height:1;background:var(--ink);color:#fff;border:1.5px solid var(--ink);border-radius:var(--radius);cursor:pointer;transition:background-color .15s ease,border-color .15s ease,transform .16s var(--ease-out)}.ds-btn:hover{background:var(--slate-2);border-color:var(--slate-2)}.ds-btn:active{transform:scale(.97)}.ds-btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 5px var(--signal)}"
+    },
+    {
+      "name": "Botón señal",
+      "kind": "button",
+      "refersTo": "button-signal",
+      "description": "Única acción principal de la pantalla, en amarillo señal.",
+      "html": "<button class=\"ds-btn-signal\">Explorar el mapa</button>",
+      "css": ".ds-btn-signal{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 26px;font-family:var(--font-display);font-weight:700;font-size:1.15rem;letter-spacing:.06em;text-transform:uppercase;background:var(--signal);color:var(--ink);border:1.5px solid var(--signal);border-radius:var(--radius);cursor:pointer;transition:background-color .15s ease,border-color .15s ease,transform .16s var(--ease-out)}.ds-btn-signal:hover{background:var(--signal-deep);border-color:var(--signal-deep)}.ds-btn-signal:active{transform:scale(.97)}.ds-btn-signal:focus-visible{outline:2px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 5px var(--signal)}"
+    },
+    {
+      "name": "Botón contorno",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Acción secundaria; se rellena de tinta al pasar el puntero.",
+      "html": "<button class=\"ds-btn-outline\">Descargar PDF</button>",
+      "css": ".ds-btn-outline{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;font-family:var(--font-display);font-weight:600;font-size:1.02rem;letter-spacing:.06em;text-transform:uppercase;background:transparent;color:var(--ink);border:1.5px solid var(--ink);border-radius:var(--radius);cursor:pointer;transition:background-color .15s ease,color .15s ease,transform .16s var(--ease-out)}.ds-btn-outline:hover{background:var(--ink);color:#fff}.ds-btn-outline:active{transform:scale(.97)}.ds-btn-outline:focus-visible{outline:2px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 5px var(--signal)}"
+    },
+    {
+      "name": "Campo de texto",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Campo de papel con etiqueta mono y anillo amarillo al enfocar.",
+      "html": "<label class=\"ds-label\">Correo electrónico<input class=\"ds-input\" placeholder=\"tu@correo.es\"></label>",
+      "css": ".ds-label{display:block;font-family:var(--font-mono);font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--steel)}.ds-input{display:block;width:100%;margin-top:6px;min-height:46px;padding:11px 14px;background:var(--surface);border:1.5px solid var(--line-strong);border-radius:var(--radius);color:var(--ink);font-family:var(--font-body);font-size:1rem;transition:border-color .15s ease,box-shadow .15s ease}.ds-input::placeholder{color:#7A828C}.ds-input:hover{border-color:rgba(14,17,20,.45)}.ds-input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px var(--signal)}"
+    },
+    {
+      "name": "Pestañas segmentadas",
+      "kind": "nav",
+      "refersTo": "tab-segmented",
+      "description": "Grupo de pestañas del panel lateral y de los modales.",
+      "html": "<div class=\"ds-tabs\"><button class=\"ds-tab is-active\">Explorar</button><button class=\"ds-tab\">Itinerario</button></div>",
+      "css": ".ds-tabs{display:flex;gap:4px;width:340px;padding:4px;background:var(--panel);border-radius:var(--radius)}.ds-tab{flex:1;min-height:40px;padding:0 12px;background:transparent;border:none;border-radius:3px;color:var(--steel);font-family:var(--font-display);font-weight:600;font-size:1rem;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:background-color .15s ease,color .15s ease}.ds-tab:hover{color:var(--ink)}.ds-tab.is-active{background:var(--ink);color:#fff}.ds-tab:focus-visible{outline:2px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 5px var(--signal)}"
+    },
+    {
+      "name": "Barra superior",
+      "kind": "nav",
+      "refersTo": "",
+      "description": "Barra tinta con sello CyL y enlaces condensados; activo con subrayado amarillo.",
+      "html": "<nav class=\"ds-nav\"><span class=\"ds-logo\"><span class=\"ds-stamp\">CyL</span>Castilla y León</span><a class=\"ds-navlink is-active\" href=\"#\">Inicio</a><a class=\"ds-navlink\" href=\"#\">Mapa</a><a class=\"ds-navlink\" href=\"#\">Mis itinerarios</a></nav>",
+      "css": ".ds-nav{display:flex;align-items:center;gap:28px;height:64px;padding:0 24px;background:var(--ink)}.ds-logo{display:inline-flex;align-items:center;gap:12px;margin-right:auto;font-family:var(--font-display);font-weight:700;font-size:1.35rem;letter-spacing:.02em;text-transform:uppercase;color:var(--board-text)}.ds-stamp{display:inline-grid;place-items:center;height:30px;padding:0 7px;background:var(--signal);color:var(--ink);border-radius:3px;font-size:1.05rem;text-transform:none}.ds-navlink{padding:8px 0;color:var(--board-muted);font-family:var(--font-display);font-weight:600;font-size:1.02rem;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;border-bottom:3px solid transparent;transition:color .15s ease,border-color .15s ease}.ds-navlink:hover{color:#fff}.ds-navlink.is-active{color:#fff;border-bottom-color:var(--signal)}.ds-navlink:focus-visible{outline:2px solid #fff;outline-offset:2px}"
+    },
+    {
+      "name": "Chip de categoría",
+      "kind": "chip",
+      "refersTo": "chip-category",
+      "description": "Filtro con icono en color de familia y recuento mono; activo en tinta.",
+      "html": "<div style=\"display:flex;gap:6px\"><button class=\"ds-chip\" style=\"--fam:var(--cat-patrimonio)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 21h18M5 21V10l7-5 7 5v11\"/></svg>Monumentos <span class=\"ds-chip-n\">412</span></button><button class=\"ds-chip is-active\" style=\"--fam:var(--cat-naturaleza)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m8 3 4 8 5-5 5 15H2L8 3z\"/></svg>Naturaleza <span class=\"ds-chip-n\">198</span></button></div>",
+      "css": ".ds-chip{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 10px;background:var(--surface);border:1.5px solid var(--line-strong);border-radius:var(--radius);color:var(--ink);font-family:var(--font-body);font-weight:500;font-size:.88rem;cursor:pointer;transition:border-color .15s ease,background-color .15s ease,color .15s ease}.ds-chip svg{width:16px;height:16px;color:var(--fam)}.ds-chip:hover{border-color:var(--ink)}.ds-chip.is-active{background:var(--ink);border-color:var(--ink);color:#fff}.ds-chip.is-active svg{color:var(--signal)}.ds-chip-n{font-family:var(--font-mono);font-size:.75rem;color:var(--steel)}.ds-chip.is-active .ds-chip-n{color:var(--board-muted)}.ds-chip:focus-visible{outline:2px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 5px var(--signal)}"
+    },
+    {
+      "name": "Billete de provincia",
+      "kind": "card",
+      "refersTo": "ticket-card",
+      "description": "Foto, perforación y matriz con placa de código, nombre y flecha.",
+      "html": "<a class=\"ds-ticket\" href=\"#\"><div class=\"ds-ticket-photo\"></div><div class=\"ds-ticket-stub\"><span class=\"ds-plate\">SG</span><span class=\"ds-ticket-names\"><strong>Segovia</strong><span>Acueducto y Alcázar</span></span><svg class=\"ds-arrow\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></div></a>",
+      "css": ".ds-ticket{display:flex;flex-direction:column;width:300px;overflow:hidden;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--radius-lg);color:var(--ink);text-decoration:none;transition:border-color .15s ease,box-shadow .2s ease,transform .2s var(--ease-out)}.ds-ticket-photo{height:150px;background:repeating-linear-gradient(135deg,var(--panel) 0 12px,#E1E4E7 12px 24px)}.ds-ticket-stub{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px 14px 13px;border-top:2px dashed rgba(14,17,20,.22)}.ds-plate{min-width:42px;padding:4px 6px;background:var(--ink);color:#fff;border-radius:3px;font-family:var(--font-mono);font-weight:600;font-size:.9rem;text-align:center}.ds-ticket-names{display:grid}.ds-ticket-names strong{font-family:var(--font-display);font-weight:700;font-size:1.35rem;line-height:1.05;letter-spacing:.02em;text-transform:uppercase}.ds-ticket-names span{font-size:.9rem;color:var(--steel)}.ds-arrow{width:22px;height:22px;transition:transform .25s var(--ease-out)}.ds-ticket:hover{border-color:var(--ink);box-shadow:var(--shadow-md);transform:translateY(-2px)}.ds-ticket:hover .ds-plate{background:var(--signal);color:var(--ink)}.ds-ticket:hover .ds-arrow{transform:translateX(4px)}.ds-ticket:focus-visible{outline:2px solid var(--ink);outline-offset:3px}"
+    },
+    {
+      "name": "Panel de salidas",
+      "kind": "custom",
+      "refersTo": "departures-board",
+      "description": "Firma del sistema: filas por hora; la próxima parada en amarillo; el domingo empieza con filete discontinuo.",
+      "html": "<section class=\"ds-board\"><header class=\"ds-board-head\"><h3>Salidas <span class=\"ds-code\">SG</span> Segovia</h3><span class=\"ds-clock\">10:42</span></header><div class=\"ds-cols\"><span>Hora</span><span>Lugar</span><span>Tipo</span><span>Día</span></div><ol class=\"ds-rows\"><li class=\"ds-row\"><span class=\"ds-time\">10:00</span><span class=\"ds-place\">Acueducto de Segovia</span><span class=\"ds-type\">Monumento</span><span class=\"ds-day\">SÁB</span></li><li class=\"ds-row is-next\"><span class=\"ds-time\">11:30</span><span class=\"ds-place\">Catedral de Segovia</span><span class=\"ds-type\">Monumento</span><span class=\"ds-day\">SÁB</span></li><li class=\"ds-row is-sunday\"><span class=\"ds-time\">10:00</span><span class=\"ds-place\">Alcázar de Segovia</span><span class=\"ds-type\">Historia</span><span class=\"ds-day\">DOM</span></li></ol></section>",
+      "css": ".ds-board{width:440px;background:rgba(14,17,20,.94);border:1px solid var(--board-line);border-radius:var(--radius-lg);box-shadow:var(--shadow-xl);overflow:hidden;color:var(--board-text)}.ds-board-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 14px;border-bottom:1px solid var(--board-line)}.ds-board-head h3{margin:0;display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;font-size:1.4rem;letter-spacing:.04em;text-transform:uppercase;color:#fff}.ds-code{padding:3px 7px;background:var(--signal);color:var(--ink);border-radius:3px;font-family:var(--font-mono);font-weight:600;font-size:.8rem}.ds-clock{font-family:var(--font-mono);font-weight:600;font-size:.9rem;color:var(--board-muted);font-variant-numeric:tabular-nums}.ds-cols,.ds-row{display:grid;grid-template-columns:56px minmax(0,1fr) 96px 34px;gap:12px;align-items:baseline}.ds-cols{padding:10px 18px 8px;font-family:var(--font-mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--board-muted)}.ds-rows{list-style:none;margin:0;padding:0}.ds-row{min-height:48px;padding:12px 18px;border-top:1px solid var(--board-line);transition:background-color .35s ease}.ds-row:hover{background:rgba(255,255,255,.05)}.ds-row.is-sunday{border-top:1px dashed rgba(238,240,242,.35)}.ds-time{font-family:var(--font-mono);font-weight:600;font-size:1.05rem;color:var(--signal);font-variant-numeric:tabular-nums}.ds-place{font-weight:500;color:#fff}.ds-type,.ds-day{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.04em;text-transform:uppercase;color:var(--board-muted)}.ds-day{text-align:right}.ds-row.is-next{background:var(--signal);border-top-color:var(--signal)}.ds-row.is-next>span{color:var(--ink)}.ds-row.is-next .ds-place{font-weight:700}"
+    },
+    {
+      "name": "Marcador del mapa",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Cuadrado en color de familia con borde blanco y halo amarillo en hover; agrupación tinta con recuento mono.",
+      "html": "<div class=\"ds-mapbg\"><span class=\"ds-pin\" style=\"--fam:var(--cat-patrimonio)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 21h18M5 21V10l7-5 7 5v11\"/></svg></span><span class=\"ds-pin\" style=\"--fam:var(--cat-mesa)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 2v20M4 2v6a3 3 0 0 0 6 0V2M17 2v20M17 2c-2 2-3 5-3 8h3\"/></svg></span><span class=\"ds-cluster\">24</span></div>",
+      "css": ".ds-mapbg{display:flex;gap:12px;padding:16px;background:#E4E6E8}.ds-pin{width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:var(--fam);color:#fff;border:2px solid #fff;border-radius:6px;box-shadow:0 2px 6px rgba(14,17,20,.35);transition:transform .16s var(--ease-out),box-shadow .16s ease}.ds-pin svg{width:16px;height:16px}.ds-pin:hover{transform:scale(1.14);box-shadow:0 0 0 3px var(--signal),0 4px 10px rgba(14,17,20,.35)}.ds-cluster{width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--ink);color:#fff;border:2px solid #fff;border-radius:8px;box-shadow:0 3px 10px rgba(14,17,20,.35);font-family:var(--font-mono);font-weight:600;font-size:.82rem;transition:transform .16s var(--ease-out),background-color .15s ease,color .15s ease}.ds-cluster:hover{transform:scale(1.08);background:var(--signal);color:var(--ink)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "El billete y el panel de salidas",
+    "overview": "El sistema trata el viaje como papelería de transporte: cada lugar es un billete con su matriz perforada y cada día del plan es un panel de salidas en tinta, ordenado por hora. La señalética de carretera y aeropuerto manda: grotesca condensada en mayúsculas para titulares y botones, mono tabular para horas, kilómetros y recuentos, y las nueve provincias identificadas por su código de matrícula (AV BU LE P SA SG SO VA ZA) como si fueran códigos IATA.\n\nLa densidad es de panel informativo: filas de 48px separadas por filetes de 1px, columnas fijas (HORA · LUGAR · TIPO · DÍA) y poca ornamentación. Dos suelos conviven: los paneles en tinta (barra superior, panel de salidas, plan del día, cabeceras de cajón, pie) y las superficies claras de billete sobre gris panel (lista de lugares, ficha, tarjetas de provincia, formularios). La fotografía real de las provincias y el mapa son los protagonistas; el sistema los enmarca, no los decora. El amarillo señal es escaso y siempre significa algo: qué cambió, qué está seleccionado, cuál es la acción principal o la próxima parada.\n\nEl sistema rechaza explícitamente la portada turística de foto + titular serif + botón y la paleta crema-terracota del diseño anterior.",
+    "keyCharacteristics": [
+      "Tinta y pizarra para los paneles; blanco roto sobre gris panel para los billetes.",
+      "Amarillo señal reservado a cambio, selección, acción principal y próxima parada.",
+      "Barlow Condensed en mayúsculas (señal de carretera), Barlow para el texto, JetBrains Mono tabular para datos.",
+      "Códigos de matrícula de provincia en placas mono de 3px.",
+      "Esquinas pequeñas (3–8px), filetes de 1px y troqueles de billete con perforación discontinua.",
+      "Colores de categoría como series de datos, nunca como decoración.",
+      "Las celdas del panel voltean como tablillas (flap) al cambiar provincia."
+    ],
+    "rules": [
+      {
+        "name": "The Signal Rule",
+        "body": "El amarillo señal solo marca cambio, selección, acción principal activa o próxima parada. Nunca rellena etiquetas informativas: la afinidad «Para ti» va en contorno amarillo sobre tinta, y el amarillo relleno queda para la línea de ruta y la fila siguiente.",
+        "section": "colors"
+      },
+      {
+        "name": "The Data Series Rule",
+        "body": "Los seis colores de categoría solo aparecen como serie de datos: fondo del marcador del mapa, miniatura de respaldo, cabecera del popup, icono del chip y etiqueta de contorno. Nunca como fondo de botones, paneles o titulares.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Grounds Rule",
+        "body": "Tinta o papel, sin término medio. Los tokens `board-*` solo viven sobre tinta; `steel` y `line` solo sobre claro.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Clock Rule",
+        "body": "Toda hora, kilómetro, nota o recuento va en JetBrains Mono con `tabular-nums`. Si es un número que el viajero compara, es mono.",
+        "section": "typography"
+      },
+      {
+        "name": "The Plate Code Rule",
+        "body": "Una provincia se identifica por su código de matrícula en placa mono (3px de radio): tinta con texto blanco en reposo, amarillo con tinta cuando está activa o es la del carrusel.",
+        "section": "typography"
+      },
+      {
+        "name": "The Condensed Caps Rule",
+        "body": "Las mayúsculas son para Barlow Condensed (titulares, botones) y para etiquetas mono pequeñas. El texto de lectura en Barlow nunca va en mayúsculas.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Paper Rule",
+        "body": "El papel no flota en reposo. Un billete gana sombra y sube 2px solo al pasar el puntero; lo único que lleva sombra permanente es lo que está encima de foto o de mapa.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Perforation Rule",
+        "body": "Entre la imagen y los datos de un billete siempre hay una perforación discontinua de 2px; la línea discontinua nunca es decorativa en otro lugar, solo señala discontinuidad.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do identificar cada provincia por su código de matrícula en placa mono de 3px (AV BU LE P SA SG SO VA ZA).",
+      "Do poner horas, kilómetros, notas y recuentos en JetBrains Mono con cifras tabulares.",
+      "Do reservar el amarillo señal (#FFD400) a la acción principal de la pantalla, la selección, la fila siguiente y la línea de ruta.",
+      "Do separar foto y datos de un billete con una perforación discontinua de 2px.",
+      "Do colorear por familia de categoría solo a través de `data-fam` y `--fam`, en marcadores, miniaturas y etiquetas de contorno.",
+      "Do mantener los paneles en tinta con sus tokens `board-*` y las superficies de lectura en papel sobre suelo gris.",
+      "Do usar iconos SVG de trazo que heredan `currentColor`.",
+      "Do respetar `prefers-reduced-motion`: sin tablillas, sin zoom lento de foto, cajones solo con opacidad."
+    ],
+    "donts": [
+      "Don't volver al titular serif sobre foto ni a la paleta crema-terracota del diseño anterior.",
+      "Don't rellenar de amarillo etiquetas informativas como la afinidad «Para ti»; van en contorno.",
+      "Don't usar los colores de categoría como fondo de botones, paneles o titulares.",
+      "Don't usar sombras desplazadas en duro ni radios de píldora en controles; los círculos son solo para paradas de ruta y el indicador de carga.",
+      "Don't usar líneas discontinuas como adorno: significan perforación, cambio de día o trayecto sin situar.",
+      "Don't poner en mayúsculas el texto de lectura en Barlow."
+    ]
+  }
+}
