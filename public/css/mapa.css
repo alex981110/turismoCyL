@@ -638,11 +638,9 @@
   border: 1px solid var(--board-muted); color: var(--board-text);
   font-family: var(--font-mono); font-size: 0.64rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
 }
-.plan-match--top { background: var(--signal); border-color: var(--signal); color: var(--ink); }
+.plan-match--top { background: transparent; border-color: var(--signal); color: var(--signal); }
 .plan-match--low { border-style: dashed; color: var(--board-muted); }
-/* La parada afín se tiñe entera de amarillo tenue, además de su etiqueta «Para ti» */
-.timeline-item.is-match { background: rgba(255,212,0,0.09); }
-.timeline-item.is-match.has-marker:hover { background: rgba(255,212,0,0.14); }
+/* La afinidad la lleva solo su etiqueta: el panel sigue en tinta y el amarillo relleno queda para la línea de ruta */
 .time-badge.is-hidden { color: var(--board-muted); opacity: 0.6; filter: blur(2px); user-select: none; }
 .plan-sched { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
 .plan-sched span { padding: 2px 6px; border: 1px solid var(--board-line); border-radius: 3px; font-family: var(--font-mono); font-size: 0.68rem; color: var(--board-muted); }
