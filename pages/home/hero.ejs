@@ -37,12 +37,12 @@
       </div>
     </div>
 
-    <!-- Panel de salidas: el plan real de fin de semana (dayPlans) de la provincia de la foto.
+    <!-- Panel de salidas: plan de ejemplo de fin de semana (dayPlans, curado a mano) de la provincia de la foto.
          Las filas son fijas; al cambiar de provincia solo voltean las celdas que cambian. -->
     <aside class="dep-board" aria-labelledby="depTitle">
       <header class="dep-head">
-        <h2 class="dep-title" id="depTitle">Salidas <span class="dep-code" id="depCode">SG</span> <span id="depProv">Segovia</span></h2>
-        <span class="dep-clock" title="Hora actual: marca en amarillo la próxima parada"><span class="visually-hidden">Hora actual </span><span id="depClock">--:--</span></span>
+        <h2 class="dep-title" id="depTitle">Plan de ejemplo <span class="dep-code" id="depCode">SG</span> <span id="depProv">Segovia</span></h2>
+        <button type="button" class="dep-own" onclick="openOnboarding()">Crea el tuyo</button>
       </header>
       <div class="dep-cols" aria-hidden="true"><span>Hora</span><span>Lugar</span><span>Tipo</span><span>Día</span></div>
       <ol class="dep-rows" id="depRows"></ol>
@@ -119,7 +119,9 @@
     var b = document.createElement('button');
     b.type = 'button';
     b.className = 'hero-dot' + (i === 0 ? ' active' : '');
-    b.textContent = CODES[SLIDES[i].prov];
+    // Código siempre visible; el nombre completo se despliega en la provincia activa
+    b.innerHTML = '<span class="hd-code">' + CODES[SLIDES[i].prov] + '</span><span class="hd-name">' + SLIDES[i].prov + '</span>';
+    b.title = SLIDES[i].prov;
     b.setAttribute('aria-label', SLIDES[i].prov);
     b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
     b.onclick = function() { goTo(i, true); resetTimer(); };
@@ -127,10 +129,10 @@
   });
 
   // ── Panel de salidas ──
-  // Seis filas fijas con el plan real de fin de semana (dayPlans.dia1 + dia2, en data.js).
+  // Seis filas fijas con el plan de ejemplo de fin de semana (dayPlans.dia1 + dia2, en data.js).
   // El tipo sale del marcador con el mismo nombre (si ya se han cargado los marcadores).
   // Al cambiar de provincia solo voltean las celdas cuyo texto cambia, como las tablillas
-  // de un panel; la fila en amarillo es la próxima parada según la hora actual.
+  // de un panel; la fila en amarillo es la primera parada, por donde empieza el plan.
   var ROWS = 6, COLS = ['time', 'place', 'type', 'day'];
   var rowEls = [];
   for (var r = 0; r < ROWS; r++) {
@@ -141,7 +143,6 @@
     rowEls.push(li);
   }
   function pad(t) { return t.length === 4 ? '0' + t : t; }
-  function mins(t) { var p = t.split(':'); return (+p[0]) * 60 + (+p[1]); }
   function typeOf(place) {
     if (typeof appState === 'undefined' || !appState.markers || !appState.markers.length) return '';
     var key = place.toLowerCase();
@@ -161,19 +162,12 @@
     el.style.animationDelay = delay + 'ms';
     el.classList.remove('is-flip'); void el.offsetWidth; el.classList.add('is-flip');
   }
-  // Próxima parada: la primera del sábado que aún no ha pasado hoy; si ya pasaron todas, la primera del domingo
-  function nextIndex(items) {
-    var now = new Date(), n = now.getHours() * 60 + now.getMinutes();
-    for (var i = 0; i < items.length; i++) if (items[i].day === 'Sáb' && mins(items[i].it.time) > n) return i;
-    for (var j = 0; j < items.length; j++) if (items[j].day === 'Dom') return j;
-    return 0;
-  }
   function renderBoard(prov, animate) {
     if (!rowsEl) return;
     var items = boardItems(prov);
     document.getElementById('depProv').textContent = prov;
     document.getElementById('depCode').textContent = CODES[prov];
-    var next = nextIndex(items);
+    var next = 0;   // la primera parada del sábado
     rowEls.forEach(function(li, i) {
       var d = items[i];
       var vals = d ? [pad(d.it.time), d.it.place, typeOf(d.it.place), d.day] : ['', '', '', ''];
@@ -183,11 +177,6 @@
       li.classList.toggle('is-sunday-start', !!d && d.day === 'Dom' && (!items[i - 1] || items[i - 1].day === 'Sáb'));
     });
   }
-  function tickClock() {
-    var now = new Date();
-    document.getElementById('depClock').textContent = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-  }
-  tickClock(); setInterval(tickClock, 30000);
   document.addEventListener('DOMContentLoaded', function() {
     renderBoard(SLIDES[0].prov, false);
     // Los marcadores llegan de la API después: rellena la columna Tipo cuando estén

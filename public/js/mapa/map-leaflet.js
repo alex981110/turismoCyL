@@ -54,7 +54,7 @@ function buildMarkerPopup(mk, reloadProvince) {
   const el = document.createElement('div');
   el.className = 'lf-popup';
   el.innerHTML = `
-    <div class="lf-popup-hero" data-fam="${catFam(mk.cat)}">${icon}<span class="lf-popup-code">${provinceCode[mk.province] || ''} ${String(mk.id ?? '').padStart(4, '0')}</span></div>
+    <div class="lf-popup-hero" data-fam="${catFam(mk.cat)}">${icon}<span class="lf-popup-code">${provinceCode[mk.province] || ''} · ${escHTML(mk.province)}</span></div>
     <div class="lf-popup-body">
       <strong class="lf-popup-name">
         <button type="button" class="lf-popup-fav" title="Añadir a favoritos">${favIcon(isFavorite(mk._id))}</button>
@@ -177,7 +177,7 @@ function renderMarkerCards() {
       <div class="mc-body">
         <div class="mc-name">${escHTML(mk.name)}</div>
         <div class="mc-meta">
-          <span class="mc-code">${provinceCode[mk.province] || ''} ${String(mk.id ?? '').padStart(4, '0')}</span>
+          <span class="mc-code">${provinceCode[mk.province] || ''} · ${escHTML(mk.province)}</span>
           <span class="mc-pill" data-fam="${catFam(mk.cat)}">${escHTML(catLabel[mk.cat] || mk.cat)}</span>
           ${starsHtml}
         </div>

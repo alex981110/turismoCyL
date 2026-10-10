@@ -2,6 +2,11 @@
 const DAY_ROUTE_COLORS = ['#0E1114', '#2459A6', '#B35E0B', '#6A4C9C', '#2D7A4C'];
 const DAY_ROUTE_LABELS = ['Día 1', 'Día 2', 'Día 3', 'Día 4', 'Día 5'];
 
+// Distancia y tiempo por carretera que devuelve OSRM, por índice de día
+let _routeTotals = {};
+const fmtKm   = m => `${(m / 1000).toLocaleString('es-ES', { maximumFractionDigits: 1 })} km`;
+const fmtTime = s => { const min = Math.round(s / 60); return min >= 60 ? `${Math.floor(min / 60)} h ${min % 60} min` : `${min} min`; };
+
 function buildGoogleMapsUrl(dayGroups) {
   const allPlaces = dayGroups.flatMap(d => d.places);
   if (allPlaces.length < 2) return '#';
@@ -32,7 +37,8 @@ function openRouteMap(places, title, days) {
 
   // Título y subtext
   document.getElementById('routeMapTitleText').textContent = (title || 'Ruta');
-  document.getElementById('routeMapSubtext').textContent   = `${allPlaces.length} paradas`;
+  document.getElementById('routeMapSubtext').textContent   = `${allPlaces.length} paradas · calculando la ruta por carretera…`;
+  _routeTotals = {};
 
   // Sidebar: por día si hay varios
   const list = document.getElementById('routeMapStopList');
@@ -40,10 +46,11 @@ function openRouteMap(places, title, days) {
   list.innerHTML = dayGroups.map((day, di) => {
     const color = DAY_ROUTE_COLORS[di % DAY_ROUTE_COLORS.length];
     const header = multiDay ? `
-      <div style="display:flex;align-items:center;gap:8px;padding:12px 10px 6px;margin-top:${di > 0 ? '10px' : '0'};">
-        <div style="width:12px;height:12px;border-radius:50%;background:${color};flex-shrink:0;"></div>
-        <span style="font-family:var(--font-display);font-size:0.8rem;color:${color};letter-spacing:0.06em;">${day.label || DAY_ROUTE_LABELS[di]}</span>
-        <span style="font-size:0.7rem;color:var(--ink-muted);">${day.places.length} paradas</span>
+      <div class="route-day" style="--day:${color};">
+        <span class="route-day-dot"></span>
+        <span class="route-day-name">${day.label || DAY_ROUTE_LABELS[di]}</span>
+        <span class="route-day-count">${day.places.length} paradas</span>
+        <span class="route-day-km" id="routeDayKm${di}"></span>
       </div>` : '';
     const stops = day.places.map((p, i) => {
       const mk  = appState.markers.find(m => m.name === p.name);
@@ -59,12 +66,8 @@ function openRouteMap(places, title, days) {
     }).join('');
     const gmapsUrl = day.places.length >= 2 ? buildGoogleMapsUrl([day]) : '#';
     const gmapsBtn = `
-      <a href="${gmapsUrl}" target="_blank" rel="noopener"
-         style="display:inline-flex;align-items:center;gap:6px;margin:8px 10px 4px;padding:8px 14px;
-                background:var(--terra);border:none;
-                border-radius:var(--radius-xl);color:white;font-size:0.78rem;font-weight:600;text-decoration:none;width:calc(100% - 20px);
-                box-sizing:border-box;justify-content:center;box-shadow:0 2px 8px rgba(184,92,56,0.3);">
-        <svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;">
+      <a href="${gmapsUrl}" target="_blank" rel="noopener" class="route-gmaps">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5 14.5 7.62 14.5 9 13.38 11.5 12 11.5z"/>
         </svg>
         ${multiDay ? `Abrir ${day.label || DAY_ROUTE_LABELS[di]} en Google Maps` : 'Abrir en Google Maps'}
@@ -84,11 +87,11 @@ function openRouteMap(places, title, days) {
   container.innerHTML = '<div id="routeMapLeaflet" style="width:100%;height:100%;"></div>';
 
   _routeMap = L.map('routeMapLeaflet', { zoomControl: true }).setView([41.5, -4.0], 7);
-  // CARTO exige ya clave de API; teselas OSM con un filtro cálido en CSS (.tiles-warm)
+  // CARTO exige ya clave de API; teselas OSM en gris neutro (.tiles-neutral) para que destaquen las rutas de cada día
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     maxZoom: 19,
-    className: 'tiles-warm'
+    className: 'tiles-neutral'
   }).addTo(_routeMap);
 
   const allLatLngs = [];
@@ -135,17 +138,20 @@ function openRouteMap(places, title, days) {
         const c = rc.getContainer();
         if (c) c.style.display = 'none';
         _routeMap.removeLayer(fallback);
-        // Actualizar subtext con distancia total del primer día que responda
-        if (di === 0) {
-          const s    = e.routes[0].summary;
-          const km   = (s.totalDistance / 1000).toFixed(1);
-          const mins = Math.round(s.totalTime / 60);
-          const hrs  = mins >= 60 ? `${Math.floor(mins/60)}h ${mins%60}min` : `${mins} min`;
-          document.getElementById('routeMapSubtext').textContent =
-            `Herramienta en desarrollo`;
-        }
+        // Distancia y tiempo por carretera (OSRM) de cada día; la cabecera suma todos los días
+        const s = e.routes[0].summary;
+        _routeTotals[di] = { m: s.totalDistance, s: s.totalTime };
+        const dayKm = document.getElementById('routeDayKm' + di);
+        if (dayKm) dayKm.textContent = `${fmtKm(s.totalDistance)} · ${fmtTime(s.totalTime)}`;
+        const all = Object.values(_routeTotals);
+        const m = all.reduce((a, t) => a + t.m, 0), t = all.reduce((a, x) => a + x.s, 0);
+        document.getElementById('routeMapSubtext').textContent =
+          `${allPlaces.length} paradas · ${fmtKm(m)} y ${fmtTime(t)} por carretera${all.length < dayGroups.length ? ' (calculando…)' : ''}`;
       });
-      rc.on('routingerror', () => {});
+      rc.on('routingerror', () => {
+        if (!Object.keys(_routeTotals).length)
+          document.getElementById('routeMapSubtext').textContent = `${allPlaces.length} paradas · sin conexión con el servidor de rutas: se ven en línea recta`;
+      });
     } catch(e) {}
   });
 

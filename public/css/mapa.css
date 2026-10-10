@@ -694,3 +694,22 @@
 .myitin-empty-ico { width: 48px; height: 48px; color: var(--ink); margin-bottom: 14px; }
 .myitin-empty h3 { font-size: 1.7rem; text-transform: uppercase; margin-bottom: 10px; }
 .myitin-empty p { max-width: 48ch; margin: 0 auto 24px; color: var(--steel); }
+
+/* Mapa de ruta: cabecera de cada día y enlace a Google Maps */
+.route-day { display: grid; grid-template-columns: 12px auto 1fr; align-items: center; gap: 2px 8px; padding: 14px 16px 8px; border-top: 1px solid var(--line); }
+.route-day:first-child { border-top: none; }
+.route-day-dot { width: 12px; height: 12px; border-radius: 3px; background: var(--day); }
+.route-day-name { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink); }
+.route-day-count { justify-self: end; font-family: var(--font-mono); font-size: 0.7rem; color: var(--steel); }
+.route-day-km { grid-column: 2 / -1; font-family: var(--font-mono); font-size: 0.72rem; color: var(--steel); font-variant-numeric: tabular-nums; }
+.route-day-km:empty { display: none; }
+.route-gmaps {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 42px; margin: 10px 16px 6px; padding: 0 14px;
+  border: 1.5px solid var(--ink); border-radius: var(--radius);
+  color: var(--ink); text-decoration: none;
+  font-family: var(--font-display); font-weight: 600; font-size: 0.98rem; letter-spacing: 0.05em; text-transform: uppercase;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.route-gmaps svg { width: 15px; height: 15px; flex-shrink: 0; }
+.route-gmaps:hover { background: var(--ink); color: #fff; }

@@ -451,8 +451,8 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
       ? `<span class="plan-match">Recomendado</span>` : '';
     const lowNote = matchPct < 0.2 && ranking.length > 0
       ? `<span class="plan-match plan-match--low">Menos afín</span>` : '';
+    // Horas y avisos de horario visibles para todos: son lo que promete la portada
     const sched = (() => {
-      if (!isLogged) return '';
       const desc = item.desc || ''; const w = [];
       [/cierra a las [\d:]+/i, /horario[^.]+/i, /requiere reserva[^.]*/i, /acceso regulado[^.]*/i, /\d{2}:\d{2}-\d{2}:\d{2}/].forEach(re => {
         const m = desc.match(re); if (m) w.push(m[0]);
@@ -461,7 +461,7 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
     })();
     const lat = mk?.lat || 0; const lng = mk?.lng || 0;
     return `<div class="timeline-item has-marker plan-item${matchPct >= 0.75 ? ' is-match' : ''}${lat ? '' : ' is-unlocated'}" data-action="focus" data-lat="${lat}" data-lng="${lng}">
-      ${isLogged ? `<div class="time-badge">${item.time}</div>` : `<div class="time-badge is-hidden" aria-label="Hora visible con cuenta">--:--</div>`}
+      <div class="time-badge">${item.time}</div>
       <div class="timeline-content">
         <div class="plan-item-row">
           ${photo ? `<div class="plan-item-photo"><img src="${photo}" alt="" onerror="this.parentNode.style.display='none'"></div>` : ''}
@@ -470,7 +470,6 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
             <div class="plan-tags">${cat ? `<span class="plan-item-cat" data-fam="${catFam(mk?.cat)}">${escHTML(cat)}</span>` : ''}${matchBadge}${lowNote}</div>
             <p class="plan-item-desc">${item.desc}</p>
             ${sched}
-            ${!isLogged ? `<span class="plan-locked-note"><a href="#" class="plan-register-link" data-action="open-modal" data-modal="register">Regístrate</a> para ver los horarios</span>` : ''}
             <span class="plan-map-link">${catIcon.default} Ver en el mapa</span>
           </div>
         </div>
