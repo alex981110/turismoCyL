@@ -246,9 +246,9 @@ async function setMarkerPhoto(id, url) {
     if (!res.ok) throw new Error();
     mk.photo = trimmed;
     if (appState.selectedProvince) loadProvinceMarkers(appState.selectedProvince);
-    showToast('🖼️ Foto guardada en base de datos');
+    showToast('Foto guardada en base de datos');
   } catch(e) {
-    showToast('❌ Error guardando la foto');
+    showToast('Error guardando la foto');
   }
 }
 

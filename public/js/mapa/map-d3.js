@@ -1,15 +1,10 @@
 // D3 REAL MAP — GeoJSON provinces
 // ============================================================
+// Todas las provincias en el mismo gris de panel: el color se reserva para el estado (hover, activa)
 const PROVINCE_COLORS = {
-  'León':       '#e8a598',
-  'Zamora':     '#a8d4e8',
-  'Salamanca':  '#e8d8a8',
-  'Valladolid': '#a8e8c8',
-  'Palencia':   '#c8b8e8',
-  'Burgos':     '#b8c8e8',
-  'Ávila':      '#c8b89a',
-  'Segovia':    '#e8c8a8',
-  'Soria':      '#e8e8a8',
+  'León': '#D6DADF', 'Zamora': '#D6DADF', 'Salamanca': '#D6DADF',
+  'Valladolid': '#D6DADF', 'Palencia': '#D6DADF', 'Burgos': '#D6DADF',
+  'Ávila': '#D6DADF', 'Segovia': '#D6DADF', 'Soria': '#D6DADF',
 };
 
 const CYL_PROVINCES = new Set(['León','Zamora','Salamanca','Valladolid','Palencia','Burgos','Ávila','Segovia','Soria']);
@@ -85,7 +80,17 @@ async function initD3Map() {
       selectProvince(n);
     });
 
-  // Province labels omitted — names shown on hover via tooltip
+  // Código de matrícula en el centro de cada provincia (el nombre completo va en el tooltip)
+  svg.selectAll('.province-code')
+    .data(cylFeatures)
+    .enter()
+    .append('text')
+    .attr('class', 'province-code')
+    .attr('transform', d => 'translate(' + path.centroid(d) + ')')
+    .attr('text-anchor', 'middle')
+    .attr('dominant-baseline', 'central')
+    .attr('data-province', d => PROVINCE_NAME_MAP[d.properties.name] || d.properties.name)
+    .text(d => provinceCode[PROVINCE_NAME_MAP[d.properties.name] || d.properties.name] || '');
 }
 
 function drawFallbackMap(svg, W, H) {
@@ -163,10 +168,10 @@ function highlightProvinceBoundary(name) {
   provinceBoundariesLayer.eachLayer(layer => {
     const n = PROVINCE_NAME_MAP[layer.feature.properties.name] || layer.feature.properties.name;
     if (n === name) {
-      layer.setStyle({ color: '#B85C38', weight: 2.5, opacity: 1, fillColor: '#B85C38', fillOpacity: 0.06 });
+      layer.setStyle({ color: '#0E1114', weight: 2.5, opacity: 1, fillColor: '#FFD400', fillOpacity: 0.04 });
       layer.bringToFront();
     } else {
-      layer.setStyle({ color: '#6B5C4E', weight: 1.2, opacity: 0.55, fillOpacity: 0 });
+      layer.setStyle({ color: '#0E1114', weight: 1.2, opacity: 0.4, fillOpacity: 0 });
     }
   });
 }
@@ -180,7 +185,7 @@ function renderProvinceList() {
     if (!list) return;
     list.innerHTML = provinces.map(p => {
       const active = p === appState.selectedProvince ? 'active' : '';
-      return `<button type="button" class="province-pill ${active}" data-action="province" data-province="${p}">${p}</button>`;
+      return `<button type="button" class="province-pill ${active}" data-action="province" data-province="${p}"><span class="pp-code">${provinceCode[p]}</span><span class="pp-name">${p}</span></button>`;
     }).join('');
   });
 }
@@ -190,7 +195,7 @@ function renderProvinceListExplore() {
   if (!list) return;
   list.innerHTML = provinces.map(p => {
     const active = p === appState.selectedProvince ? 'active' : '';
-    return `<button type="button" class="province-pill ${active}" data-action="province" data-province="${p}">${p}</button>`;
+    return `<button type="button" class="province-pill ${active}" data-action="province" data-province="${p}"><span class="pp-code">${provinceCode[p]}</span><span class="pp-name">${p}</span></button>`;
   }).join('');
 }
 
@@ -214,7 +219,7 @@ function selectProvince(name, skipPlanner = false) {
   if (plannerBtn) plannerBtn.style.display = 'block';
 
   const chip = document.getElementById('provinceChip');
-  if (chip) chip.style.display = 'flex';
+  if (chip) { chip.style.display = 'flex'; chip.dataset.code = provinceCode[name] || ''; }
   const catSection = document.getElementById('catFilterSection');
   if (catSection) catSection.style.display = 'block';
   const strip = document.getElementById('msb-prov-strip');

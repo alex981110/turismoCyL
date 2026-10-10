@@ -19,34 +19,34 @@ const OB_KEYWORDS = {
 };
 
 // ── Paleta del onboarding ──────────────────────────────────────────────────
-// Fondo crema cálido · acentos terracota/ámbar · texto tinta oscura
+// Superficie clara · tinta para el texto y la selección · amarillo señal para lo elegido
 const OB_C = {
-  bg:           '#FDFAF5',          // crema cálido (var(--cream))
-  bgCard:       '#FFFFFF',          // blanco puro para tarjetas
-  bgCardSel:    'rgba(184,92,56,0.07)', // terracota tenue al seleccionar
-  border:       'rgba(184,92,56,0.18)', // borde terracota suave
-  borderSel:    '#B85C38',          // borde terracota al seleccionar (var(--terra))
-  accent:       '#B85C38',          // terracota principal
-  accentLight:  '#D4845C',          // terracota claro
-  accentBg:     'rgba(184,92,56,0.08)', // fondo accent
-  accentBg2:    'rgba(184,92,56,0.15)', // fondo accent más intenso
-  text:         '#2A2118',          // tinta oscura (var(--ink))
-  textMuted:    '#8C7E6E',          // tinta apagada (var(--ink-muted))
-  textSoft:     '#5A4D3E',          // tinta suave (var(--ink-soft))
-  badge:        '#B85C38',          // color badge número
-  badgeText:    '#FFFFFF',
-  progressBg:   'rgba(184,92,56,0.12)',
-  rankBg:       'rgba(184,92,56,0.08)',
-  rankBorder:   'rgba(184,92,56,0.25)',
-  rankText:     '#B85C38',
-  btnPrimary:   'linear-gradient(135deg,#B85C38,#D4845C)',
-  btnPrimaryHov:'linear-gradient(135deg,#8B3A1F,#B85C38)',
-  btnSecBg:     'rgba(184,92,56,0.06)',
-  btnSecBorder: 'rgba(184,92,56,0.25)',
-  btnSecText:   '#B85C38',
-  lockBg:       'rgba(184,92,56,0.06)',
-  lockBorder:   'rgba(184,92,56,0.15)',
-  shadow:       '0 8px 40px rgba(42,33,24,0.12)',
+  bg:           'var(--surface)',
+  bgCard:       'var(--surface)',
+  bgCardSel:    'var(--signal)',          // tarjeta elegida
+  border:       'rgba(14,17,20,0.26)',
+  borderSel:    'var(--ink)',
+  accent:       'var(--ink)',
+  accentLight:  'var(--steel)',
+  accentBg:     'var(--panel)',
+  accentBg2:    'rgba(14,17,20,0.12)',
+  text:         'var(--ink)',
+  textMuted:    'var(--steel)',
+  textSoft:     'var(--ink-soft)',
+  badge:        'var(--ink)',             // número de orden
+  badgeText:    'var(--signal)',
+  progressBg:   'rgba(14,17,20,0.12)',
+  rankBg:       'var(--panel)',
+  rankBorder:   'rgba(14,17,20,0.26)',
+  rankText:     'var(--ink)',
+  btnPrimary:   'var(--ink)',
+  btnPrimaryHov:'var(--slate-2)',
+  btnSecBg:     'transparent',
+  btnSecBorder: 'rgba(14,17,20,0.26)',
+  btnSecText:   'var(--ink)',
+  lockBg:       'var(--panel)',
+  lockBorder:   'rgba(14,17,20,0.14)',
+  shadow:       'var(--shadow-md)',
 };
 
 const OB_STORAGE_KEY = 'cyl_prefs';
@@ -133,9 +133,9 @@ function openOnboarding() {
         btnNext.style.fontSize = '0.87rem';
         btnNext.style.cursor = 'pointer';
         btnNext.style.transition = 'all 0.2s';
-        btnNext.style.boxShadow = '0 4px 16px rgba(184,92,56,0.35)';
-        btnNext.onmouseover = () => { btnNext.style.background = OB_C.btnPrimaryHov; btnNext.style.boxShadow = '0 6px 20px rgba(184,92,56,0.45)'; };
-        btnNext.onmouseout  = () => { btnNext.style.background = OB_C.btnPrimary;    btnNext.style.boxShadow = '0 4px 16px rgba(184,92,56,0.35)'; };
+        btnNext.style.boxShadow = '0 4px 16px rgba(14,17,20,0.35)';
+        btnNext.onmouseover = () => { btnNext.style.background = OB_C.btnPrimaryHov; btnNext.style.boxShadow = '0 6px 20px rgba(14,17,20,0.45)'; };
+        btnNext.onmouseout  = () => { btnNext.style.background = OB_C.btnPrimary;    btnNext.style.boxShadow = '0 4px 16px rgba(14,17,20,0.35)'; };
       }
     }
     const progress = document.getElementById('obProgress');
@@ -162,7 +162,7 @@ registerActions({
 function closeOnboarding() { document.getElementById('onboardingModal').style.display = 'none'; }
 
 function _obTag(icon, label) {
-  return `<span style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:${OB_C.accentBg};border:1px solid ${OB_C.rankBorder};border-radius:20px;font-size:0.8rem;color:${OB_C.accent};font-weight:600;">${icon} ${label}</span>`;
+  return `<span style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:${OB_C.accentBg};border:1px solid ${OB_C.rankBorder};border-radius:var(--radius);font-size:0.8rem;color:${OB_C.accent};font-weight:600;">${icon} ${label}</span>`;
 }
 
 function renderObResumeStep() {
@@ -183,7 +183,7 @@ function renderObResumeStep() {
   }).join('');
 
   body.innerHTML = `
-    <h3 style="font-family:'Instrument Serif',serif;color:${OB_C.text};font-size:1.15rem;margin:0 0 6px;font-weight:700;">¿Mantenemos tus gustos?</h3>
+    <h3 style="font-family:var(--font-display);color:${OB_C.text};font-size:1.15rem;margin:0 0 6px;font-weight:700;">¿Mantenemos tus gustos?</h3>
     <p style="color:${OB_C.textMuted};font-size:0.85rem;margin:0 0 18px;line-height:1.6;">Tienes ${obRanking.length} preferencias guardadas.</p>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;">${topLabels}</div>
     <button type="button" class="ob-link-btn" data-action="ob-change-prefs">
@@ -206,7 +206,7 @@ function renderObStep() {
 
   if (obStep === 1) {
     body.innerHTML = `
-      <h3 style="font-family:'Instrument Serif',serif;color:${OB_C.text};font-size:1.2rem;margin:0 0 4px;font-weight:700;">¿Qué te gusta más?</h3>
+      <h3 style="font-family:var(--font-display);color:${OB_C.text};font-size:1.2rem;margin:0 0 4px;font-weight:700;">¿Qué te gusta más?</h3>
       <p style="color:${OB_C.textMuted};font-size:0.85rem;margin:0 0 20px;line-height:1.6;">Haz clic en las tarjetas en orden de preferencia.</p>
       <div id="obPrefGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
       <div id="obRankingList" style="margin-top:20px;display:none;">
@@ -232,7 +232,7 @@ function renderObStep() {
     if (!window._obSelectedDays) window._obSelectedDays = 2;
 
     body.innerHTML = `
-      <h3 style="font-family:'Instrument Serif',serif;color:${OB_C.text};font-size:1.2rem;margin:0 0 4px;font-weight:700;">¿Cuántos días tienes?</h3>
+      <h3 style="font-family:var(--font-display);color:${OB_C.text};font-size:1.2rem;margin:0 0 4px;font-weight:700;">¿Cuántos días tienes?</h3>
       <p style="color:${OB_C.textMuted};font-size:0.85rem;margin:0 0 20px;line-height:1.6;">Los itinerarios de 3 a 7 días requieren registro.</p>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
         ${dayOpts.map(opt => {
@@ -248,7 +248,7 @@ function renderObStep() {
           </button>`;
         }).join('')}
       </div>
-      ${!isLogged ? `<div style="margin-top:16px;padding:12px 16px;background:${OB_C.lockBg};border:1px solid ${OB_C.lockBorder};border-radius:10px;font-size:0.8rem;color:${OB_C.textMuted};line-height:1.6;">
+      ${!isLogged ? `<div style="margin-top:16px;padding:12px 16px;background:${OB_C.lockBg};border:1px solid ${OB_C.lockBorder};border-radius:var(--radius);font-size:0.8rem;color:${OB_C.textMuted};line-height:1.6;">
         <svg class="cat-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Itinerarios de 3-7 días disponibles con cuenta gratuita.
         <a href="#" class="ob-lock-link" data-action="ob-register">Registrarse →</a>
       </div>` : ''}`;
@@ -256,22 +256,21 @@ function renderObStep() {
   } else {
     // ── PASO 3: Selector de provincias (multi-selección) ──────────────────
     const provs = ['Ávila','Burgos','León','Palencia','Salamanca','Segovia','Soria','Valladolid','Zamora'];
-    const provIcons = { 'Ávila':'🏰','Burgos':'⛪','León':'🦁','Palencia':'🌾','Salamanca':'📚','Segovia':'🏛️','Soria':'🌿','Valladolid':'🍷','Zamora':'🌊' };
     if (!Array.isArray(window._obSelectedProvinces)) window._obSelectedProvinces = [];
     const numDays = window._obSelectedDays || 2;
     body.innerHTML = `
-      <h3 style="font-family:'Instrument Serif',serif;color:${OB_C.text};font-size:1.2rem;margin:0 0 4px;font-weight:700;">¿A qué provincias viajas?</h3>
+      <h3 style="font-family:var(--font-display);color:${OB_C.text};font-size:1.2rem;margin:0 0 4px;font-weight:700;">¿A qué provincias viajas?</h3>
       <p style="color:${OB_C.textMuted};font-size:0.85rem;margin:0 0 6px;line-height:1.6;">
         Itinerario de <strong style="color:${OB_C.accent};font-weight:700;">${numDays} días</strong> · Puedes elegir <strong>varias provincias</strong>.
       </p>
-      <p id="obProvHint" style="color:${OB_C.textMuted};font-size:0.78rem;margin:0 0 14px;font-style:italic;">
+      <p id="obProvHint" style="color:${OB_C.textMuted};font-size:0.78rem;margin:0 0 14px;">
         ${numDays === 1 ? 'Selecciona 1 provincia.' : `Hasta ${Math.min(numDays, provs.length)} provincias (los días se reparten entre ellas).`}
       </p>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
         ${provs.map(p => `
           <button type="button" class="ob-prov" data-action="ob-province" data-province="${p}" id="obProv_${p.replace(/\s/g,'_')}">
             <span class="ob-prov-badge" id="obProvBadge_${p.replace(/\s/g,'_')}"></span>
-            <div class="ob-prov-icon">${provIcons[p] || '🗺️'}</div>
+            <div class="ob-prov-icon">${provinceCode[p]}</div>
             ${p}
           </button>`).join('')}
       </div>
@@ -302,7 +301,7 @@ function renderObPrefGrid() {
   if (list) list.style.display = obRanking.length ? 'block' : 'none';
   if (items) items.innerHTML = obRanking.map((id, i) => {
     const p = OB_PREFS.find(x => x.id === id);
-    return `<span style="background:${OB_C.accentBg};border:1px solid ${OB_C.rankBorder};border-radius:20px;padding:4px 12px;font-size:0.78rem;color:${OB_C.rankText};font-weight:600;">${i+1}. ${p.icon} ${p.label}</span>`;
+    return `<span style="background:${OB_C.accentBg};border:1px solid ${OB_C.rankBorder};border-radius:var(--radius);padding:4px 12px;font-size:0.78rem;color:${OB_C.rankText};font-weight:600;">${i+1}. ${p.icon} ${p.label}</span>`;
   }).join('');
 }
 
@@ -335,7 +334,7 @@ function _obUpdateProvSummary() {
   // Distribución de días sugerida
   const split = _obSplitDays(numDays, list.length);
   const parts = list.map((p, i) => `<strong style="color:${OB_C.accent};">${p}</strong> <span style="color:${OB_C.textMuted};">(${split[i]} día${split[i] !== 1 ? 's' : ''})</span>`).join(' · ');
-  sum.innerHTML = `📍 ${parts}`;
+  sum.innerHTML = `${parts}`;
 }
 
 // Reparte numDays entre numProvs lo más equitativamente posible
@@ -363,7 +362,7 @@ function obToggleProvince(name) {
   } else {
     // Comprobar límite
     if (list.length >= maxProvs) {
-      showToast(`⚠️ Para ${numDays} días puedes elegir hasta ${maxProvs} provincia${maxProvs !== 1 ? 's' : ''}`);
+      showToast(`Para ${numDays} días puedes elegir hasta ${maxProvs} provincia${maxProvs !== 1 ? 's' : ''}`);
       return;
     }
     list.push(name);
@@ -385,11 +384,11 @@ function obNext() {
   if (obStep === 1) {
     obStep = 2; renderObStep();
   } else if (obStep === 2) {
-    if (!window._obSelectedDays) { showToast('⚠️ Selecciona cuántos días'); return; }
+    if (!window._obSelectedDays) { showToast('Selecciona cuántos días'); return; }
     obStep = 3; renderObStep();
   } else {
     const provList = window._obSelectedProvinces || [];
-    if (!provList.length) { showToast('⚠️ Selecciona al menos una provincia'); return; }
+    if (!provList.length) { showToast('Selecciona al menos una provincia'); return; }
     obSavePrefs();
     closeOnboarding();
     const days = window._obSelectedDays || 2;
@@ -402,7 +401,7 @@ function launchTripPlan(provincesList, ranking, numDays) {
   numDays = numDays || 2;
   const isLogged = !!appState.currentUser;
   const allDays = buildTripPlan(provincesList, ranking, numDays);
-  if (!allDays.length) { showToast('⚠️ No se pudo generar el itinerario'); return; }
+  if (!allDays.length) { showToast('No se pudo generar el itinerario'); return; }
 
   const mainProv = provincesList[0];
   const multi = provincesList.length > 1;
@@ -435,8 +434,8 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
   if (overlay) overlay.style.display = 'none';
   let badge = document.getElementById('personalizedBadge');
   if (!badge) { badge = document.createElement('div'); badge.id = 'personalizedBadge'; badge.style.cssText = 'grid-column:1/-1;'; container.parentNode.insertBefore(badge, container); }
-  const topPrefs = ranking.slice(0, 3).map(id => { const p = OB_PREFS.find(x => x.id === id); return p ? p.icon + ' ' + p.label : ''; }).filter(Boolean);
-  badge.innerHTML = `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 18px;background:rgba(42,33,24,0.04);border-bottom:1px solid rgba(184,92,56,0.08);"><span style="font-size:0.78rem;color:var(--ink-muted);">✨ Personalizado para:</span><span style="font-size:0.82rem;color:var(--terra);font-weight:600;">${topPrefs.join(' · ')}</span><button type="button" class="plan-prefs-btn" data-action="ob-open">🎯 Cambiar gustos</button></div>`;
+  const topPrefs = ranking.slice(0, 3).map(id => { const p = OB_PREFS.find(x => x.id === id); return p ? `<span class="plan-pref">${p.icon} ${escHTML(p.label)}</span>` : ''; }).filter(Boolean);
+  badge.innerHTML = `<div class="plan-prefs"><span class="plan-prefs-label">Ordenado por tus gustos</span><div class="plan-prefs-list">${topPrefs.join('')}</div><button type="button" class="plan-prefs-btn" data-action="ob-open">Cambiar</button></div>`;
   const _allScores = (allDays && allDays.length ? allDays.flatMap(d => d.items) : [...dia1, ...dia2]).map(i => planAffinity(i, ranking));
   const _maxScore = Math.max(..._allScores, 1);
   const renderItem = (item) => {
@@ -447,46 +446,44 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
     const score = planAffinity(item, ranking);
     const matchPct = _maxScore > 0 ? score / _maxScore : 0;
     const matchBadge = matchPct >= 0.75
-      ? `<span style="font-size:0.62rem;background:rgba(184,92,56,0.12);border:1px solid rgba(184,92,56,0.4);border-radius:20px;color:var(--terra-dark);padding:1px 6px;margin-left:5px;vertical-align:middle;">★ Para ti</span>`
+      ? `<span class="plan-match plan-match--top">Para ti</span>`
       : matchPct >= 0.35
-      ? `<span style="font-size:0.62rem;background:rgba(42,33,24,0.06);border:1px solid rgba(42,33,24,0.18);border-radius:20px;color:var(--ink-soft);padding:1px 6px;margin-left:5px;vertical-align:middle;">✦ Rec.</span>` : '';
+      ? `<span class="plan-match">Recomendado</span>` : '';
     const lowNote = matchPct < 0.2 && ranking.length > 0
-      ? `<span style="font-size:0.66rem;color:var(--ink-muted);margin-left:5px;font-style:italic;vertical-align:middle;">· menos afín</span>` : '';
+      ? `<span class="plan-match plan-match--low">Menos afín</span>` : '';
     const sched = (() => {
       if (!isLogged) return '';
       const desc = item.desc || ''; const w = [];
       [/cierra a las [\d:]+/i, /horario[^.]+/i, /requiere reserva[^.]*/i, /acceso regulado[^.]*/i, /\d{2}:\d{2}-\d{2}:\d{2}/].forEach(re => {
         const m = desc.match(re); if (m) w.push(m[0]);
       });
-      return w.length ? `<div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:3px;">${w.map(x => `<span style="font-size:0.68rem;background:rgba(42,33,24,0.06);border:1px solid rgba(42,33,24,0.15);border-radius:20px;color:var(--ink-soft);padding:1px 6px;">🕐 ${x}</span>`).join('')}</div>` : '';
+      return w.length ? `<div class="plan-sched">${w.map(x => `<span>${escHTML(x)}</span>`).join('')}</div>` : '';
     })();
     const lat = mk?.lat || 0; const lng = mk?.lng || 0;
-    return `<div class="timeline-item has-marker plan-item" data-action="focus" data-lat="${lat}" data-lng="${lng}">
-      ${isLogged ? `<div class="time-badge">${item.time}</div>` : `<div class="time-badge" style="opacity:0.3;filter:blur(3px);user-select:none;font-size:0.68rem;">--:--</div>`}
-      <div class="timeline-content" style="flex:1;">
-        <div style="display:flex;gap:8px;align-items:flex-start;">
-          ${photo ? `<div style="width:44px;height:44px;flex-shrink:0;overflow:hidden;border-radius:6px;border:1px solid rgba(42,33,24,0.14);"><img src="${photo}" alt="" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentNode.style.display='none'"></div>` : ''}
-          <div style="flex:1;min-width:0;">
-            <h4 style="margin:0 0 2px;font-size:0.85rem;color:var(--ink);line-height:1.3;">${escHTML(item.place)}
-              <span style="font-size:0.62rem;background:rgba(184,92,56,0.08);border:1px solid rgba(42,33,24,0.14);border-radius:4px;color:var(--terra);padding:1px 5px;margin-left:4px;vertical-align:middle;">${icon} ${cat}</span>
-              ${matchBadge}${lowNote}
-            </h4>
-            <p style="margin:0;font-size:0.78rem;color:var(--ink-soft);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${item.desc}</p>
+    return `<div class="timeline-item has-marker plan-item${matchPct >= 0.75 ? ' is-match' : ''}" data-action="focus" data-lat="${lat}" data-lng="${lng}">
+      ${isLogged ? `<div class="time-badge">${item.time}</div>` : `<div class="time-badge is-hidden" aria-label="Hora visible con cuenta">--:--</div>`}
+      <div class="timeline-content">
+        <div class="plan-item-row">
+          ${photo ? `<div class="plan-item-photo"><img src="${photo}" alt="" onerror="this.parentNode.style.display='none'"></div>` : ''}
+          <div class="plan-item-text">
+            <h4>${escHTML(item.place)}</h4>
+            <div class="plan-tags">${cat ? `<span class="plan-item-cat" data-fam="${catFam(mk?.cat)}">${escHTML(cat)}</span>` : ''}${matchBadge}${lowNote}</div>
+            <p class="plan-item-desc">${item.desc}</p>
             ${sched}
-            ${!isLogged ? `<span style="font-size:0.68rem;color:var(--ink-muted);margin-top:3px;display:inline-block;">🔒 <a href="#" class="plan-register-link" data-action="open-modal" data-modal="register">Regístrate</a> para ver horarios</span>` : ''}
-            <span style="font-size:0.68rem;color:var(--terra);margin-top:2px;display:inline-block;">🗺️ Ver en mapa</span>
+            ${!isLogged ? `<span class="plan-locked-note"><a href="#" class="plan-register-link" data-action="open-modal" data-modal="register">Regístrate</a> para ver los horarios</span>` : ''}
+            <span class="plan-map-link">${catIcon.default} Ver en el mapa</span>
           </div>
         </div>
       </div>
     </div>`;
   };
-  const renderDay = (items, dayLabel, emoji) =>
-    `<div class="col-12 col-md-6"><div class="day-plan-card h-100"><h3>${emoji} ${dayLabel} en ${province}</h3><div class="timeline">${items.length ? items.map(renderItem).join('') : '<p style="color:var(--ink-muted);font-style:italic;font-size:0.85rem;padding:12px;">Sin lugares disponibles.</p>'}</div></div></div>`;
+  const renderDay = (items, dayLabel) =>
+    `<div class="col-12 col-md-6"><div class="day-plan-card h-100"><h3>${dayLabel} en ${province}</h3><div class="timeline">${items.length ? items.map(renderItem).join('') : '<p class="plan-day-empty">Sin lugares disponibles.</p>'}</div></div></div>`;
   const planAllDays = allDays || appState.currentPlan?.allDays;
   if (planAllDays && planAllDays.length > 0) {
-    container.innerHTML = planAllDays.map(d => renderDay(d.items, d.label, d.emoji)).join('');
+    container.innerHTML = planAllDays.map(d => renderDay(d.items, d.label)).join('');
   } else {
-    container.innerHTML = renderDay(dia1, 'Sábado', '🌅') + renderDay(dia2, 'Domingo', '🌄');
+    container.innerHTML = renderDay(dia1, 'Sábado') + renderDay(dia2, 'Domingo');
   }
   appState.currentPlan = { province, dia1, dia2, allDays: allDays || appState.currentPlan?.allDays, numDays: appState.currentPlan?.numDays };
   const pdfBtn = document.getElementById('pdfBtn');
@@ -504,27 +501,25 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
   if (!routeBtn) {
     routeBtn = document.createElement('button');
     routeBtn.id = 'plannerRouteBtn'; routeBtn.className = 'pdf-btn';
-    routeBtn.style.cssText = 'background:rgba(184,92,56,0.08);border:1px solid var(--terra);margin-left:8px;border-radius:8px;';
-    routeBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg>&nbsp;Ver ruta`;
+    routeBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg> Ver ruta`;
     const bw = document.getElementById('plannerBtnWrap'); if (bw) bw.appendChild(routeBtn);
   }
   routeBtn.style.display = 'inline-flex';
   routeBtn.onclick = () => {
     const cp = appState.currentPlan; if (!cp) return;
-    const emojis = ['🌅','🌄','🌇','🌆','🌃','🌉','🌁'];
     let days;
     if (cp.allDays && cp.allDays.length > 0) {
       days = cp.allDays.map((d, i) => ({
-        label: (emojis[i] || '📅') + ' ' + d.label,
+        label: d.label,
         places: d.items.filter(p => p.marker?.lat).map(p => ({ lat: p.marker.lat, lng: p.marker.lng, name: p.marker.name }))
       })).filter(d => d.places.length > 0);
     } else {
       days = [
-        { label: '🌅 Sábado',  places: (cp.dia1 || []).filter(p => p.marker?.lat).map(p => ({ lat: p.marker.lat, lng: p.marker.lng, name: p.marker.name })) },
-        { label: '🌄 Domingo', places: (cp.dia2 || []).filter(p => p.marker?.lat).map(p => ({ lat: p.marker.lat, lng: p.marker.lng, name: p.marker.name })) },
+        { label: 'Sábado',  places: (cp.dia1 || []).filter(p => p.marker?.lat).map(p => ({ lat: p.marker.lat, lng: p.marker.lng, name: p.marker.name })) },
+        { label: 'Domingo', places: (cp.dia2 || []).filter(p => p.marker?.lat).map(p => ({ lat: p.marker.lat, lng: p.marker.lng, name: p.marker.name })) },
       ].filter(d => d.places.length > 0);
     }
-    if (days.reduce((s, d) => s + d.places.length, 0) < 2) { showToast('⚠️ No hay suficientes marcadores'); return; }
+    if (days.reduce((s, d) => s + d.places.length, 0) < 2) { showToast('No hay suficientes marcadores'); return; }
     openRouteMap(null, cp.province || province, days);
   };
 }
@@ -534,12 +529,12 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
 // ============================================================
 async function savePlannerItinerary() {
   if (!appState.currentUser) {
-    showToast('⚠️ Inicia sesión para guardar tu itinerario');
+    showToast('Inicia sesión para guardar tu itinerario');
     openModal('login');
     return;
   }
   const cp = appState.currentPlan;
-  if (!cp) { showToast('⚠️ No hay itinerario que guardar'); return; }
+  if (!cp) { showToast('No hay itinerario que guardar'); return; }
 
   // Convertir el plan del cuestionario al formato del modelo Itinerary
   // (mismo shape que usa "Mi Itinerario" para que se vea igual al cargarlo)
@@ -593,13 +588,13 @@ async function savePlannerItinerary() {
     const method = cp._savedId ? 'PUT' : 'POST';
     const res = await fetch(url, { method, headers: authHeaders(), body: JSON.stringify(payload) });
     const data = await res.json();
-    if (!res.ok) { showToast('❌ ' + (data.error || 'No se pudo guardar')); return; }
+    if (!res.ok) { showToast('' + (data.error || 'No se pudo guardar')); return; }
     cp._savedId = data._id;
-    showToast('💾 Itinerario guardado en "Mis Itinerarios"');
+    showToast('Itinerario guardado en "Mis Itinerarios"');
     // Refrescar listas si están visibles
     if (typeof loadMyItineraries === 'function') loadMyItineraries();
   } catch(e) {
-    showToast('❌ Error al guardar');
+    showToast('Error al guardar');
   }
 }
 

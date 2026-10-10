@@ -14,7 +14,7 @@ async function loadFavorites() {
 
 async function toggleFavorite(markerId, name) {
   if (!appState.currentUser) {
-    showToast('⚠️ Inicia sesión para guardar favoritos');
+    showToast('Inicia sesión para guardar favoritos');
     openModal('login');
     return;
   }
@@ -28,7 +28,7 @@ async function toggleFavorite(markerId, name) {
       headers: authHeaders(),
       body: JSON.stringify({ markerId: String(markerId) })
     }).catch(() => {});
-    showToast('💔 Eliminado de favoritos');
+    showToast('Eliminado de favoritos');
   } else {
     const newFav = {
       markerId: String(markerId),

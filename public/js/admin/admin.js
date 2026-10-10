@@ -24,36 +24,36 @@ function renderAdminMarkers() {
 
   const tbody = document.getElementById('adminMarkersBody');
   if (!slice.length) {
-    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--ink-muted);padding:20px;font-style:italic;">${q ? 'Sin resultados para "' + escHTML(q) + '"' : 'Sin marcadores aún'}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--ink-muted);padding:20px;">${q ? 'Sin resultados para "' + escHTML(q) + '"' : 'Sin marcadores aún'}</td></tr>`;
   } else {
   tbody.innerHTML = slice.map(m => `
       <tr>
-        <td style="font-family:'Instrument Serif',serif;">
-          ${m.photo ? `<img src="${escHTML(m.photo)}" style="width:32px;height:32px;object-fit:cover;vertical-align:middle;margin-right:6px;border:1px solid rgba(42,33,24,0.20);cursor:zoom-in;" data-action="photo-zoom" data-src="${escHTML(m.photo)}" data-caption="${escHTML(m.name)}">` : ''}
+        <td class="admin-name">
+          ${m.photo ? `<img src="${escHTML(m.photo)}" alt="" data-action="photo-zoom" data-src="${escHTML(m.photo)}" data-caption="${escHTML(m.name)}">` : ''}
           ${escHTML(m.name)}
         </td>
         <td>${escHTML(m.province)}</td>
-        <td><span class="badge badge-cyl badge-outline-gold">${escHTML(m.cat)}</span></td>
+        <td><span class="mc-pill" data-fam="${catFam(m.cat)}">${escHTML(m.cat)}</span></td>
         <td style="min-width:200px;">
           <div class="input-group input-group-sm input-group-cyl">
             <input type="text" class="form-control form-control-cyl" placeholder="URL de foto..." value="${escHTML(m.photo||'')}"
-              id="photoInput_${escHTML(m._id)}" style="font-size:0.82rem;" />
-            <button type="button" class="btn btn-sm" data-action="admin-photo" data-id="${escHTML(m._id)}"
-              style="background:rgba(184,92,56,0.08);border:1px solid rgba(42,33,24,0.20);color:var(--terra);white-space:nowrap;">
-              🖼️
+              id="photoInput_${escHTML(m._id)}" aria-label="URL de foto de ${escHTML(m.name)}" />
+            <button type="button" class="pw-toggle" data-action="admin-photo" data-id="${escHTML(m._id)}" title="Guardar foto" aria-label="Guardar foto">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
             </button>
           </div>
         </td>
         <td>
           <div class="d-flex gap-1 align-items-center">
-            <button type="button" data-action="admin-edit" data-id="${escHTML(m._id)}"
-              class="btn btn-sm"
-              style="background:none;border:1px solid rgba(42,33,24,0.20);color:var(--terra);font-size:0.72rem;padding:3px 8px;font-family:'Instrument Serif',serif;" title="Editar">✏️</button>
-            <button type="button" data-action="admin-place" data-name="${escHTML(m.name)}"
-              class="btn btn-sm"
-              style="background:none;border:1px solid rgba(42,33,24,0.20);color:var(--terra);font-size:0.72rem;padding:3px 8px;font-family:'Instrument Serif',serif;">★</button>
-            <button type="button" data-action="admin-delete" data-id="${escHTML(m._id)}" class="btn btn-sm"
-              style="background:none;border:none;color:#d44;font-size:0.85rem;" title="Eliminar">✕</button>
+            <button type="button" data-action="admin-edit" data-id="${escHTML(m._id)}" class="admin-icon-btn" title="Editar" aria-label="Editar ${escHTML(m.name)}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+            </button>
+            <button type="button" data-action="admin-place" data-name="${escHTML(m.name)}" class="admin-icon-btn" title="Ver ficha" aria-label="Ver ficha de ${escHTML(m.name)}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+            <button type="button" data-action="admin-delete" data-id="${escHTML(m._id)}" class="admin-icon-btn admin-icon-btn--danger" title="Eliminar" aria-label="Eliminar ${escHTML(m.name)}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+            </button>
           </div>
         </td>
       </tr>
@@ -114,12 +114,10 @@ function refreshAdminData() {
   document.getElementById('statsContainer').innerHTML = Object.entries(stats)
     .sort((a,b) => b[1]-a[1])
     .map(([prov, count]) => `
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-        <span style="min-width:100px;font-size:0.85rem;">${prov}</span>
-        <div style="flex:1;background:rgba(184,92,56,0.08);height:8px;position:relative;">
-          <div style="background:var(--terra);height:100%;width:${(count/Math.max(...Object.values(stats)))*100}%;transition:width 0.5s;"></div>
-        </div>
-        <span style="color:var(--terra);font-family:'Instrument Serif',serif;font-weight:700;">${count}</span>
+      <div class="admin-stat">
+        <span class="admin-stat-name">${escHTML(prov)}</span>
+        <div><div class="admin-stat-bar" style="width:${(count/Math.max(...Object.values(stats)))*100}%;"></div></div>
+        <span class="admin-stat-n">${count}</span>
       </div>
     `).join('');
 
@@ -129,7 +127,7 @@ function refreshAdminData() {
   document.getElementById('ratingsTotalCount').textContent = totalReviews;
   const ratingsEl = document.getElementById('adminRatingsContainer');
   if (!totalReviews) {
-    ratingsEl.innerHTML = '<p style="color:var(--ink-muted);font-style:italic;font-size:0.88rem;">Sin valoraciones aún.</p>';
+    ratingsEl.innerHTML = '<p style="color:var(--ink-muted);font-size:0.88rem;">Sin valoraciones aún.</p>';
   } else {
     // Sort places by avg rating desc
     const ranked = allRatings
@@ -142,14 +140,14 @@ function refreshAdminData() {
         <tbody>
           ${ranked.map(({name,rs,avg})=>`
             <tr>
-              <td style="font-family:'Instrument Serif',serif;">${escHTML(name)}</td>
+              <td class="admin-name">${escHTML(name)}</td>
               <td>
-                <span style="color:var(--terra);letter-spacing:1px;">${[1,2,3,4,5].map(i=>`<span style="color:${i<=Math.round(avg)?'var(--terra)':'rgba(42,33,24,0.13)'};font-size:0.85rem;">★</span>`).join('')}</span>
-                <span style="color:var(--terra);font-weight:700;margin-left:4px;">${avg.toFixed(1)}</span>
+                <span class="place-stars">${[1,2,3,4,5].map(i=>`<span class="${i<=Math.round(avg)?'is-on':''}">★</span>`).join('')}</span>
+                <span style="font-family:var(--font-mono);font-weight:600;margin-left:6px;">${avg.toFixed(1)}</span>
               </td>
               <td>${rs.length}</td>
-              <td style="color:var(--ink-muted);font-size:0.82rem;">${escHTML(rs[rs.length-1].date)} — ${escHTML(rs[rs.length-1].userName)}</td>
-              <td><button type="button" class="admin-link-btn" data-action="admin-place" data-name="${escHTML(name)}">Ver →</button></td>
+              <td style="color:var(--steel);font-size:0.88rem;">${escHTML(rs[rs.length-1].date)}, ${escHTML(rs[rs.length-1].userName)}</td>
+              <td><button type="button" class="admin-link-btn" data-action="admin-place" data-name="${escHTML(name)}">Ver ficha</button></td>
             </tr>
           `).join('')}
         </tbody>
@@ -169,7 +167,7 @@ function deleteMarker(id) {
   fetch(`/api/markers/${id}`, { method: 'DELETE', headers: authHeaders() }).catch(() => {});
   if (appState.selectedProvince) loadProvinceMarkers(appState.selectedProvince);
   refreshAdminData();
-  showToast('📍 Marcador eliminado');
+  showToast('Marcador eliminado');
 }
 
 // ============================================================
@@ -213,10 +211,10 @@ function handleCSVUpload(event) {
       }
     });
 
-    document.getElementById('csvStatus').innerHTML = `<span style="color:#4a9e2a;">✅ ${added} marcadores importados correctamente</span>`;
+    document.getElementById('csvStatus').innerHTML = `<span style="color:var(--ok);">${added} marcadores importados correctamente</span>`;
     if (appState.selectedProvince) loadProvinceMarkers(appState.selectedProvince);
     refreshAdminData();
-    showToast(`✅ ${added} marcadores importados`);
+    showToast(`${added} marcadores importados`);
     event.target.value = '';
   };
   reader.readAsText(file);

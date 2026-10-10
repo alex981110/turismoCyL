@@ -142,7 +142,7 @@ function updateDayPlanner(province) {
               </div>` : ''}
             <div class="plan-item-text">
               <h4>${escHTML(mk.name)}
-                <span class="plan-item-cat">${icon} ${escHTML(cat)}</span>
+                ${cat ? `<span class="plan-item-cat" data-fam="${catFam(mk.cat)}">${escHTML(cat)}</span>` : ''}
               </h4>
               <p class="plan-item-desc">${escHTML(item.desc)}</p>
               <span class="plan-map-link">${catIcon.default} Ver en el mapa</span>
@@ -197,7 +197,7 @@ function updateDayPlanner(province) {
     routeBtn = document.createElement('button');
     routeBtn.id = 'plannerRouteBtn';
     routeBtn.className = 'btn planner-route-btn';
-    routeBtn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg>&nbsp;Ver ruta en mapa`;
+    routeBtn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg>Ver ruta`;
     if (pdfBtn) {
       pdfBtn.parentNode.insertBefore(routeBtn, pdfBtn.nextSibling);
     } else {
@@ -209,22 +209,21 @@ function updateDayPlanner(province) {
   routeBtn.onclick = () => {
     const cp = appState.currentPlan;
     if (!cp) return;
-    const emojis = ['🌅','🌄','🌇','🌆','🌃','🌉','🌁'];
     const labels = ['Sábado','Domingo','Día 3','Día 4','Día 5','Día 6','Día 7'];
     let days;
     if (cp.allDays && cp.allDays.length > 0) {
       days = cp.allDays.map((d, i) => ({
-        label: emojis[i] + ' ' + d.label,
+        label: d.label,
         places: d.items.filter(p => p.marker && p.marker.lat).map(p => ({ lat: p.marker.lat, lng: p.marker.lng, name: p.marker.name }))
       })).filter(d => d.places.length > 0);
     } else {
       days = [
-        { label: '🌅 Sábado',  places: (cp.dia1||[]).filter(p=>p.marker?.lat).map(p => ({ lat: p.marker.lat, lng: p.marker.lng, name: p.marker.name })) },
-        { label: '🌄 Domingo', places: (cp.dia2||[]).filter(p=>p.marker?.lat).map(p => ({ lat: p.marker.lat, lng: p.marker.lng, name: p.marker.name })) },
+        { label: 'Sábado',  places: (cp.dia1||[]).filter(p=>p.marker?.lat).map(p => ({ lat: p.marker.lat, lng: p.marker.lng, name: p.marker.name })) },
+        { label: 'Domingo', places: (cp.dia2||[]).filter(p=>p.marker?.lat).map(p => ({ lat: p.marker.lat, lng: p.marker.lng, name: p.marker.name })) },
       ].filter(d => d.places.length > 0);
     }
     const total = days.reduce((s, d) => s + d.places.length, 0);
-    if (total < 2) { showToast('⚠️ No hay suficientes marcadores con coordenadas'); return; }
+    if (total < 2) { showToast('No hay suficientes lugares con coordenadas para trazar la ruta'); return; }
     openRouteMap(null, cp.province || province, days);
   };
 }

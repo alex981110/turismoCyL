@@ -1,40 +1,33 @@
 <!-- MIS ITINERARIOS GUARDADOS -->
-<section class="day-planner-section spa-section" id="spa-mis-itinerarios" style="border-top:1px solid rgba(184,92,56,0.1);display:none;">
+<section class="day-planner-section spa-section" id="spa-mis-itinerarios" style="display:none;">
   <div class="container-xxl px-4 py-5">
-    <div class="premium-badge">📚 Tus Viajes Guardados</div>
-    <h2 class="section-title">Mis <em>Itinerarios</em></h2>
-    <p class="section-subtitle">Hasta 3 itinerarios guardados — ábrelos cuando quieras</p>
+    <h2 class="section-title">Mis itinerarios</h2>
+    <p class="section-subtitle">Guarda hasta tres y ábrelos cuando quieras, también en el móvil.</p>
 
     <div class="locked-feature" id="myItinContent">
       <div id="myItinLockedOverlay" class="locked-overlay">
-        <p>🔒 Inicia sesión para ver tus itinerarios guardados</p>
+        <p>Inicia sesión para ver tus itinerarios guardados</p>
         <button class="btn" onclick="openModal('login')">Iniciar sesión</button>
       </div>
 
-      <!-- Cabecera con contador y CTA -->
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
-        <div id="myItinCounter" style="font-size:0.85rem;color:var(--ink-muted);"></div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="btn btn-outline" onclick="navigateTo('/mapa')" style="font-size:0.82rem;padding:8px 18px;">
-            🗺️ Crear desde el mapa
-          </button>
-          <button class="btn" onclick="navigateTo('/itinerario')" style="font-size:0.82rem;padding:8px 18px;">
-            ✦ Crear nuevo itinerario
-          </button>
+      <!-- Cabecera con contador y acciones -->
+      <div class="myitin-head">
+        <div id="myItinCounter" class="myitin-counter"></div>
+        <div class="myitin-actions">
+          <button class="btn btn-outline" onclick="navigateTo('/mapa')">Crear desde el mapa</button>
+          <button class="btn" onclick="navigateTo('/itinerario')">Nuevo itinerario</button>
         </div>
       </div>
 
       <!-- Grid de itinerarios guardados -->
       <div id="myItinList" class="row g-4"></div>
 
-      <!-- Empty state -->
-      <div id="myItinEmpty" style="display:none;text-align:center;padding:60px 20px;">
-        <div style="font-size:3.5rem;margin-bottom:14px;opacity:0.6;">🗺️</div>
-        <h3 style="font-family:'Instrument Serif',serif;color:var(--terra);font-size:1.3rem;margin-bottom:10px;">Aún no tienes itinerarios guardados</h3>
-        <p style="color:var(--ink-muted);font-size:0.9rem;max-width:480px;margin:0 auto 24px;">
-          Cuando generes un itinerario en el creador o desde el cuestionario del mapa, podrás guardarlo aquí (hasta 3) y consultarlo cuando vuelvas.
-        </p>
-        <button class="btn" onclick="navigateTo('/itinerario')">✦ Crear mi primer itinerario</button>
+      <!-- Estado vacío -->
+      <div id="myItinEmpty" class="myitin-empty" style="display:none;">
+        <svg class="myitin-empty-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9a3 3 0 0 0 0 6v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3a3 3 0 0 0 0-6V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2M13 17v2M13 11v2"/></svg>
+        <h3>Todavía no has guardado ningún itinerario</h3>
+        <p>Genera uno en el creador o desde «Mis gustos» en el mapa y pulsa Guardar. Aquí aparecerán hasta tres.</p>
+        <button class="btn" onclick="navigateTo('/itinerario')">Crear mi primer itinerario</button>
       </div>
 
     </div>

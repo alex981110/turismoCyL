@@ -10,7 +10,7 @@ function getAvgRating(name) {
 
 function openRatingModal(name, province) {
   if (!appState.currentUser) {
-    showToast('✦ Inicia sesión para valorar');
+    showToast('Inicia sesión para valorar');
     openModal('login');
     return;
   }
@@ -67,7 +67,7 @@ document.querySelectorAll('#ratingStars .star').forEach((star, idx) => {
 function submitRating() {
   const { name } = appState.pendingRating || {};
   const stars = appState.pendingStars;
-  if (!stars) { showToast('⚠️ Selecciona una puntuación'); return; }
+  if (!stars) { showToast('Selecciona una puntuación'); return; }
   if (!name) return;
 
   if (!appState.ratings[name]) appState.ratings[name] = [];
@@ -87,7 +87,7 @@ function submitRating() {
   }
 
   closeRatingModal();
-  showToast('✦ ¡Valoración enviada!');
+  showToast('¡Valoración enviada!');
 
   // Refresh cards if province is selected
   if (appState.selectedProvince) renderMarkerCards();

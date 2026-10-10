@@ -43,7 +43,7 @@ function _downloadItinerarioPDF() {
   } else {
     province = appState.selectedProvince || 'Castilla y León';
     const plan = (typeof dayPlans !== 'undefined') && dayPlans[province];
-    if (!plan) { showToast('⚠️ No hay itinerario para esta provincia'); return; }
+    if (!plan) { showToast('No hay itinerario para esta provincia'); return; }
     headerDate = new Date().toLocaleDateString('es-ES', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 
     // dayPlans puede tener dia1, dia2, dia3…
@@ -60,14 +60,15 @@ function _downloadItinerarioPDF() {
   }
 
   // ── Colores ──────────────────────────────────────────────────
-  const TERRA_D = [139,  58,  31];
-  const TERRA   = [184,  92,  56];
-  const TERRA_L = [212, 132,  90];
-  const CREAM   = [253, 251, 247];
-  const SAND    = [247, 243, 236];
-  const SAND_D  = [237, 230, 216];
-  const INK     = [ 42,  33,  24];
-  const INK_M   = [107,  92,  78];
+  // Paleta del sistema «billete y panel de salidas»
+  const TERRA_D = [ 14,  17,  20];   // tinta
+  const TERRA   = [ 28,  33,  39];   // pizarra
+  const TERRA_L = [255, 212,   0];   // amarillo señal
+  const CREAM   = [255, 255, 255];
+  const SAND    = [241, 242, 243];
+  const SAND_D  = [231, 233, 236];
+  const INK     = [ 14,  17,  20];
+  const INK_M   = [ 90,  99, 110];
   const WHITE   = [255, 255, 255];
 
   const { jsPDF } = window.jspdf;
@@ -96,7 +97,7 @@ function _downloadItinerarioPDF() {
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7.5);
   doc.setTextColor(...TERRA_L);
-  doc.text('TURISMO  ✦  turismo.jcyl.es', W / 2, 16, { align: 'center' });
+  doc.text('PLANIFICA TU ESCAPADA', W / 2, 16, { align: 'center' });
 
   doc.setFillColor(...SAND_D);
   doc.rect(0, 22, W, 3.5, 'F');
@@ -119,12 +120,6 @@ function _downloadItinerarioPDF() {
   y += 9;
 
   // ── DÍAS ─────────────────────────────────────────────────────
-  const CAT_EMOJI = {
-    monumento:'🏰', museo:'🏛️', naturaleza:'🌿', gastronomia:'🍷',
-    alojamiento:'🏨', bar:'🍺', teatro:'🎭', cine:'🎬',
-    exposicion:'🖼️', biblioteca:'📚', historia:'⚔️', cultura:'🎨'
-  };
-
   days.forEach((day, di) => {
     if (y > 255) { doc.addPage(); initPage(); y = 20; }
 
@@ -162,10 +157,6 @@ function _downloadItinerarioPDF() {
       doc.setTextColor(...WHITE);
       doc.text(item.time, ML + 16, y + 8, { align: 'center' });
 
-      // Emoji
-      const emoji = CAT_EMOJI[item.cat] || '📍';
-      doc.setFontSize(9);
-      doc.text(emoji, ML + 30, y + 8);
 
       // Nombre del lugar
       const nameX = ML + 40;
@@ -206,7 +197,7 @@ function _downloadItinerarioPDF() {
   }
 
   doc.save(`Itinerario_${province.replace(/\s+/g,'_')}.pdf`);
-  showToast('📄 PDF descargado');
+  showToast('PDF descargado');
 }
 
 function _autoTime(i) {

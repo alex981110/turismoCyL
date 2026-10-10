@@ -1,11 +1,11 @@
 function initLeafletMap() {
   if (map) return; // Ya inicializado
   map = L.map('map', { zoomControl: true }).setView([41.5, -4.0], 7);
-  // CARTO exige ya clave de API; teselas OSM con un filtro cálido en CSS (.tiles-warm)
+  // CARTO exige ya clave de API; teselas OSM en gris neutro vía CSS (.tiles-neutral)
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     maxZoom: 19,
-    className: 'tiles-warm'
+    className: 'tiles-neutral'
   }).addTo(map);
   loadProvinceBoundaries();
 
@@ -21,11 +21,11 @@ function initLeafletMap() {
 function createCustomIcon(cat) {
   const icon = catIcon[cat] || catIcon.default;
   return L.divIcon({
-    html: `<div class="cyl-pin">${icon}</div>`,
+    html: `<div class="cyl-pin" data-fam="${catFam(cat)}">${icon}</div>`,
     className: '',
-    iconSize: [36, 36],
-    iconAnchor: [18, 18],
-    popupAnchor: [0, -20]
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    popupAnchor: [0, -18]
   });
 }
 
@@ -54,17 +54,17 @@ function buildMarkerPopup(mk, reloadProvince) {
   const el = document.createElement('div');
   el.className = 'lf-popup';
   el.innerHTML = `
-    <div class="lf-popup-hero">${icon}</div>
+    <div class="lf-popup-hero" data-fam="${catFam(mk.cat)}">${icon}<span class="lf-popup-code">${provinceCode[mk.province] || ''} ${String(mk.id ?? '').padStart(4, '0')}</span></div>
     <div class="lf-popup-body">
       <strong class="lf-popup-name">
         <button type="button" class="lf-popup-fav" title="Añadir a favoritos">${favIcon(isFavorite(mk._id))}</button>
         <span>${escHTML(mk.name)}</span>
       </strong>
       <div class="lf-popup-meta">
-        <span class="lf-popup-pill">${icon} ${escHTML(catLabel[mk.cat] || mk.cat)}</span>
+        <span class="lf-popup-pill" data-fam="${catFam(mk.cat)}">${escHTML(catLabel[mk.cat] || mk.cat)}</span>
         <span class="lf-popup-prov">${escHTML(mk.province)}</span>
       </div>
-      <p class="lf-popup-hint">Toca para ver detalles →</p>
+      <p class="lf-popup-hint">Ver ficha</p>
     </div>`;
   el.addEventListener('click', () => {
     map.closePopup();
@@ -129,11 +129,11 @@ function loadProvinceMarkers(province) {
   if (filterBar) {
     filterBar.innerHTML = `
       <button type="button" data-action="cat-filter" data-cat="" data-province="${escHTML(province)}" class="cat-chip${!activeCat ? ' is-active' : ''}">
-        Todos (${pMarkers.length})
+        Todos <span class="cat-chip-n">${pMarkers.length}</span>
       </button>
       ${Object.entries(catCounts).sort((a, b) => b[1] - a[1]).map(([c, n]) => `
-        <button type="button" data-action="cat-filter" data-cat="${escHTML(c)}" data-province="${escHTML(province)}" class="cat-chip${activeCat === c ? ' is-active' : ''}">
-          ${catIcon[c] || catIcon.default} ${escHTML(catLabel[c] || c)} (${n})
+        <button type="button" data-action="cat-filter" data-cat="${escHTML(c)}" data-province="${escHTML(province)}" data-fam="${catFam(c)}" class="cat-chip${activeCat === c ? ' is-active' : ''}">
+          ${catIcon[c] || catIcon.default} ${escHTML(catLabel[c] || c)} <span class="cat-chip-n">${n}</span>
         </button>
       `).join('')}
     `;
@@ -171,13 +171,14 @@ function renderMarkerCards() {
     return `
     <div class="mc-row" id="card-${escHTML(mk.id)}" data-action="open-place"
          data-name="${escHTML(mk.name)}" data-province="${escHTML(mk.province)}" data-lat="${mk.lat}" data-lng="${mk.lng}">
-      <div class="mc-thumb">
+      <div class="mc-thumb" data-fam="${catFam(mk.cat)}">
         <div class="mc-thumb-fallback">${icon}</div>
       </div>
       <div class="mc-body">
         <div class="mc-name">${escHTML(mk.name)}</div>
         <div class="mc-meta">
-          <span class="mc-pill">${icon} ${escHTML(catLabel[mk.cat] || mk.cat)}</span>
+          <span class="mc-code">${provinceCode[mk.province] || ''} ${String(mk.id ?? '').padStart(4, '0')}</span>
+          <span class="mc-pill" data-fam="${catFam(mk.cat)}">${escHTML(catLabel[mk.cat] || mk.cat)}</span>
           ${starsHtml}
         </div>
       </div>
@@ -196,12 +197,12 @@ function renderMarkerCards() {
     let html = '';
     if (remaining > 0) {
       html += `<button type="button" class="msb-more-btn" data-action="more" data-step="${Math.min(remaining, 8)}">
-        Ver más <span class="msb-more-count">(${remaining} restantes)</span> ▼
+        Ver ${Math.min(remaining, 8)} más <span class="msb-more-count">${remaining} restantes</span>
       </button>`;
     }
     if (visible > 8) {
       html += `<button type="button" class="msb-more-btn" data-action="less">
-        Ver menos ▲
+        Ver menos
       </button>`;
     }
     showMoreEl.innerHTML = html;

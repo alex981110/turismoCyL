@@ -1,16 +1,17 @@
+<% const closeIcon = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>'; %>
 <!-- ONBOARDING MODAL — Cuestionario de gustos -->
 <div class="modal-overlay" id="onboardingModal" style="display:none;z-index:10000;">
-  <div class="modal-cyl" style="max-width:580px;width:95%;padding:0;overflow:hidden;border-radius:16px;">
+  <div class="modal-cyl" style="max-width:580px;width:95%;padding:0;overflow:hidden;">
 
     <!-- Header con progreso -->
-    <div id="obHeader" style="padding:24px 28px 16px;border-bottom:1px solid rgba(184,92,56,0.15);">
-      <button class="modal-close" onclick="closeOnboarding()" style="top:16px;right:16px;">✕</button>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-        <span id="obStepLabel" style="font-size:0.75rem;color:var(--terra);letter-spacing:0.1em;text-transform:uppercase;">Paso 1 de 2</span>
+    <div id="obHeader" style="padding:22px 28px 0;">
+      <button class="modal-close" onclick="closeOnboarding()" aria-label="Cerrar"><%- closeIcon %></button>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+        <span id="obStepLabel" style="text-transform:uppercase;">Paso 1 de 2</span>
       </div>
       <!-- Barra de progreso -->
-      <div style="height:3px;background:rgba(184,92,56,0.15);border-radius:2px;">
-        <div id="obProgress" style="height:100%;background:var(--terra);border-radius:2px;transition:width 0.4s ease;width:50%;"></div>
+      <div style="height:4px;margin:0 -28px;">
+        <div id="obProgress" style="height:100%;width:50%;"></div>
       </div>
     </div>
 
@@ -18,10 +19,10 @@
     <div id="obBody" style="padding:24px 28px;max-height:65vh;overflow-y:auto;"></div>
 
     <!-- Footer con botones -->
-    <div style="padding:16px 28px 24px;border-top:1px solid rgba(184,92,56,0.15);display:flex;justify-content:space-between;align-items:center;">
-      <button id="obBtnBack" onclick="obPrev()" style="background:none;border:1px solid rgba(184,92,56,0.3);color:var(--ink-muted);padding:8px 20px;cursor:pointer;font-size:0.85rem;display:none;">← Atrás</button>
+    <div style="padding:16px 28px 24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;">
+      <button id="obBtnBack" onclick="obPrev()" style="display:none;">Atrás</button>
       <span></span>
-      <button id="obBtnNext" onclick="obNext()" class="btn" style="padding:10px 28px;font-size:0.9rem;">Siguiente →</button>
+      <button id="obBtnNext" onclick="obNext()" class="btn">Siguiente</button>
     </div>
 
   </div>
@@ -29,7 +30,7 @@
 
 <!-- PHOTO LIGHTBOX -->
 <div id="photoModal" onclick="closePhotoModal()">
-  <button class="photo-close" onclick="closePhotoModal()">✕</button>
+  <button class="photo-close" onclick="closePhotoModal()" aria-label="Cerrar foto"><%- closeIcon %></button>
   <img id="photoModalImg" alt="">
   <div class="photo-caption" id="photoModalCaption"></div>
 </div>
@@ -37,7 +38,7 @@
 <!-- RATING MODAL -->
 <div id="ratingModal">
   <div class="rating-modal-inner">
-    <button style="position:absolute;top:14px;right:18px;background:none;border:none;color:var(--ink-muted);font-size:1.2rem;cursor:pointer;" onclick="closeRatingModal()">✕</button>
+    <button class="modal-close rating-close" onclick="closeRatingModal()" aria-label="Cerrar"><%- closeIcon %></button>
     <h3 id="ratingModalTitle">Valorar lugar</h3>
     <p id="ratingModalSubtitle">Tu opinión ayuda a otros viajeros</p>
     <div class="big-stars" id="ratingStars">
@@ -56,20 +57,20 @@
 <!-- AUTH MODAL -->
 <div class="modal-overlay" id="authModal">
   <div class="modal-cyl">
-    <button class="modal-close" onclick="closeModal()">✕</button>
+    <button class="modal-close" onclick="closeModal()" aria-label="Cerrar"><%- closeIcon %></button>
     <div class="modal-tabs">
-      <div class="modal-tab active" id="tabLogin" onclick="switchTab('login')">Iniciar Sesión</div>
+      <div class="modal-tab active" id="tabLogin" onclick="switchTab('login')">Iniciar sesión</div>
       <div class="modal-tab" id="tabRegister" onclick="switchTab('register')">Registrarse</div>
     </div>
     <div id="loginForm">
       <div class="mb-3">
-        <label class="form-label-cyl">Correo electrónico</label>
-        <input type="email" id="loginEmail" class="form-control form-control-cyl" placeholder="tu@correo.es">
+        <label class="form-label-cyl" for="loginEmail">Correo electrónico</label>
+        <input type="email" id="loginEmail" class="form-control form-control-cyl" placeholder="tu@correo.es" autocomplete="email">
       </div>
       <div class="mb-3">
-        <label class="form-label-cyl">Contraseña</label>
+        <label class="form-label-cyl" for="loginPassword">Contraseña</label>
         <div class="input-group">
-          <input type="password" id="loginPassword" class="form-control form-control-cyl" placeholder="••••••••">
+          <input type="password" id="loginPassword" class="form-control form-control-cyl" placeholder="••••••••" autocomplete="current-password">
           <button type="button" onclick="togglePassword('loginPassword', this)" class="pw-toggle" title="Mostrar contraseña" aria-label="Mostrar contraseña" aria-pressed="false"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
         </div>
       </div>
@@ -77,30 +78,30 @@
     </div>
     <div id="registerForm" style="display:none;">
       <div class="mb-3">
-        <label class="form-label-cyl">Nombre completo</label>
-        <input type="text" id="regName" class="form-control form-control-cyl" placeholder="Tu nombre">
+        <label class="form-label-cyl" for="regName">Nombre completo</label>
+        <input type="text" id="regName" class="form-control form-control-cyl" placeholder="Tu nombre" autocomplete="name">
       </div>
       <div class="mb-3">
-        <label class="form-label-cyl">Correo electrónico</label>
-        <input type="email" id="regEmail" class="form-control form-control-cyl" placeholder="tu@correo.es">
+        <label class="form-label-cyl" for="regEmail">Correo electrónico</label>
+        <input type="email" id="regEmail" class="form-control form-control-cyl" placeholder="tu@correo.es" autocomplete="email">
       </div>
       <div class="mb-3">
-        <label class="form-label-cyl">Contraseña</label>
+        <label class="form-label-cyl" for="regPassword">Contraseña</label>
         <div class="input-group">
-          <input type="password" id="regPassword" class="form-control form-control-cyl" placeholder="Mínimo 6 caracteres">
+          <input type="password" id="regPassword" class="form-control form-control-cyl" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
           <button type="button" onclick="togglePassword('regPassword', this)" class="pw-toggle" title="Mostrar contraseña" aria-label="Mostrar contraseña" aria-pressed="false"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
         </div>
       </div>
       <div class="mb-3">
-        <label class="form-label-cyl">Repetir contraseña</label>
+        <label class="form-label-cyl" for="regPassword2">Repetir contraseña</label>
         <div class="input-group">
-          <input type="password" id="regPassword2" class="form-control form-control-cyl" placeholder="Repite tu contraseña">
+          <input type="password" id="regPassword2" class="form-control form-control-cyl" placeholder="Repite tu contraseña" autocomplete="new-password">
           <button type="button" onclick="togglePassword('regPassword2', this)" class="pw-toggle" title="Mostrar contraseña" aria-label="Mostrar contraseña" aria-pressed="false"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
         </div>
       </div>
       <button class="btn w-100 mt-2" onclick="doRegister()">Crear cuenta gratis</button>
-      <p class="text-center mt-3" style="font-size:0.8rem;color:var(--ink-muted);">
-        ✦ Accede al planificador de días y rutas exclusivas
+      <p class="text-center mt-3" style="font-size:0.9rem;color:var(--steel);margin:0;">
+        Con cuenta guardas tus itinerarios y desbloqueas el plan completo.
       </p>
     </div>
   </div>
@@ -132,87 +133,87 @@
 
 <!-- FAVORITES DRAWER -->
 <div id="favDrawerOverlay" onclick="closeFavDrawer()"></div>
-<div id="favDrawer">
+<div id="favDrawer" role="dialog" aria-labelledby="favDrawerTitle">
   <div class="drawer-header">
-    <button class="drawer-close" onclick="closeFavDrawer()">✕</button>
-    <h3>❤️ Mis Favoritos</h3>
-    <p id="favDrawerSubtitle" style="color:var(--ink-muted);font-size:0.82rem;margin:4px 0 0;"></p>
+    <button class="drawer-close" onclick="closeFavDrawer()" aria-label="Cerrar favoritos"><%- closeIcon %></button>
+    <h3 id="favDrawerTitle">Mis favoritos</h3>
+    <p id="favDrawerSubtitle"></p>
   </div>
-  <div id="favDrawerBody" style="padding:16px;overflow-y:auto;flex:1;"></div>
+  <div id="favDrawerBody"></div>
 </div>
 
 <!-- MARKER EDIT MODAL -->
 <div class="modal-overlay" id="markerEditModal">
   <div class="modal-cyl" style="max-width:540px;width:95%;">
-    <button class="modal-close" onclick="closeMarkerEditModal()">✕</button>
-    <h3 style="font-family:'Instrument Serif',serif;color:var(--terra);margin-bottom:20px;">✏️ Editar Marcador</h3>
+    <button class="modal-close" onclick="closeMarkerEditModal()" aria-label="Cerrar"><%- closeIcon %></button>
+    <h3 style="margin-bottom:20px;">Editar marcador</h3>
     <input type="hidden" id="editMarkerId">
     <div class="row g-3">
       <div class="col-12">
-        <label class="form-label-cyl">Nombre</label>
+        <label class="form-label-cyl" for="editMarkerName">Nombre</label>
         <input type="text" id="editMarkerName" class="form-control form-control-cyl" placeholder="Nombre del lugar">
       </div>
       <div class="col-12">
-        <label class="form-label-cyl">Descripción</label>
+        <label class="form-label-cyl" for="editMarkerDesc">Descripción</label>
         <textarea id="editMarkerDesc" class="form-control form-control-cyl" rows="3" placeholder="Descripción" style="resize:vertical;"></textarea>
       </div>
       <div class="col-6">
-        <label class="form-label-cyl">Provincia</label>
+        <label class="form-label-cyl" for="editMarkerProvince">Provincia</label>
         <select id="editMarkerProvince" class="form-control form-control-cyl">
-          <option value="">— Selecciona —</option>
+          <option value="">Selecciona</option>
           <option>Ávila</option><option>Burgos</option><option>León</option>
           <option>Palencia</option><option>Salamanca</option><option>Segovia</option>
           <option>Soria</option><option>Valladolid</option><option>Zamora</option>
         </select>
       </div>
       <div class="col-6">
-        <label class="form-label-cyl">Categoría</label>
+        <label class="form-label-cyl" for="editMarkerCat">Categoría</label>
         <select id="editMarkerCat" class="form-control form-control-cyl">
-          <option value="">— Selecciona —</option>
-          <option value="monumento">🏛 Monumento</option>
-          <option value="museo">🎨 Museo</option>
-          <option value="naturaleza">🌿 Naturaleza</option>
-          <option value="historia">📜 Historia</option>
-          <option value="gastronomia">🍽 Gastronomía</option>
-          <option value="teatro">🎭 Teatro</option>
-          <option value="biblioteca">📚 Biblioteca</option>
-          <option value="cultura">🏛 Cultura</option>
-          <option value="exposicion">🖼 Exposición</option>
-          <option value="cine">🎬 Cine</option>
+          <option value="">Selecciona</option>
+          <option value="monumento">Monumento</option>
+          <option value="museo">Museo</option>
+          <option value="naturaleza">Naturaleza</option>
+          <option value="historia">Historia</option>
+          <option value="gastronomia">Gastronomía</option>
+          <option value="teatro">Teatro</option>
+          <option value="biblioteca">Biblioteca</option>
+          <option value="cultura">Cultura</option>
+          <option value="exposicion">Exposición</option>
+          <option value="cine">Cine</option>
         </select>
       </div>
       <div class="col-6">
-        <label class="form-label-cyl">Latitud</label>
+        <label class="form-label-cyl" for="editMarkerLat">Latitud</label>
         <input type="number" id="editMarkerLat" class="form-control form-control-cyl" step="0.0001" placeholder="41.5000">
       </div>
       <div class="col-6">
-        <label class="form-label-cyl">Longitud</label>
+        <label class="form-label-cyl" for="editMarkerLng">Longitud</label>
         <input type="number" id="editMarkerLng" class="form-control form-control-cyl" step="0.0001" placeholder="-4.0000">
       </div>
       <div class="col-12">
-        <label class="form-label-cyl">URL Foto</label>
+        <label class="form-label-cyl" for="editMarkerPhoto">URL de la foto</label>
         <input type="text" id="editMarkerPhoto" class="form-control form-control-cyl" placeholder="https://...">
       </div>
       <div class="col-12">
-        <label class="form-label-cyl">Sitio Web</label>
+        <label class="form-label-cyl" for="editMarkerUrl">Sitio web</label>
         <input type="text" id="editMarkerUrl" class="form-control form-control-cyl" placeholder="https://...">
       </div>
     </div>
     <div class="d-flex gap-2 mt-4">
-      <button class="btn w-100" onclick="saveMarkerEdit()">💾 Guardar cambios</button>
-      <button class="btn btn-outline" onclick="closeMarkerEditModal()" style="min-width:100px;">Cancelar</button>
+      <button class="btn w-100" onclick="saveMarkerEdit()">Guardar cambios</button>
+      <button class="btn btn-outline" onclick="closeMarkerEditModal()" style="min-width:110px;">Cancelar</button>
     </div>
   </div>
 </div>
 
 <!-- ROUTE MAP OVERLAY -->
-<div id="routeMapOverlay" style="border-radius:0;">
+<div id="routeMapOverlay">
   <div id="routeMapHeader">
     <div id="routeMapTitle">
       <span id="routeMapTitleText">Ruta</span>
       <span id="routeMapSubtext"></span>
     </div>
-    <button id="routeMapCloseBtn" onclick="closeRouteMap()">✕ Cerrar</button>
+    <button id="routeMapCloseBtn" onclick="closeRouteMap()"><%- closeIcon %> Cerrar</button>
   </div>
   <div id="routeMapBody">
     <div id="routeMapSidebar">

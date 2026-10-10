@@ -1,12 +1,11 @@
-<section class="day-planner-section spa-section" id="spa-itinerario" style="border-top:1px solid rgba(184,92,56,0.1);">
+<section class="day-planner-section spa-section" id="spa-itinerario">
   <div class="container-xxl px-4 py-5">
-    <div class="premium-badge">🗓 Planificador Inteligente</div>
-    <h2 class="section-title">Mi Itinerario <em>Personalizado</em></h2>
-    <p class="section-subtitle">Elige tus lugares favoritos y generamos tu itinerario personalizado</p>
+    <h2 class="section-title">Mi itinerario</h2>
+    <p class="section-subtitle">Elige provincia, fecha y los lugares que quieres ver. Nosotros los ordenamos por días y por horario.</p>
 
     <div class="locked-feature" id="itinerarioContent">
       <div id="itinerarioLockedOverlay" class="locked-overlay">
-        <p>🔒 Inicia sesión para crear tu itinerario</p>
+        <p>Inicia sesión para crear tu itinerario</p>
         <button class="btn" onclick="openModal('login')">Iniciar sesión</button>
       </div>
 
@@ -14,20 +13,20 @@
       <div id="itin-step1" class="itin-step">
         <div class="row g-4 mb-4">
           <div class="col-12 col-md-4">
-            <label class="form-label-cyl">Provincia</label>
+            <label class="form-label-cyl" for="itinProvince">Provincia</label>
             <select id="itinProvince" class="form-control form-control-cyl" onchange="itinLoadMarkers()">
-              <option value="">— Selecciona provincia —</option>
+              <option value="">Selecciona provincia</option>
               <option>Ávila</option><option>Burgos</option><option>León</option>
               <option>Palencia</option><option>Salamanca</option><option>Segovia</option>
               <option>Soria</option><option>Valladolid</option><option>Zamora</option>
             </select>
           </div>
           <div class="col-12 col-md-3">
-            <label class="form-label-cyl">Fecha de inicio</label>
+            <label class="form-label-cyl" for="itinDate">Fecha de inicio</label>
             <input type="date" id="itinDate" class="form-control form-control-cyl" onchange="itinLoadMarkers()">
           </div>
           <div class="col-12 col-md-3">
-            <label class="form-label-cyl">Número de días</label>
+            <label class="form-label-cyl" for="itinDays">Número de días</label>
             <select id="itinDays" class="form-control form-control-cyl" onchange="itinLoadMarkers()">
               <option value="1">1 día</option>
               <option value="2" selected>2 días</option>
@@ -36,26 +35,24 @@
           </div>
         </div>
 
-        <div id="itinLoadingHours" style="display:none;text-align:center;padding:32px 0;">
-          <div style="display:inline-flex;align-items:center;gap:12px;color:var(--ink-muted);font-size:0.9rem;">
-            <div style="width:20px;height:20px;border:2px solid var(--terra);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0;"></div>
-            Preparando los lugares disponibles...
-          </div>
+        <div id="itinLoadingHours" class="itin-loading" style="display:none;">
+          <span class="itin-spinner" aria-hidden="true"></span>
+          Comprobando qué lugares abren esos días
         </div>
 
         <div id="itinMarkersWrap" style="display:none;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
-            <span style="font-size:0.75rem;letter-spacing:0.12em;color:var(--terra);">SELECCIONA LOS LUGARES QUE QUIERES VISITAR</span>
-            <span id="itinSelCount" style="font-size:0.8rem;color:var(--ink-muted);">0 seleccionados</span>
+          <div class="itin-pick-head">
+            <span class="form-label-cyl" style="margin:0;">Lugares que quieres visitar</span>
+            <span id="itinSelCount" class="itin-sel-count">0 seleccionados</span>
           </div>
           <div class="input-group mb-4">
-            <input id="itinSearch" type="text" class="form-control form-control-cyl" placeholder="Buscar lugar..." oninput="itinFilterMarkers(this.value)">
-            <button onclick="document.getElementById('itinSearch').value='';itinFilterMarkers('')" style="background:rgba(184,92,56,0.08);border:1px solid rgba(184,92,56,0.25);border-left:none;color:var(--ink-muted);padding:0 12px;cursor:pointer;font-size:0.85rem;" title="Limpiar">✕</button>
+            <input id="itinSearch" type="text" class="form-control form-control-cyl" placeholder="Buscar lugar..." aria-label="Buscar lugar" oninput="itinFilterMarkers(this.value)">
+            <button class="pw-toggle" onclick="document.getElementById('itinSearch').value='';itinFilterMarkers('')" title="Limpiar búsqueda" aria-label="Limpiar búsqueda"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
           </div>
           <div id="itinDayColumns" class="row g-3"></div>
           <div class="text-center mt-4">
-            <button id="itinGenerateBtn" class="btn" onclick="itinGenerate()" disabled style="opacity:0.4;">
-              ✦ Generar Itinerario
+            <button id="itinGenerateBtn" class="btn" onclick="itinGenerate()" disabled>
+              Generar itinerario
             </button>
           </div>
         </div>
@@ -63,18 +60,16 @@
 
       <!-- PASO 2: Resultado -->
       <div id="itin-step2" style="display:none;">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+        <div class="itin-result-head">
           <div>
-            <div id="itinResultTitle" style="font-family:'Instrument Serif',serif;font-size:1.4rem;color:var(--terra);"></div>
-            <div id="itinResultSub" style="font-size:0.82rem;color:var(--ink-muted);margin-top:4px;"></div>
+            <div id="itinResultTitle" class="itin-result-title"></div>
+            <div id="itinResultSub" class="itin-result-sub"></div>
           </div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button class="btn btn-outline" onclick="itinReset()" style="font-size:0.82rem;padding:8px 18px;">← Volver a editar</button>
-            <button class="btn" onclick="itinSaveCurrent()" style="font-size:0.82rem;padding:8px 18px;" title="Guardar este itinerario (máx. 3)">
-              💾 Guardar
-            </button>
+          <div class="itin-result-actions">
+            <button class="btn btn-outline" onclick="itinReset()">Volver a editar</button>
+            <button class="btn" onclick="itinSaveCurrent()" title="Guardar este itinerario (máx. 3)">Guardar</button>
             <button class="pdf-btn" onclick="itinDownloadPDF()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
               Descargar PDF
             </button>
             <span id="itinRouteWrap"></span>

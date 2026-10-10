@@ -1,5 +1,5 @@
 <div class="spa-section" id="spa-home">
-<section class="hero-immersive">
+<section class="hero-immersive" aria-labelledby="heroTitle">
 
   <!-- Carrusel de fondo: las fotos se cargan desde JS (la visible y la siguiente) -->
   <div class="hero-bg" id="heroBg">
@@ -15,46 +15,46 @@
     <div class="hero-bg-overlay"></div>
   </div>
 
-  <!-- Pie de foto del carrusel -->
-  <p class="hero-caption" aria-live="polite">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
-    <span id="heroSlideLabel">Acueducto Romano · Segovia</span>
-  </p>
-
-  <!-- Contenido centrado -->
-  <div class="hero-immersive-content">
-
-    <h1 class="hero-immersive-title">
-      Descubre el corazón<br>
-      <em>de España</em>
-    </h1>
-
-    <p class="hero-immersive-sub">
-      Monumentos, naturaleza, gastronomía y cultura.<br>
-      Tu itinerario personalizado te espera.
-    </p>
-
-    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-      <button onclick="launchTravelAnimation()" class="hero-immersive-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg>
-        Explorar el mapa
-      </button>
+  <div class="hero-grid">
+    <!-- Mensaje y acciones -->
+    <div class="hero-copy">
+      <p class="hero-code" aria-hidden="true"><span id="heroCode">SG</span></p>
+      <h1 class="hero-immersive-title" id="heroTitle">Tu escapada por Castilla y León</h1>
+      <p class="hero-immersive-sub">2.619 lugares en nueve provincias. Dinos qué te gusta y te montamos el plan con horario, por zonas y con su ruta.</p>
+      <div class="hero-actions">
+        <button type="button" onclick="launchTravelAnimation()" class="hero-immersive-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>
+          Explorar el mapa
+        </button>
+        <button type="button" onclick="openOnboarding()" class="hero-ghost-btn">Crear mi plan</button>
+      </div>
     </div>
 
-    <div class="hero-immersive-steps">
-      <span><strong>2.619</strong> lugares</span>
-      <span class="hero-step-dot">·</span>
-      <span><strong>9</strong> provincias</span>
-      <span class="hero-step-dot">·</span>
-      <span><strong>63</strong> días de itinerario</span>
-    </div>
-
-    <!-- Puntos indicadores -->
-    <div class="hero-carousel-dots" id="heroCarouselDots"></div>
-
+    <!-- Panel de salidas: el día 1 real de la provincia que se ve en la foto -->
+    <aside class="dep-board" aria-labelledby="depTitle">
+      <header class="dep-head">
+        <h2 class="dep-title" id="depTitle">Día 1 en <span id="depProv">Segovia</span></h2>
+        <span class="dep-code" id="depCode">SG</span>
+      </header>
+      <div class="dep-cols" aria-hidden="true"><span>Hora</span><span>Lugar</span><span>Parada</span></div>
+      <ol class="dep-rows" id="depRows" aria-live="polite"></ol>
+      <footer class="dep-foot">
+        <button type="button" class="dep-link" id="depOpen">
+          Ver la provincia en el mapa
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </footer>
+    </aside>
   </div>
 
-
+  <!-- Pie: foto actual y selector de provincia por código -->
+  <div class="hero-bottom">
+    <p class="hero-caption" aria-live="polite">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+      <span id="heroSlideLabel">Acueducto romano, Segovia</span>
+    </p>
+    <div class="hero-carousel-dots" id="heroCarouselDots" role="group" aria-label="Elegir provincia de la portada"></div>
+  </div>
 
 </section>
 
@@ -64,21 +64,24 @@
 <script>
 (function() {
   var SLIDES = [
-    { label: 'Acueducto Romano · Segovia' },
-    { label: 'Catedral · Burgos' },
-    { label: 'Plaza Mayor · Salamanca' },
-    { label: 'Las Médulas · León' },
-    { label: 'Murallas medievales · Ávila' },
-    { label: 'Laguna Negra · Soria' },
-    { label: 'San Martín de Frómista · Palencia' },
-    { label: 'Iglesia de San Pablo · Valladolid' },
-    { label: 'Catedral · Zamora' }
+    { prov: 'Segovia',    label: 'Acueducto romano, Segovia' },
+    { prov: 'Burgos',     label: 'Catedral, Burgos' },
+    { prov: 'Salamanca',  label: 'Plaza Mayor, Salamanca' },
+    { prov: 'León',       label: 'Las Médulas, León' },
+    { prov: 'Ávila',      label: 'Murallas medievales, Ávila' },
+    { prov: 'Soria',      label: 'Laguna Negra, Soria' },
+    { prov: 'Palencia',   label: 'San Martín de Frómista, Palencia' },
+    { prov: 'Valladolid', label: 'Iglesia de San Pablo, Valladolid' },
+    { prov: 'Zamora',     label: 'Catedral, Zamora' }
   ];
+  var CODES = { 'Ávila': 'AV', 'Burgos': 'BU', 'León': 'LE', 'Palencia': 'P', 'Salamanca': 'SA', 'Segovia': 'SG', 'Soria': 'SO', 'Valladolid': 'VA', 'Zamora': 'ZA' };
 
   var slides   = document.querySelectorAll('.hero-slide');
   var dotsWrap = document.getElementById('heroCarouselDots');
   var labelEl  = document.getElementById('heroSlideLabel');
-  if (labelEl) labelEl.style.transition = 'opacity 0.4s ease';
+  var codeEl   = document.getElementById('heroCode');
+  var rowsEl   = document.getElementById('depRows');
+  var reduce   = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var current = 0;
 
   // WebP a 1920 px en pantallas grandes y a 1080 px en el resto (densidad máx. 2)
@@ -95,52 +98,88 @@
   loadSlide(0);
   window.addEventListener('load', function() { loadSlide(1); });
 
+  // Selector por código de provincia (hace de puntos del carrusel)
   slides.forEach(function(_, i) {
-    var dot = document.createElement('button');
-    dot.className = 'hero-dot' + (i === 0 ? ' active' : '');
-    dot.setAttribute('aria-label', SLIDES[i].label);
-    dot.onclick = function() { goTo(i); resetTimer(); };
-    dotsWrap.appendChild(dot);
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'hero-dot' + (i === 0 ? ' active' : '');
+    b.textContent = CODES[SLIDES[i].prov];
+    b.setAttribute('aria-label', SLIDES[i].prov);
+    b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    b.onclick = function() { goTo(i); resetTimer(); };
+    dotsWrap.appendChild(b);
+  });
+
+  // Panel de salidas: día 1 real de la provincia (dayPlans, en data.js)
+  function esc(s) { return String(s).replace(/[&<>"]/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function renderBoard(prov, animate) {
+    if (typeof dayPlans === 'undefined' || !rowsEl) return;
+    var items = ((dayPlans[prov] || {}).dia1 || []).slice(0, 5);
+    document.getElementById('depProv').textContent = prov;
+    document.getElementById('depCode').textContent = CODES[prov];
+    rowsEl.innerHTML = items.map(function(it, i) {
+      var t = it.time.length === 4 ? '0' + it.time : it.time;
+      return '<li class="dep-row' + (i === 0 ? ' is-next' : '') + '" style="--i:' + i + '">' +
+        '<span class="dep-time">' + esc(t) + '</span>' +
+        '<span class="dep-place">' + esc(it.place) + '</span>' +
+        '<span class="dep-stop">' + (i + 1) + '/' + items.length + '</span></li>';
+    }).join('');
+    if (animate && !reduce) {
+      rowsEl.classList.remove('is-flipping');
+      void rowsEl.offsetWidth;
+      rowsEl.classList.add('is-flipping');
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function() { renderBoard(SLIDES[0].prov, false); });
+  document.getElementById('depOpen').addEventListener('click', function() {
+    if (typeof goToProvince === 'function') goToProvince(SLIDES[current].prov);
+    else navigateTo('/mapa');
   });
 
   function goTo(idx) {
+    if (idx === current) return;
     slides[current].classList.remove('active');
     dotsWrap.children[current].classList.remove('active');
+    dotsWrap.children[current].setAttribute('aria-pressed', 'false');
     current = idx;
     loadSlide(current);
     loadSlide((current + 1) % slides.length);
     slides[current].classList.add('active');
     dotsWrap.children[current].classList.add('active');
-    if (labelEl) {
-      labelEl.style.opacity = '0';
-      setTimeout(function() {
-        labelEl.textContent = SLIDES[current].label;
-        labelEl.style.opacity = '1';
-      }, 300);
+    dotsWrap.children[current].setAttribute('aria-pressed', 'true');
+    var s = SLIDES[current];
+    if (labelEl) labelEl.textContent = s.label;
+    if (codeEl) {
+      codeEl.textContent = CODES[s.prov];
+      if (!reduce) { codeEl.classList.remove('is-in'); void codeEl.offsetWidth; codeEl.classList.add('is-in'); }
     }
+    renderBoard(s.prov, true);
   }
 
   function next() { goTo((current + 1) % slides.length); }
-  var timer = setInterval(next, 6000);
-  function resetTimer() { clearInterval(timer); timer = setInterval(next, 6000); }
+  var timer = setInterval(next, 7000);
+  function resetTimer() { clearInterval(timer); timer = setInterval(next, 7000); }
 
-  var bg = document.getElementById('heroBg');
-  if (bg) {
-    bg.addEventListener('mouseenter', function() { clearInterval(timer); });
-    bg.addEventListener('mouseleave', function() { timer = setInterval(next, 6000); });
+  // Pausa mientras el puntero está sobre la portada o el foco dentro de ella
+  var hero = document.querySelector('.hero-immersive');
+  if (hero) {
+    hero.addEventListener('mouseenter', function() { clearInterval(timer); });
+    hero.addEventListener('mouseleave', resetTimer);
+    hero.addEventListener('focusin', function() { clearInterval(timer); });
+    hero.addEventListener('focusout', resetTimer);
   }
+  document.addEventListener('visibilitychange', function() { if (document.hidden) clearInterval(timer); else resetTimer(); });
 })();
 
-/* ── Barra transparente solo mientras se ve la foto de portada ── */
+/* ── Barra translúcida solo mientras se ve la foto de portada ── */
 (function() {
   var nav = document.getElementById('mainNavbar');
-  var home = document.getElementById('spa-home');
-  var hero = home && home.querySelector('.hero-immersive');
-  if (!nav || !hero) return;
-  window.addEventListener('scroll', function() {
-    if (home.style.display === 'none') return;
-    nav.classList.toggle('navbar-on-hero', window.scrollY < hero.offsetHeight - nav.offsetHeight);
-  }, { passive: true });
+  var hero = document.querySelector('#spa-home .hero-immersive');
+  if (!nav || !hero || !('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function(entries) {
+    nav.classList.toggle('navbar-on-hero', entries[0].isIntersecting);
+  }, { rootMargin: '-' + (nav.offsetHeight || 64) + 'px 0px 0px 0px', threshold: 0 });
+  io.observe(hero);
 })();
 
 /* ── Transición "viaje por las nueve provincias" hacia el mapa ──
@@ -154,15 +193,15 @@
 
   // Paradas en el orden de la ruta
   var STOPS = {
-    'León':       { img: 'leon',       place: 'Las Médulas' },
-    'Palencia':   { img: 'palencia',   place: 'San Martín de Frómista' },
-    'Burgos':     { img: 'burgos',     place: 'Catedral' },
-    'Soria':      { img: 'soria',      place: 'Laguna Negra' },
-    'Segovia':    { img: 'segovia',    place: 'Acueducto romano' },
-    'Ávila':      { img: 'avila',      place: 'Murallas medievales' },
-    'Salamanca':  { img: 'salamanca',  place: 'Plaza Mayor' },
-    'Zamora':     { img: 'zamora',     place: 'Catedral' },
-    'Valladolid': { img: 'valladolid', place: 'Iglesia de San Pablo' }
+    'León':       { img: 'leon',       place: 'Las Médulas',            code: 'LE' },
+    'Palencia':   { img: 'palencia',   place: 'San Martín de Frómista', code: 'P'  },
+    'Burgos':     { img: 'burgos',     place: 'Catedral',               code: 'BU' },
+    'Soria':      { img: 'soria',      place: 'Laguna Negra',           code: 'SO' },
+    'Segovia':    { img: 'segovia',    place: 'Acueducto romano',       code: 'SG' },
+    'Ávila':      { img: 'avila',      place: 'Murallas medievales',    code: 'AV' },
+    'Salamanca':  { img: 'salamanca',  place: 'Plaza Mayor',            code: 'SA' },
+    'Zamora':     { img: 'zamora',     place: 'Catedral',               code: 'ZA' },
+    'Valladolid': { img: 'valladolid', place: 'Iglesia de San Pablo',   code: 'VA' }
   };
 
   var overlay = document.getElementById('routeIntro');
@@ -176,6 +215,7 @@
   var count  = card.querySelector('.ri-card-count');
   var name   = card.querySelector('.ri-card-name');
   var place  = card.querySelector('.ri-card-place');
+  var code   = card.querySelector('.ri-card-code');
   var cities = Array.prototype.slice.call(overlay.querySelectorAll('.ri-city'));
   var provs  = Array.prototype.slice.call(overlay.querySelectorAll('.ri-provinces path'));
 
@@ -273,9 +313,10 @@
     card.classList.remove('is-in');
     later(function() {
       img.style.backgroundImage = "url('/hero/" + stop.img + "-1080.webp')";
-      count.textContent = (i + 1) + ' de ' + cities.length;
+      count.textContent = 'Parada ' + (i + 1) + '/' + cities.length;
       name.textContent = n;
       place.textContent = stop.place || '';
+      if (code) code.textContent = stop.code || '';
       card.classList.add('is-in');
     }, i === 0 ? 0 : 180);
   }

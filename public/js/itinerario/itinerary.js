@@ -7,7 +7,7 @@ let itinSelected = [];
 let itinResult   = null;
 
 const DAYS_ES  = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
-const DAY_EMOJIS = ['🌅','🌄','🌇'];
+const DAY_EMOJIS = ['', '', ''];
 
 registerActions({
   'myitin-open':   d => openMyItinerary(d.id),
@@ -39,8 +39,8 @@ function itinUpdateLock() {
 const ITIN_MAX = 3;
 
 async function itinSaveCurrent() {
-  if (!itinResult) { showToast('⚠️ No hay itinerario que guardar'); return; }
-  if (!appState.currentUser) { showToast('⚠️ Inicia sesión para guardar'); return; }
+  if (!itinResult) { showToast('No hay itinerario que guardar'); return; }
+  if (!appState.currentUser) { showToast('Inicia sesión para guardar'); return; }
 
   const defaultTitle = itinResult._title
     || `${itinResult.province} · ${itinResult.numDays} día${itinResult.numDays!==1?'s':''}`;
@@ -72,13 +72,13 @@ async function itinSaveCurrent() {
       });
     }
     const data = await res.json();
-    if (!res.ok) { showToast('❌ ' + (data.error || 'No se pudo guardar')); return; }
+    if (!res.ok) { showToast('' + (data.error || 'No se pudo guardar')); return; }
     itinResult._savedId = data._id;
     itinResult._title   = data.title;
-    showToast('💾 Itinerario guardado');
+    showToast('Itinerario guardado');
     if (typeof loadMyItineraries === 'function') loadMyItineraries();  // refrescar vista dedicada
   } catch(e) {
-    showToast('❌ Error al guardar');
+    showToast('Error al guardar');
   }
 }
 
@@ -122,8 +122,8 @@ function renderMyItineraries(items) {
   if (counter) {
     const remaining = ITIN_MAX - items.length;
     counter.innerHTML = items.length >= ITIN_MAX
-      ? `<strong style="color:var(--terra);">${items.length} de ${ITIN_MAX}</strong> itinerarios guardados · <span style="font-style:italic;">elimina alguno para guardar otro</span>`
-      : `<strong style="color:var(--terra);">${items.length} de ${ITIN_MAX}</strong> itinerarios guardados · puedes guardar ${remaining} más`;
+      ? `<strong>${items.length} de ${ITIN_MAX}</strong> guardados. Elimina alguno para guardar otro.`
+      : `<strong>${items.length} de ${ITIN_MAX}</strong> guardados. Puedes guardar ${remaining} más.`;
   }
 
   list.innerHTML = items.map(it => {
@@ -137,25 +137,22 @@ function renderMyItineraries(items) {
     return `
       <div class="col-12 col-md-6 col-lg-4">
         <div class="myitin-card">
-          <div>
-            <div style="font-family:'Instrument Serif',serif;color:var(--terra);font-size:1.15rem;font-weight:700;line-height:1.3;margin-bottom:6px;">
-              ${escHTML(it.title || provinces)}
-            </div>
-            <div style="font-size:0.78rem;color:var(--ink-muted);line-height:1.6;">
-              📍 ${escHTML(provinces)}<br>
-              📅 ${it.numDays} día${it.numDays!==1?'s':''}${dateLabel ? ' · '+dateLabel : ''}<br>
-              📌 ${totalPlaces} lugar${totalPlaces!==1?'es':''}
-            </div>
+          <div class="myitin-band">
+            ${provinceCode[it.province] ? `<span class="myitin-code">${provinceCode[it.province]}</span>` : ''}
+            <span class="myitin-title">${escHTML(it.title || provinces)}</span>
           </div>
-          <div style="font-size:0.7rem;color:var(--ink-muted);font-style:italic;opacity:0.7;border-top:1px solid rgba(184,92,56,0.15);padding-top:10px;">
-            Guardado el ${created}
-          </div>
-          <div style="display:flex;gap:8px;margin-top:auto;">
+          <dl class="myitin-fields">
+            <div><dt>Días</dt><dd>${it.numDays}</dd></div>
+            <div><dt>Lugares</dt><dd>${totalPlaces}</dd></div>
+            <div><dt>Salida</dt><dd>${dateLabel ? escHTML(dateLabel) : 'Sin fecha'}</dd></div>
+          </dl>
+          <p class="myitin-saved">Guardado el ${created}</p>
+          <div class="myitin-actions-row">
             <button type="button" class="btn myitin-open-btn" data-action="myitin-open" data-id="${escHTML(it._id)}">
-              📂 Abrir
+              Abrir
             </button>
-            <button type="button" class="itin-del-btn" data-action="myitin-delete" data-id="${escHTML(it._id)}" title="Eliminar">
-              🗑️
+            <button type="button" class="itin-del-btn" data-action="myitin-delete" data-id="${escHTML(it._id)}" title="Eliminar itinerario" aria-label="Eliminar itinerario">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg>
             </button>
           </div>
         </div>
@@ -166,7 +163,7 @@ function renderMyItineraries(items) {
 async function openMyItinerary(id) {
   try {
     const res = await fetch('/api/itineraries/' + id, { headers: authHeaders() });
-    if (!res.ok) { showToast('❌ No se pudo cargar el itinerario'); return; }
+    if (!res.ok) { showToast('No se pudo cargar el itinerario'); return; }
     const item = await res.json();
     itinResult = {
       province: item.province,
@@ -184,9 +181,9 @@ async function openMyItinerary(id) {
       const step2 = document.getElementById('itin-step2');
       if (step2) step2.scrollIntoView({ behavior:'smooth', block:'start' });
     }, 100);
-    showToast(`✦ "${item.title}" cargado`);
+    showToast(`"${item.title}" cargado`);
   } catch(e) {
-    showToast('❌ Error al cargar');
+    showToast('Error al cargar');
   }
 }
 
@@ -194,15 +191,15 @@ async function deleteMyItinerary(id) {
   if (!confirm('¿Eliminar este itinerario guardado? Esta acción no se puede deshacer.')) return;
   try {
     const res = await fetch('/api/itineraries/' + id, { method:'DELETE', headers: authHeaders() });
-    if (!res.ok) { showToast('❌ No se pudo eliminar'); return; }
-    showToast('🗑️ Itinerario eliminado');
+    if (!res.ok) { showToast('No se pudo eliminar'); return; }
+    showToast('Itinerario eliminado');
     if (itinResult && itinResult._savedId === id) {
       itinResult = null;
       if (typeof itinReset === 'function') itinReset();
     }
     loadMyItineraries();  // refrescar la vista
   } catch(e) {
-    showToast('❌ Error al eliminar');
+    showToast('Error al eliminar');
   }
 }
 
@@ -287,33 +284,33 @@ function itinRenderDayColumns(query) {
     const chipHTML = (m, isOpen) => {
       const sel      = itinSelected.includes(m.id);
       const disabled = !isOpen ? 'opacity:0.45;cursor:not-allowed;' : 'cursor:pointer;';
-      const bg       = sel ? 'rgba(184,92,56,0.15)' : 'rgba(245,237,216,0.03)';
-      const border   = sel ? 'var(--terra)' : isOpen ? 'rgba(184,92,56,0.2)' : 'rgba(184,92,56,0.1)';
+      const bg       = sel ? 'rgba(14,17,20,0.15)' : 'rgba(245,237,216,0.03)';
+      const border   = sel ? 'var(--terra)' : isOpen ? 'rgba(14,17,20,0.2)' : 'rgba(14,17,20,0.1)';
       const click    = isOpen ? `data-action="itin-toggle" data-id="${m.id}"` : '';
       return `<div class="itin-marker-chip" id="chip-${m.id}-d${d}" ${click}
         style="border:1px solid ${border};padding:9px 11px;transition:all 0.18s;background:${bg};display:flex;align-items:center;gap:8px;${disabled}">
         <span style="font-size:0.75rem;color:var(--terra);">${catEmoji(m.cat)}</span>
         <div style="flex:1;min-width:0;">
           <div style="font-size:0.8rem;color:${isOpen?'var(--ink)':'var(--ink-muted)'};line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHTML(m.name)}</div>
-          ${!isOpen ? `<div style="font-size:0.68rem;color:#e57373;margin-top:2px;">No disponible este día</div>` : ''}
+          ${!isOpen ? `<div style="font-size:0.68rem;color:var(--danger);margin-top:2px;">No disponible este día</div>` : ''}
         </div>
       </div>`;
     };
 
     const openHTML = filteredOpen.length
       ? filteredOpen.map(m => chipHTML(m, true)).join('')
-      : `<p style="color:var(--ink-muted);font-style:italic;font-size:0.8rem;padding:8px 0;">Sin resultados.</p>`;
+      : `<p style="color:var(--ink-muted);font-size:0.8rem;padding:8px 0;">Sin resultados.</p>`;
 
     const closedSection = filteredClosed.length ? `
-      <div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(184,92,56,0.1);">
-        <div style="font-size:0.68rem;letter-spacing:0.1em;color:#e57373;margin-bottom:8px;">CERRADOS ESTE DÍA (${filteredClosed.length})</div>
+      <div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(14,17,20,0.1);">
+        <div style="font-size:0.68rem;letter-spacing:0.1em;color:var(--danger);margin-bottom:8px;">CERRADOS ESTE DÍA (${filteredClosed.length})</div>
         ${filteredClosed.map(m => chipHTML(m, false)).join('')}
       </div>` : '';
 
     cols.push(`
       <div class="${colWidth}">
-        <div style="background:rgba(245,237,216,0.03);border:1px solid rgba(184,92,56,0.2);padding:16px;height:100%;">
-          <div style="font-family:'Instrument Serif',serif;color:var(--terra);font-size:0.95rem;margin-bottom:4px;">${DAY_EMOJIS[d]} Día ${d+1}</div>
+        <div style="background:rgba(245,237,216,0.03);border:1px solid rgba(14,17,20,0.2);padding:16px;height:100%;">
+          <div style="font-family:var(--font-display);color:var(--terra);font-size:0.95rem;margin-bottom:4px;">Día ${d+1}</div>
           <div style="font-size:0.78rem;color:var(--ink-muted);margin-bottom:14px;text-transform:capitalize;">${dateLabel}</div>
           <div style="display:flex;flex-direction:column;gap:6px;max-height:380px;overflow-y:auto;padding-right:4px;">
             ${openHTML}
@@ -328,7 +325,7 @@ function itinRenderDayColumns(query) {
 
 function catEmoji(cat) {
   const map = { monumento:'🏛', naturaleza:'🌿', gastronomia:'🍽', museo:'🎨', religioso:'⛪', castillo:'🏰', otros:'📍' };
-  return map[cat] || '📍';
+  return ''; // sin emojis: la categoría ya va como etiqueta de texto
 }
 
 function itinToggle(id) {
@@ -458,7 +455,7 @@ async function itinGenerate() {
   itinResult = { province, dateStr, numDays, days, warnings };
 
   itinRenderResult();
-  btn.textContent = '✦ Generar Itinerario';
+  btn.textContent = 'Generar itinerario';
   btn.disabled = false;
 }
 
@@ -487,18 +484,18 @@ function itinRenderResult() {
             <div class="timeline-item" style="position:relative;">
               <div class="time-badge">${p.time}</div>
               <div class="timeline-content" style="padding-right:30px;">
-                <h4>${escHTML(p.name)} ${p.rating ? `<span style="font-size:0.72rem;color:var(--terra);font-family:'DM Sans',sans-serif;">★ ${p.rating}</span>` : ''}</h4>
+                <h4>${escHTML(p.name)} ${p.rating ? `<span style="font-size:0.72rem;color:var(--terra);font-family:var(--font-body);">★ ${p.rating}</span>` : ''}</h4>
                 <p style="margin:2px 0 0;">${p.parsedHours ? `Abierto: ${p.parsedHours.text}` : p.desc || p.cat || ''}</p>
               </div>
               ${favBtn}
             </div>`;
         }).join('')
-      : `<p style="color:var(--ink-muted);font-style:italic;font-size:0.85rem;padding:12px 0;">Sin lugares disponibles este día.</p>`;
+      : `<p style="color:var(--ink-muted);font-size:0.85rem;padding:12px 0;">Sin lugares disponibles este día.</p>`;
 
     return `
       <div class="col-12 col-md-6 col-lg-4">
         <div class="day-plan-card h-100">
-          <h3>${DAY_EMOJIS[di] || '📅'} Día ${di+1} — <span style="font-size:1rem;">${dateLabel}</span></h3>
+          <h3>Día ${di+1}, <span style="font-size:1rem;">${dateLabel}</span></h3>
           <div class="timeline">${placesHTML}</div>
         </div>
       </div>`;
@@ -508,9 +505,9 @@ function itinRenderResult() {
   if (warnings.length) {
     warnEl.innerHTML = `
       <div style="background:rgba(229,115,115,0.08);border:1px solid rgba(229,115,115,0.25);padding:14px 18px;">
-        <div style="font-size:0.75rem;letter-spacing:0.1em;color:#e57373;margin-bottom:8px;">⚠ LUGARES NO DISPONIBLES ESTE DÍA</div>
+        <div style="font-size:0.75rem;letter-spacing:0.1em;color:var(--danger);margin-bottom:8px;">Lugares no disponibles este día</div>
         <div style="font-size:0.82rem;color:var(--ink-muted);">
-          ${warnings.map(w => `<span style="display:inline-block;margin:3px 8px 3px 0;"><b style="color:var(--ink);">${escHTML(w.name)}</b> — cerrado el ${w.day}</span>`).join('')}
+          ${warnings.map(w => `<span style="display:inline-block;margin:3px 8px 3px 0;"><b style="color:var(--ink);">${escHTML(w.name)}</b>, cerrado el ${w.day}</span>`).join('')}
         </div>
       </div>`;
   } else {
@@ -537,7 +534,7 @@ function itinDrawRoute() {
 
   const days = itinResult.days.map((day, di) => {
     const dateLabel = day.date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
-    const label     = `${DAY_EMOJIS[di] || '📅'} Día ${di + 1} — ${dateLabel}`;
+    const label     = `Día ${di + 1}, ${dateLabel}`;
     const places    = day.places.map(p => {
       const mk = appState.markers.find(m => m.name === p.name && m.province === itinResult.province);
       return mk ? { lat: mk.lat, lng: mk.lng, name: p.name } : null;
@@ -547,7 +544,7 @@ function itinDrawRoute() {
 
   const totalPlaces = days.reduce((s, d) => s + d.places.length, 0);
   if (totalPlaces < 2) {
-    showToast('⚠️ No hay suficientes lugares con coordenadas para trazar la ruta');
+    showToast('No hay suficientes lugares con coordenadas para trazar la ruta');
     return;
   }
 
@@ -582,7 +579,7 @@ function _itinDownloadPDF() {
   doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.setTextColor(...dark);
   doc.text('CASTILLA Y LEÓN', W/2, 12, {align:'center'});
   doc.setFontSize(9); doc.setFont('helvetica','normal');
-  doc.text('✦ Mi Itinerario Personalizado ✦', W/2, 19, {align:'center'});
+  doc.text('Mi itinerario personalizado', W/2, 19, {align:'center'});
 
   doc.setFont('helvetica','bold'); doc.setFontSize(24); doc.setTextColor(...gold);
   doc.text(itinResult.province, W/2, 44, {align:'center'});

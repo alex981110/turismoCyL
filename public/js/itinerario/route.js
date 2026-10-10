@@ -1,5 +1,6 @@
-const DAY_ROUTE_COLORS = ['#B85C38', '#4ca8c9', '#7ec94c', '#c94c7e', '#c9784c'];
-const DAY_ROUTE_LABELS = ['🌅 Día 1', '🌄 Día 2', '🌇 Día 3', '🌆 Día 4', '🌃 Día 5'];
+// Un color de serie por día; el primero es la tinta del sistema
+const DAY_ROUTE_COLORS = ['#0E1114', '#2459A6', '#B35E0B', '#6A4C9C', '#2D7A4C'];
+const DAY_ROUTE_LABELS = ['Día 1', 'Día 2', 'Día 3', 'Día 4', 'Día 5'];
 
 function buildGoogleMapsUrl(dayGroups) {
   const allPlaces = dayGroups.flatMap(d => d.places);
@@ -25,12 +26,12 @@ function openRouteMap(places, title, days) {
 
   const allPlaces = dayGroups.flatMap(d => d.places);
   if (!allPlaces || allPlaces.length < 2) {
-    showToast('⚠️ Se necesitan al menos 2 lugares con coordenadas');
+    showToast('Se necesitan al menos 2 lugares con coordenadas');
     return;
   }
 
   // Título y subtext
-  document.getElementById('routeMapTitleText').textContent = '🗺️ ' + (title || 'Ruta');
+  document.getElementById('routeMapTitleText').textContent = (title || 'Ruta');
   document.getElementById('routeMapSubtext').textContent   = `${allPlaces.length} paradas`;
 
   // Sidebar: por día si hay varios
@@ -41,14 +42,14 @@ function openRouteMap(places, title, days) {
     const header = multiDay ? `
       <div style="display:flex;align-items:center;gap:8px;padding:12px 10px 6px;margin-top:${di > 0 ? '10px' : '0'};">
         <div style="width:12px;height:12px;border-radius:50%;background:${color};flex-shrink:0;"></div>
-        <span style="font-family:'Instrument Serif',serif;font-size:0.8rem;color:${color};letter-spacing:0.06em;">${day.label || DAY_ROUTE_LABELS[di]}</span>
+        <span style="font-family:var(--font-display);font-size:0.8rem;color:${color};letter-spacing:0.06em;">${day.label || DAY_ROUTE_LABELS[di]}</span>
         <span style="font-size:0.7rem;color:var(--ink-muted);">${day.places.length} paradas</span>
       </div>` : '';
     const stops = day.places.map((p, i) => {
       const mk  = appState.markers.find(m => m.name === p.name);
       const cat = mk ? (catLabel[mk.cat] || mk.cat) : '';
       return `
-        <div class="route-stop-item" data-action="route-fly" data-lat="${p.lat}" data-lng="${p.lng}" style="border-left:2px solid ${color}30;">
+        <div class="route-stop-item" data-action="route-fly" data-lat="${p.lat}" data-lng="${p.lng}" >
           <div class="route-stop-num" style="background:${color};">${i + 1}</div>
           <div class="route-stop-info">
             <div class="route-stop-name">${escHTML(p.name)}</div>
@@ -102,7 +103,7 @@ function openRouteMap(places, title, days) {
     // Marcadores numerados con color del día
     day.places.forEach((p, i) => {
       const icon = L.divIcon({
-        html: `<div style="background:${color};color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.75rem;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.25);">${i + 1}</div>`,
+        html: `<div style="background:${color};color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:0.75rem;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.25);">${i + 1}</div>`,
         className: '', iconSize: [28, 28], iconAnchor: [14, 14]
       });
       const label = multiDay ? `${day.label || DAY_ROUTE_LABELS[di]} · ${i + 1}. ${p.name}` : `${i + 1}. ${p.name}`;
@@ -141,7 +142,7 @@ function openRouteMap(places, title, days) {
           const mins = Math.round(s.totalTime / 60);
           const hrs  = mins >= 60 ? `${Math.floor(mins/60)}h ${mins%60}min` : `${mins} min`;
           document.getElementById('routeMapSubtext').textContent =
-            `🚧 Herramienta en desarrollo`;
+            `Herramienta en desarrollo`;
         }
       });
       rc.on('routingerror', () => {});
@@ -211,8 +212,8 @@ async function saveMarkerEdit() {
   const photo = document.getElementById('editMarkerPhoto').value.trim();
   const url  = document.getElementById('editMarkerUrl').value.trim();
 
-  if (!name) { showToast('⚠️ El nombre es obligatorio'); return; }
-  if (isNaN(lat) || isNaN(lng)) { showToast('⚠️ Coordenadas inválidas'); return; }
+  if (!name) { showToast('El nombre es obligatorio'); return; }
+  if (isNaN(lat) || isNaN(lng)) { showToast('Coordenadas inválidas'); return; }
 
   try {
     const res = await fetch(`/api/markers/${id}`, {
@@ -228,14 +229,14 @@ async function saveMarkerEdit() {
 
     closeMarkerEditModal();
     refreshAdminData();
-    showToast('✅ Marcador actualizado correctamente');
+    showToast('Marcador actualizado correctamente');
 
     // Refresh map if province is active
     if (appState.selectedProvince === province) {
       loadProvinceMarkers(province);
     }
   } catch(e) {
-    showToast('❌ Error al guardar el marcador');
+    showToast('Error al guardar el marcador');
   }
 }
 

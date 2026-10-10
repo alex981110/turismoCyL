@@ -1,35 +1,40 @@
-<!-- Portada: acceso directo a cada provincia en el mapa -->
+<!-- Portada: acceso directo a cada provincia en el mapa, como billetes -->
 <%
   const provincias = [
-    { name: 'Segovia',    img: 'segovia',    place: 'Acueducto romano' },
-    { name: 'Salamanca',  img: 'salamanca',  place: 'Plaza Mayor' },
-    { name: 'León',       img: 'leon',       place: 'Las Médulas' },
-    { name: 'Burgos',     img: 'burgos',     place: 'Catedral' },
-    { name: 'Ávila',      img: 'avila',      place: 'Murallas medievales' },
-    { name: 'Valladolid', img: 'valladolid', place: 'Iglesia de San Pablo' },
-    { name: 'Zamora',     img: 'zamora',     place: 'Catedral' },
-    { name: 'Palencia',   img: 'palencia',   place: 'San Martín de Frómista' },
-    { name: 'Soria',      img: 'soria',      place: 'Laguna Negra' }
+    { name: 'Segovia',    code: 'SG', img: 'segovia',    place: 'Acueducto romano' },
+    { name: 'Salamanca',  code: 'SA', img: 'salamanca',  place: 'Plaza Mayor' },
+    { name: 'León',       code: 'LE', img: 'leon',       place: 'Las Médulas' },
+    { name: 'Burgos',     code: 'BU', img: 'burgos',     place: 'Catedral' },
+    { name: 'Ávila',      code: 'AV', img: 'avila',      place: 'Murallas medievales' },
+    { name: 'Valladolid', code: 'VA', img: 'valladolid', place: 'Iglesia de San Pablo' },
+    { name: 'Zamora',     code: 'ZA', img: 'zamora',     place: 'Catedral' },
+    { name: 'Palencia',   code: 'P',  img: 'palencia',   place: 'San Martín de Frómista' },
+    { name: 'Soria',      code: 'SO', img: 'soria',      place: 'Laguna Negra' }
   ];
 %>
 <section class="home-provinces" aria-labelledby="homeProvincesTitle">
   <header class="home-provinces-head">
-    <h2 id="homeProvincesTitle">Nueve provincias</h2>
-    <p>Elige una y empieza a explorar sus lugares en el mapa.</p>
+    <h2 id="homeProvincesTitle">Nueve provincias, un destino cada una</h2>
+    <p>Elige una y abre sus lugares en el mapa.</p>
   </header>
   <div class="home-provinces-grid">
     <% provincias.forEach(function(p, i) { %>
     <a class="province-tile<%= i === 0 ? ' province-tile--feature' : '' %>" href="/mapa"
        onclick="event.preventDefault();goToProvince('<%= p.name %>')">
-      <img src="/hero/<%= p.img %>-640.webp"
-           srcset="/hero/<%= p.img %>-640.webp 640w, /hero/<%= p.img %>-1080.webp 1080w"
-           sizes="<%= i === 0 ? '(max-width: 760px) 100vw, 50vw' : '(max-width: 760px) 50vw, 33vw' %>"
-           alt="" loading="lazy" decoding="async">
-      <span class="province-tile-text">
-        <strong><%= p.name %></strong>
-        <span><%= p.place %></span>
+      <span class="province-tile-photo">
+        <img src="/hero/<%= p.img %>-640.webp"
+             srcset="/hero/<%= p.img %>-640.webp 640w, /hero/<%= p.img %>-1080.webp 1080w"
+             sizes="<%= i === 0 ? '(max-width: 760px) 100vw, 50vw' : '(max-width: 760px) 100vw, 25vw' %>"
+             alt="" loading="lazy" decoding="async">
       </span>
-      <svg class="province-tile-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      <span class="province-tile-text">
+        <span class="province-tile-code"><%= p.code %></span>
+        <span class="province-tile-names">
+          <strong><%= p.name %></strong>
+          <span><%= p.place %></span>
+        </span>
+        <svg class="province-tile-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </span>
     </a>
     <% }) %>
   </div>

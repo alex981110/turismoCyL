@@ -566,6 +566,23 @@ const provinceCenters = {
   'Soria': [41.76, -2.46],
 };
 
+// Código de matrícula de cada provincia: hace de «código de aeropuerto» en billetes y paneles
+const provinceCode = {
+  'Ávila': 'AV', 'Burgos': 'BU', 'León': 'LE', 'Palencia': 'P', 'Salamanca': 'SA',
+  'Segovia': 'SG', 'Soria': 'SO', 'Valladolid': 'VA', 'Zamora': 'ZA',
+};
+
+// Familia de cada categoría: decide el color del marcador y de su etiqueta (ver --cat-* en shared.css)
+const catFamily = {
+  'monumento': 'patrimonio', 'historia': 'patrimonio',
+  'museo': 'cultura', 'exposicion': 'cultura', 'cultura': 'cultura', 'biblioteca': 'cultura',
+  'teatro': 'escena', 'cine': 'escena',
+  'naturaleza': 'naturaleza',
+  'gastronomia': 'mesa', 'bar': 'mesa',
+  'alojamiento': 'cama',
+};
+const catFam = cat => catFamily[cat] || 'cultura';
+
 // Iconos de categoría: SVG de trazo (estilo Lucide), heredan el color con currentColor
 const _catSvg = inner => '<svg class="cat-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + inner + '</svg>';
 const catIcon = {
@@ -584,7 +601,7 @@ const catIcon = {
   'default':     _catSvg('<path d="M20 10c0 5-5.5 10.2-7.4 11.8a1 1 0 0 1-1.2 0C9.5 20.2 4 15 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>')
 };
 
-// Corazón de favoritos: contorno si no lo es, relleno terracota si lo es
+// Corazón de favoritos: contorno si no lo es, relleno amarillo señal si lo es
 const favIcon = on => '<svg class="fav-ico' + (on ? ' is-on' : '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></svg>';
 
 const catLabel = {

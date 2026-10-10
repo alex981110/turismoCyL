@@ -28,7 +28,7 @@ function switchTab(tab) {
 async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const pass = document.getElementById('loginPassword').value;
-  if (!email || !pass) { showToast('⚠️ Introduce email y contraseña'); return; }
+  if (!email || !pass) { showToast('Introduce email y contraseña'); return; }
   try {
     const res = await fetch('/api/auth/login', {
       method: 'POST',
@@ -36,7 +36,7 @@ async function doLogin() {
       body: JSON.stringify({ email, password: pass })
     });
     const data = await res.json();
-    if (!res.ok) { showToast('❌ ' + (data.error || 'Credenciales incorrectas')); return; }
+    if (!res.ok) { showToast('' + (data.error || 'Credenciales incorrectas')); return; }
     // GUARDAR TOKEN DIRECTAMENTE AQUÍ — sin depender de loginSuccess
     // por si algún otro script ha sobreescrito esa función
     if (data.token) {
@@ -45,7 +45,7 @@ async function doLogin() {
     }
     loginSuccess(data.user, data.token);
   } catch (e) {
-    showToast('❌ Error de conexión al servidor');
+    showToast('Error de conexión al servidor');
   }
 }
 
@@ -54,8 +54,8 @@ async function doRegister() {
   const email = document.getElementById('regEmail').value.trim();
   const pass = document.getElementById('regPassword').value;
   const pass2 = document.getElementById('regPassword2')?.value;
-  if (!name || !email || pass.length < 6) { showToast('⚠️ Completa todos los campos (mín. 6 caracteres)'); return; }
-  if (pass2 !== undefined && pass !== pass2) { showToast('⚠️ Las contraseñas no coinciden'); return; }
+  if (!name || !email || pass.length < 6) { showToast('Completa todos los campos (mín. 6 caracteres)'); return; }
+  if (pass2 !== undefined && pass !== pass2) { showToast('Las contraseñas no coinciden'); return; }
   try {
     const res = await fetch('/api/auth/register', {
       method: 'POST',
@@ -63,15 +63,15 @@ async function doRegister() {
       body: JSON.stringify({ name, email, password: pass })
     });
     const data = await res.json();
-    if (!res.ok) { showToast('❌ ' + (data.error || 'Error al registrarse')); return; }
+    if (!res.ok) { showToast('' + (data.error || 'Error al registrarse')); return; }
     if (data.token) {
       appState.token = data.token;
       localStorage.setItem('cyl_token', data.token);
     }
     loginSuccess(data.user, data.token);
-    showToast('✅ ¡Bienvenido/a! Cuenta creada correctamente.');
+    showToast('¡Bienvenido/a! Cuenta creada correctamente.');
   } catch (e) {
-    showToast('❌ Error de conexión al servidor');
+    showToast('Error de conexión al servidor');
   }
 }
 
@@ -86,7 +86,7 @@ function loginSuccess(user, token) {
   updateAuthUI();
   unlockFeatures();
   loadFavorites();
-  showToast(_t('toast.welcome', { name: user.name.split(' ')[0] }, `✦ Bienvenido/a, ${user.name.split(' ')[0]}`));
+  showToast(_t('toast.welcome', { name: user.name.split(' ')[0] }, `Bienvenido/a, ${user.name.split(' ')[0]}`));
   if (appState.personalizedPlan) {
     const { ranking } = appState.personalizedPlan;
     const cp = appState.currentPlan;
@@ -129,7 +129,7 @@ function doLogout() {
   localStorage.removeItem('cyl_token');
   updateAuthUI();
   lockFeatures();
-  showToast(_t('toast.loggedOut', null, '✦ Sesión cerrada'));
+  showToast(_t('toast.loggedOut', null, 'Sesión cerrada'));
 }
 
 // El planificador muestra u oculta el segundo día según la sesión: se vuelve a pintar

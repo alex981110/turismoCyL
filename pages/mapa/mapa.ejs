@@ -6,8 +6,8 @@
 
       <!-- Header del sidebar -->
       <div class="msb-header">
-        <div class="msb-logo">CyL Turismo</div>
-        <button class="msb-collapse-btn" id="sidebarToggle" onclick="toggleSidebar()" title="Colapsar panel">
+        <div class="msb-logo">Lugares y planes</div>
+        <button class="msb-collapse-btn" id="sidebarToggle" onclick="toggleSidebar()" title="Ocultar panel" aria-label="Ocultar panel">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
       </div>
@@ -32,7 +32,7 @@
           <div class="locked-feature" id="plannerContent">
             <div id="dayPlanContainer" class="msb-dayplan"></div>
             <div id="plannerBtnWrap" style="padding:12px 16px 4px;display:none;flex-wrap:wrap;gap:8px;">
-              <button class="btn" id="plannerSaveBtn" onclick="savePlannerItinerary()" style="flex:1;min-width:120px;font-size:0.82rem;">
+              <button class="btn" id="plannerSaveBtn" onclick="savePlannerItinerary()" style="flex:1;min-width:120px;">
                 Guardar
               </button>
               <button class="pdf-btn" id="pdfBtn" onclick="downloadItinerarioPDF()" style="display:none;flex:1;min-width:120px;">
@@ -46,8 +46,8 @@
         <!-- Empty state cuando aún no hay plan generado -->
         <div id="mapEmptyState" class="msb-empty">
           <div class="msb-empty-icon"><svg class="cat-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
-          <p>Aún no has creado un itinerario.</p>
-          <button onclick="openOnboarding()" class="btn" style="margin-top:16px;font-size:0.82rem;padding:8px 20px;">
+          <p>Todavía no tienes plan. Dinos qué te gusta y te lo montamos por zonas, con horario.</p>
+          <button onclick="openOnboarding()" class="btn" style="margin-top:18px;">
             Crear mi itinerario
           </button>
         </div>
@@ -81,10 +81,10 @@
     <!-- ── MAPA LEAFLET ──────────────────────────────────────────────── -->
     <div class="map-main">
       <div class="map-province-chip" id="provinceChip" style="display:none;">
-        <span id="provinceTitle">—</span>
+        <span id="provinceTitle"></span>
         <span id="markerCount" class="map-province-count"></span>
       </div>
-      <button class="map-sidebar-fab" id="sidebarFab" onclick="toggleSidebar()" style="display:none;" title="Abrir panel">
+      <button class="map-sidebar-fab" id="sidebarFab" onclick="toggleSidebar()" style="display:none;" title="Abrir panel" aria-label="Abrir panel">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
       <div id="map" style="width:100%;height:100%;"></div>
