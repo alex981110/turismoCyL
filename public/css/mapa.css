@@ -110,8 +110,8 @@
 .msb-province-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
 .msb-province-grid .province-pill,
 .province-pill {
-  display: flex; align-items: center; gap: 6px;
-  min-height: 40px; padding: 0 6px;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 4px;
+  min-height: 54px; padding: 6px 8px;
   background: var(--surface);
   border: 1.5px solid var(--line-strong);
   border-radius: var(--radius) !important;
@@ -127,7 +127,7 @@
   background: var(--ink); color: #fff; border-radius: 3px;
   font-family: var(--font-mono); font-weight: 600; font-size: 0.66rem; text-align: center; letter-spacing: 0;
 }
-.pp-name { overflow: hidden; text-overflow: ellipsis; font-size: 0.86rem; }
+.pp-name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-size: 0.92rem; line-height: 1.1; }
 .msb-province-grid .province-pill:hover { border-color: var(--ink); }
 .msb-province-grid .province-pill.active { background: var(--signal) !important; border-color: var(--ink) !important; color: var(--ink) !important; font-weight: 600; }
 
@@ -580,9 +580,6 @@
   #routeMapHeader { padding: 8px 12px; flex-wrap: wrap; gap: 8px; }
   #routeMapTitleText { font-size: 1.15rem; }
 }
-@media (max-width: 420px) {
-  .pp-name { font-size: 0.8rem; letter-spacing: -0.01em; }
-}
 @media (max-width: 340px) {
   .msb-province-grid { grid-template-columns: repeat(2, 1fr); }
 }
@@ -616,8 +613,9 @@
 }
 .plan-match--top { background: var(--signal); border-color: var(--signal); color: var(--ink); }
 .plan-match--low { border-style: dashed; color: var(--board-muted); }
-/* La parada afín lleva una línea amarilla continua; el resto, ninguna */
-.timeline-item.is-match { box-shadow: inset 3px 0 0 var(--signal); }
+/* La parada afín se tiñe entera de amarillo tenue, además de su etiqueta «Para ti» */
+.timeline-item.is-match { background: rgba(255,212,0,0.09); }
+.timeline-item.is-match.has-marker:hover { background: rgba(255,212,0,0.14); }
 .time-badge.is-hidden { color: var(--board-muted); opacity: 0.6; filter: blur(2px); user-select: none; }
 .plan-sched { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
 .plan-sched span { padding: 2px 6px; border: 1px solid var(--board-line); border-radius: 3px; font-family: var(--font-mono); font-size: 0.68rem; color: var(--board-muted); }

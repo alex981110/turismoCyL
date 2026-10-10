@@ -23,8 +23,8 @@
   --slate-2: #2A3038;
   --ink-soft: #2E353D;
   --steel: #5A636E;
-  --panel: #E7E9EC;
-  --ground: #F1F2F3;
+  --panel: #DCDFE3;
+  --ground: #E6E8EB;
   --surface: #FCFCFB;
   --line: rgba(14,17,20,0.13);
   --line-strong: rgba(14,17,20,0.26);
@@ -266,11 +266,11 @@ a:hover { text-decoration-color: var(--signal-deep); }
 .btn-outline:hover { background: var(--ink) !important; color: #fff !important; }
 .btn svg, .btn-outline svg { width: 18px; height: 18px; flex-shrink: 0; }
 
-/* Acción principal sobre fondo tinta: amarillo señal */
-.navbar-cyl .btn, .btn-signal {
-  background: var(--signal); border-color: var(--signal); color: var(--ink);
-}
-.navbar-cyl .btn:hover, .btn-signal:hover { background: var(--signal-deep); border-color: var(--signal-deep); color: var(--ink); }
+/* En la barra tinta, la cuenta va en blanco: el amarillo queda para la acción principal de cada pantalla */
+.navbar-cyl .btn { background: #fff; border-color: #fff; color: var(--ink); }
+.navbar-cyl .btn:hover { background: var(--panel); border-color: var(--panel); color: var(--ink); }
+.btn-signal { background: var(--signal); border-color: var(--signal); color: var(--ink); }
+.btn-signal:hover { background: var(--signal-deep); border-color: var(--signal-deep); color: var(--ink); }
 .navbar-cyl .btn-outline {
   color: var(--board-text) !important;
   border-color: rgba(238,240,242,0.45) !important;

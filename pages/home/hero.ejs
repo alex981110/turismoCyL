@@ -18,9 +18,16 @@
   <div class="hero-grid">
     <!-- Mensaje y acciones -->
     <div class="hero-copy">
-      <p class="hero-code" aria-hidden="true"><span id="heroCode">SG</span></p>
-      <h1 class="hero-immersive-title" id="heroTitle">Tu escapada por Castilla y León</h1>
-      <p class="hero-immersive-sub">2.619 lugares en nueve provincias. Dinos qué te gusta y te montamos el plan con horario, por zonas y con su ruta.</p>
+      <!-- Titular como trayecto de billete: código de la provincia → destino -->
+      <h1 class="hero-route" id="heroTitle">
+        <span class="hero-route-from" aria-hidden="true">
+          <span class="hero-code" id="heroCode">SG</span>
+          <svg class="hero-route-arrow" viewBox="0 0 48 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" aria-hidden="true"><path d="M2 12h40M32 3l10 9-10 9"/></svg>
+        </span>
+        <span class="hero-route-to">Tu fin de semana</span>
+        <span class="visually-hidden"> en Castilla y León</span>
+      </h1>
+      <p class="hero-immersive-sub">2.619 lugares en las nueve provincias de Castilla y León. Dinos qué te gusta y te montamos el plan con horario, por zonas y con su ruta.</p>
       <div class="hero-actions">
         <button type="button" onclick="launchTravelAnimation()" class="hero-immersive-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>
@@ -30,14 +37,15 @@
       </div>
     </div>
 
-    <!-- Panel de salidas: el día 1 real de la provincia que se ve en la foto -->
+    <!-- Panel de salidas: el plan real de fin de semana (dayPlans) de la provincia de la foto.
+         Las filas son fijas; al cambiar de provincia solo voltean las celdas que cambian. -->
     <aside class="dep-board" aria-labelledby="depTitle">
       <header class="dep-head">
-        <h2 class="dep-title" id="depTitle">Día 1 en <span id="depProv">Segovia</span></h2>
-        <span class="dep-code" id="depCode">SG</span>
+        <h2 class="dep-title" id="depTitle">Salidas <span class="dep-code" id="depCode">SG</span> <span id="depProv">Segovia</span></h2>
+        <span class="dep-clock" title="Hora actual: marca en amarillo la próxima parada"><span class="visually-hidden">Hora actual </span><span id="depClock">--:--</span></span>
       </header>
-      <div class="dep-cols" aria-hidden="true"><span>Hora</span><span>Lugar</span><span>Parada</span></div>
-      <ol class="dep-rows" id="depRows" aria-live="polite"></ol>
+      <div class="dep-cols" aria-hidden="true"><span>Hora</span><span>Lugar</span><span>Tipo</span><span>Día</span></div>
+      <ol class="dep-rows" id="depRows"></ol>
       <footer class="dep-foot">
         <button type="button" class="dep-link" id="depOpen">
           Ver la provincia en el mapa
@@ -49,11 +57,19 @@
 
   <!-- Pie: foto actual y selector de provincia por código -->
   <div class="hero-bottom">
-    <p class="hero-caption" aria-live="polite">
+    <p class="hero-caption">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
       <span id="heroSlideLabel">Acueducto romano, Segovia</span>
     </p>
-    <div class="hero-carousel-dots" id="heroCarouselDots" role="group" aria-label="Elegir provincia de la portada"></div>
+    <div class="hero-controls">
+      <button type="button" class="hero-pause" id="heroPause" aria-pressed="false" aria-label="Pausar el cambio automático de provincia">
+        <svg class="ico-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
+        <svg class="ico-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5v14l12-7z"/></svg>
+      </button>
+      <div class="hero-carousel-dots" id="heroCarouselDots" role="group" aria-label="Elegir provincia de la portada"></div>
+    </div>
+    <!-- Solo anuncia los cambios que pide la persona, no el avance automático -->
+    <p class="visually-hidden" id="heroAnnounce" aria-live="polite"></p>
   </div>
 
 </section>
@@ -106,37 +122,87 @@
     b.textContent = CODES[SLIDES[i].prov];
     b.setAttribute('aria-label', SLIDES[i].prov);
     b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
-    b.onclick = function() { goTo(i); resetTimer(); };
+    b.onclick = function() { goTo(i, true); resetTimer(); };
     dotsWrap.appendChild(b);
   });
 
-  // Panel de salidas: día 1 real de la provincia (dayPlans, en data.js)
-  function esc(s) { return String(s).replace(/[&<>"]/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  // ── Panel de salidas ──
+  // Seis filas fijas con el plan real de fin de semana (dayPlans.dia1 + dia2, en data.js).
+  // El tipo sale del marcador con el mismo nombre (si ya se han cargado los marcadores).
+  // Al cambiar de provincia solo voltean las celdas cuyo texto cambia, como las tablillas
+  // de un panel; la fila en amarillo es la próxima parada según la hora actual.
+  var ROWS = 6, COLS = ['time', 'place', 'type', 'day'];
+  var rowEls = [];
+  for (var r = 0; r < ROWS; r++) {
+    var li = document.createElement('li');
+    li.className = 'dep-row is-empty';
+    COLS.forEach(function(c) { var s = document.createElement('span'); s.className = 'dep-' + c; li.appendChild(s); });
+    rowsEl.appendChild(li);
+    rowEls.push(li);
+  }
+  function pad(t) { return t.length === 4 ? '0' + t : t; }
+  function mins(t) { var p = t.split(':'); return (+p[0]) * 60 + (+p[1]); }
+  function typeOf(place) {
+    if (typeof appState === 'undefined' || !appState.markers || !appState.markers.length) return '';
+    var key = place.toLowerCase();
+    var m = appState.markers.find(function(x) { return (x.name || '').toLowerCase() === key; });
+    return m && typeof catLabel !== 'undefined' ? (catLabel[m.cat] || m.cat || '') : '';
+  }
+  function boardItems(prov) {
+    var plan = (typeof dayPlans !== 'undefined' && dayPlans[prov]) || {};
+    var sat = (plan.dia1 || []).map(function(it) { return { it: it, day: 'Sáb' }; });
+    var sun = (plan.dia2 || []).map(function(it) { return { it: it, day: 'Dom' }; });
+    return sat.concat(sun).slice(0, ROWS);
+  }
+  function setCell(el, text, delay, animate) {
+    if (el.textContent === text) return;
+    el.textContent = text;
+    if (!animate || reduce) return;
+    el.style.animationDelay = delay + 'ms';
+    el.classList.remove('is-flip'); void el.offsetWidth; el.classList.add('is-flip');
+  }
+  // Próxima parada: la primera del sábado que aún no ha pasado hoy; si ya pasaron todas, la primera del domingo
+  function nextIndex(items) {
+    var now = new Date(), n = now.getHours() * 60 + now.getMinutes();
+    for (var i = 0; i < items.length; i++) if (items[i].day === 'Sáb' && mins(items[i].it.time) > n) return i;
+    for (var j = 0; j < items.length; j++) if (items[j].day === 'Dom') return j;
+    return 0;
+  }
   function renderBoard(prov, animate) {
-    if (typeof dayPlans === 'undefined' || !rowsEl) return;
-    var items = ((dayPlans[prov] || {}).dia1 || []).slice(0, 5);
+    if (!rowsEl) return;
+    var items = boardItems(prov);
     document.getElementById('depProv').textContent = prov;
     document.getElementById('depCode').textContent = CODES[prov];
-    rowsEl.innerHTML = items.map(function(it, i) {
-      var t = it.time.length === 4 ? '0' + it.time : it.time;
-      return '<li class="dep-row' + (i === 0 ? ' is-next' : '') + '" style="--i:' + i + '">' +
-        '<span class="dep-time">' + esc(t) + '</span>' +
-        '<span class="dep-place">' + esc(it.place) + '</span>' +
-        '<span class="dep-stop">' + (i + 1) + '/' + items.length + '</span></li>';
-    }).join('');
-    if (animate && !reduce) {
-      rowsEl.classList.remove('is-flipping');
-      void rowsEl.offsetWidth;
-      rowsEl.classList.add('is-flipping');
-    }
+    var next = nextIndex(items);
+    rowEls.forEach(function(li, i) {
+      var d = items[i];
+      var vals = d ? [pad(d.it.time), d.it.place, typeOf(d.it.place), d.day] : ['', '', '', ''];
+      COLS.forEach(function(c, k) { setCell(li.children[k], vals[k], i * 70 + k * 35, animate); });
+      li.classList.toggle('is-empty', !d);
+      li.classList.toggle('is-next', !!d && i === next);
+      li.classList.toggle('is-sunday-start', !!d && d.day === 'Dom' && (!items[i - 1] || items[i - 1].day === 'Sáb'));
+    });
   }
-  document.addEventListener('DOMContentLoaded', function() { renderBoard(SLIDES[0].prov, false); });
+  function tickClock() {
+    var now = new Date();
+    document.getElementById('depClock').textContent = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+  }
+  tickClock(); setInterval(tickClock, 30000);
+  document.addEventListener('DOMContentLoaded', function() {
+    renderBoard(SLIDES[0].prov, false);
+    // Los marcadores llegan de la API después: rellena la columna Tipo cuando estén
+    var tries = 0, wait = setInterval(function() {
+      if ((typeof appState !== 'undefined' && appState.markers && appState.markers.length) || ++tries > 40) {
+        clearInterval(wait); renderBoard(SLIDES[current].prov, true);
+      }
+    }, 250);
+  });
   document.getElementById('depOpen').addEventListener('click', function() {
     if (typeof goToProvince === 'function') goToProvince(SLIDES[current].prov);
     else navigateTo('/mapa');
   });
 
-  function goTo(idx) {
+  function goTo(idx, byUser) {
     if (idx === current) return;
     slides[current].classList.remove('active');
     dotsWrap.children[current].classList.remove('active');
@@ -154,21 +220,32 @@
       if (!reduce) { codeEl.classList.remove('is-in'); void codeEl.offsetWidth; codeEl.classList.add('is-in'); }
     }
     renderBoard(s.prov, true);
+    if (byUser) document.getElementById('heroAnnounce').textContent = 'Mostrando ' + s.prov + ': ' + s.label;
   }
 
-  function next() { goTo((current + 1) % slides.length); }
-  var timer = setInterval(next, 7000);
-  function resetTimer() { clearInterval(timer); timer = setInterval(next, 7000); }
+  // Avance automático cada 7 s, salvo con movimiento reducido o pausado por la persona
+  var paused = reduce, timer = null;
+  var pauseBtn = document.getElementById('heroPause');
+  function next() { goTo((current + 1) % slides.length, false); }
+  function stopTimer() { clearInterval(timer); timer = null; }
+  function resetTimer() { stopTimer(); if (!paused && !document.hidden) timer = setInterval(next, 7000); }
+  function syncPause() {
+    pauseBtn.setAttribute('aria-pressed', paused ? 'true' : 'false');
+    pauseBtn.setAttribute('aria-label', paused ? 'Reanudar el cambio automático de provincia' : 'Pausar el cambio automático de provincia');
+    pauseBtn.classList.toggle('is-paused', paused);
+  }
+  pauseBtn.addEventListener('click', function() { paused = !paused; syncPause(); resetTimer(); });
+  syncPause(); resetTimer();
 
   // Pausa mientras el puntero está sobre la portada o el foco dentro de ella
   var hero = document.querySelector('.hero-immersive');
   if (hero) {
-    hero.addEventListener('mouseenter', function() { clearInterval(timer); });
+    hero.addEventListener('mouseenter', stopTimer);
     hero.addEventListener('mouseleave', resetTimer);
-    hero.addEventListener('focusin', function() { clearInterval(timer); });
+    hero.addEventListener('focusin', stopTimer);
     hero.addEventListener('focusout', resetTimer);
   }
-  document.addEventListener('visibilitychange', function() { if (document.hidden) clearInterval(timer); else resetTimer(); });
+  document.addEventListener('visibilitychange', resetTimer);
 })();
 
 /* ── Barra translúcida solo mientras se ve la foto de portada ── */

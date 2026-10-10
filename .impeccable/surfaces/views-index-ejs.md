@@ -23,6 +23,8 @@ FIRST VIEWPORT: Portada a 1440: foto de provincia a sangre conservada, oscurecid
 
 SIGNATURE: El panel de salidas: las filas se reordenan en su sitio (FLIP) al cambiar provincia o plan y la fila cambiada mantiene el amarillo hasta que se ve; las paradas del itinerario se leen como salidas con hora, y el estado va también en forma de línea (continua/discontinua).
 
+AMENDMENT (tras la revisión final): el panel muestra seis filas reales del fin de semana (sábado y domingo de dayPlans) con HORA · LUGAR · TIPO · DÍA; el estado no es una columna inventada sino la fila amarilla = próxima parada según el reloj de la cabecera. El titular es el trayecto «SG → Tu fin de semana». Las cifras van en el subtítulo, no como banda (el craft floor rechaza la plantilla de métricas).
+
 FORM: vernacular-ephemera-boarding-pass-and-gate-board (aspirante elegido por el usuario frente a la posición 6 asignada de mi lista); seed key 4f78267c.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
