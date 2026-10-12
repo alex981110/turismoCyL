@@ -109,7 +109,7 @@ MONGO_URI=mongodb+srv://<usuario>:<contraseña>@<cluster>.mongodb.net/cyl-turism
 JWT_SECRET=<mínimo 32 caracteres aleatorios>
 GOOGLE_PLACES_KEY=tu_api_key_de_google_places   # opcional, para fotos
 GOOGLE_DAILY_CAP=1000                            # opcional, tope diario de llamadas a Google
-TRUST_PROXY=0                                    # 1 si va detrás de un proxy (Render, Railway, nginx…)
+TRUST_PROXY=0                                    # 1 si va detrás de un proxy (Railway, nginx…); en Render no hace falta
 NODE_ENV=production                              # en producción
 PORT=3000
 ```
