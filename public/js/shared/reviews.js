@@ -65,11 +65,11 @@ async function openReviewsDrawer(name, province) {
     ownHTML = sorted.map(r => `
       <div class="review-item">
         <div class="review-header">
-          <span class="review-author">${r.userName}</span>
-          <span class="review-date">${r.date}</span>
+          <span class="review-author">${escapeHtml(r.userName)}</span>
+          <span class="review-date">${escapeHtml(r.date)}</span>
         </div>
         <div class="review-stars">${[1,2,3,4,5].map(i=>`<span style="color:${i<=r.stars?'var(--gold)':'rgba(42,33,24,0.13)'};">★</span>`).join('')}</div>
-        ${r.comment ? `<div class="review-comment">"${r.comment}"</div>` : ''}
+        ${r.comment ? `<div class="review-comment">"${escapeHtml(r.comment)}"</div>` : ''}
       </div>
     `).join('');
   }
@@ -137,8 +137,8 @@ async function openReviewsDrawer(name, province) {
         ? data.schedule.weekday_text.map(line => {
             const [day, ...rest] = line.split(':');
             return `<div style="display:flex;justify-content:space-between;gap:12px;padding:4px 0;border-bottom:1px solid rgba(42,33,24,0.04);font-size:0.8rem;">
-              <span style="color:var(--gold);min-width:90px;">${day}</span>
-              <span style="color:var(--parch2);text-align:right;">${rest.join(':').trim()}</span>
+              <span style="color:var(--gold);min-width:90px;">${escapeHtml(day)}</span>
+              <span style="color:var(--parch2);text-align:right;">${escapeHtml(rest.join(':').trim())}</span>
             </div>`;
           }).join('')
         : '';
@@ -169,14 +169,14 @@ async function openReviewsDrawer(name, province) {
     const reviewsHTML = data.reviews?.length ? data.reviews.map(r => `
       <div class="review-item" style="margin-bottom:14px;">
         <div class="review-header" style="display:flex;align-items:center;gap:10px;">
-          ${r.photo ? `<img src="${r.photo}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid rgba(42,33,24,0.20);" onerror="this.style.display='none'">` : ''}
+          ${r.photo ? `<img src="${escapeHtml(r.photo)}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid rgba(42,33,24,0.20);" onerror="this.style.display='none'">` : ''}
           <div>
-            <span class="review-author">${r.author}</span>
-            <span class="review-date" style="display:block;">${r.date}</span>
+            <span class="review-author">${escapeHtml(r.author)}</span>
+            <span class="review-date" style="display:block;">${escapeHtml(r.date)}</span>
           </div>
         </div>
         <div class="review-stars" style="margin:6px 0 4px;">${[1,2,3,4,5].map(i=>`<span style="color:${i<=r.stars?'var(--gold)':'rgba(42,33,24,0.13)'};">★</span>`).join('')}</div>
-        ${r.text ? `<div class="review-comment" style="font-style:normal;">${r.text}</div>` : ''}
+        ${r.text ? `<div class="review-comment" style="font-style:normal;">${escapeHtml(r.text)}</div>` : ''}
       </div>
     `).join('') : '';
 

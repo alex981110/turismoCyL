@@ -7,6 +7,14 @@ const mongoose = require('mongoose');
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
+// Ningún filtro de consulta acepta operadores ($ne, $gt…) venidos del cliente
+mongoose.set('sanitizeFilter', true);
+
+// Detrás de un proxy (Render, Railway, nginx…) poner TRUST_PROXY=1 para que
+// req.ip sea la IP real del cliente y el límite de peticiones funcione
+app.set('trust proxy', Number(process.env.TRUST_PROXY || 0));
+app.disable('x-powered-by');
+
 // ── MongoDB ─────────────────────────────────────────────────
 mongoose.connect(process.env.MONGO_URI)
   .then(async () => {
@@ -25,8 +33,16 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.error('❌ Error MongoDB:', err));
 
 // ── Middleware ───────────────────────────────────────────────
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '200kb' }));
+app.use(express.urlencoded({ extended: true, limit: '200kb' }));
+app.use((req, res, next) => {
+  res.set({
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+  });
+  next();
+});
 
 // ── Rutas API ────────────────────────────────────────────────
 app.use('/api/auth',        require('./pages/auth/route'));

@@ -106,12 +106,19 @@ Crea un fichero `.env` en la raíz del proyecto:
 
 ```env
 MONGO_URI=mongodb+srv://<usuario>:<contraseña>@<cluster>.mongodb.net/cyl-turismo
-JWT_SECRET=tu_secreto_jwt_aqui
+JWT_SECRET=<mínimo 32 caracteres aleatorios>
 GOOGLE_PLACES_KEY=tu_api_key_de_google_places   # opcional, para fotos
+GOOGLE_DAILY_CAP=1000                            # opcional, tope diario de llamadas a Google
+TRUST_PROXY=0                                    # 1 si va detrás de un proxy (Render, Railway, nginx…)
+NODE_ENV=production                              # en producción
 PORT=3000
 ```
 
-> **Nota:** Si no tienes clave de Google Places, las fotos de los marcadores no se cargarán pero la aplicación funcionará correctamente.
+Genera el `JWT_SECRET` con `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`. En producción el servidor no arranca sin él; en desarrollo usa uno aleatorio (las sesiones se pierden al reiniciar).
+
+El `.env` está en `.gitignore`: **nunca lo subas al repositorio**.
+
+> **Nota:** Si no tienes clave de Google Places, las fotos de los marcadores no se cargarán pero la aplicación funcionará correctamente. Restringe la clave en Google Cloud a las APIs que usa (Places y Maps Static) y ponle un presupuesto con alertas.
 
 ### 4. Arrancar el servidor
 
@@ -127,13 +134,7 @@ Abre [http://localhost:3000](http://localhost:3000) en el navegador.
 
 ## 👤 Crear un usuario administrador
 
-Una vez arrancado el servidor, ejecuta el script de creación de admin:
-
-```bash
-node createAdmin.js
-```
-
-Esto crea un usuario con rol `admin` que da acceso al panel de administración (`/admin`).
+Regístrate desde la web y cambia el rol de tu usuario a `admin` en MongoDB Atlas (colección `users`, campo `role`). Después cierra sesión y vuelve a entrar para que el token incluya el nuevo rol. Eso da acceso al panel de administración (`/admin`).
 
 ---
 
@@ -174,8 +175,7 @@ Esto crea un usuario con rol `admin` que da acceso al panel de administración (
 
 ```bash
 npm start          # Arranca el servidor
-node createAdmin.js  # Crea usuario administrador
-node import-jcyl.js  # Importa dataset de la Junta de CyL (opcional)
+npm run dev        # Arranca con recarga automática (nodemon)
 ```
 
 ---
