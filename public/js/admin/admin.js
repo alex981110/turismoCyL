@@ -24,19 +24,19 @@ function renderAdminMarkers() {
 
   const tbody = document.getElementById('adminMarkersBody');
   if (!slice.length) {
-    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--parch2);padding:20px;font-style:italic;">${q ? 'Sin resultados para "' + q + '"' : 'Sin marcadores aún'}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--parch2);padding:20px;font-style:italic;">${q ? 'Sin resultados para "' + escapeHtml(q) + '"' : 'Sin marcadores aún'}</td></tr>`;
   } else {
   tbody.innerHTML = slice.map(m => `
       <tr>
         <td style="font-family:'Playfair Display',serif;">
           ${m.photo ? `<img src="${m.photo}" style="width:32px;height:32px;object-fit:cover;vertical-align:middle;margin-right:6px;border:1px solid rgba(42,33,24,0.20);cursor:zoom-in;" onclick="openPhotoModal('${m.photo.replace(/'/g,"\\'")}','${m.name.replace(/'/g,"\\'")}')">` : ''}
-          ${m.name}
+          ${escapeHtml(m.name)}
         </td>
-        <td>${m.province}</td>
-        <td><span class="badge badge-cyl badge-outline-gold">${m.cat}</span></td>
+        <td>${escapeHtml(m.province)}</td>
+        <td><span class="badge badge-cyl badge-outline-gold">${escapeHtml(m.cat)}</span></td>
         <td style="min-width:200px;">
           <div class="input-group input-group-sm input-group-cyl">
-            <input type="text" class="form-control form-control-cyl" placeholder="URL de foto..." value="${m.photo||''}"
+            <input type="text" class="form-control form-control-cyl" placeholder="URL de foto..." value="${escapeHtml(m.photo)}"
               id="photoInput_${m._id}" style="font-size:0.82rem;" />
             <button class="btn btn-sm" onclick="setMarkerPhoto('${m._id}',document.getElementById('photoInput_${m._id}').value);refreshAdminData();"
               style="background:rgba(184,92,56,0.08);border:1px solid rgba(42,33,24,0.20);color:var(--gold);white-space:nowrap;">
@@ -95,9 +95,9 @@ function refreshAdminData() {
       if (countEl) countEl.textContent = users.length;
       if (ubody) ubody.innerHTML = users.map(u => `
         <tr>
-          <td>${u.name}</td>
-          <td>${u.email}</td>
-          <td><span class="tag ${u.role==='admin'?'tag-castle':'tag-nature'}">${u.role}</span></td>
+          <td>${escapeHtml(u.name)}</td>
+          <td>${escapeHtml(u.email)}</td>
+          <td><span class="tag ${u.role==='admin'?'tag-castle':'tag-nature'}">${escapeHtml(u.role)}</span></td>
           <td>${new Date(u.date || u.createdAt).toLocaleDateString('es-ES')}</td>
         </tr>
       `).join('');
@@ -105,7 +105,7 @@ function refreshAdminData() {
     .catch(err => {
       const ubody = document.getElementById('usersBody');
       if (ubody) ubody.innerHTML =
-        `<tr><td colspan="4" style="color:var(--parch2);text-align:center;">${err.message}</td></tr>`;
+        `<tr><td colspan="4" style="color:var(--parch2);text-align:center;">${escapeHtml(err.message)}</td></tr>`;
     });
 
   // Stats

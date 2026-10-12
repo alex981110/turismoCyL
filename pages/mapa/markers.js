@@ -2,6 +2,9 @@ const express  = require('express');
 const router   = express.Router();
 const mongoose = require('mongoose');
 const { requireAuth, requireAdmin } = require('../../middleware/auth');
+const { serverError } = require('../../middleware/errors');
+
+const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const markerSchema = new mongoose.Schema({
   id:       { type: Number, unique: true },
@@ -21,12 +24,15 @@ router.get('/', async (req, res) => {
   try {
     const { province, cat, q } = req.query;
     const filter = {};
-    if (province) filter.province = province;
-    if (cat)      filter.cat = cat;
-    if (q)        filter.name = { $regex: q, $options: 'i' };
+    if (typeof province === 'string' && province) filter.province = province;
+    if (typeof cat === 'string' && cat)           filter.cat = cat;
+    if (typeof q === 'string' && q) {
+      // Texto literal: sin metacaracteres de regex (evita ReDoS) y acotado
+      filter.name = { $regex: escapeRegex(q.slice(0, 100)), $options: 'i' };
+    }
     res.json(await Marker.find(filter));
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    serverError(res, e);
   }
 });
 
@@ -37,7 +43,7 @@ router.get('/:id', async (req, res) => {
     if (!marker) return res.status(404).json({ error: 'Marcador no encontrado' });
     res.json(marker);
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    serverError(res, e);
   }
 });
 
@@ -58,7 +64,7 @@ router.put('/:id', requireAdmin, async (req, res) => {
     if (!marker) return res.status(404).json({ error: 'Marcador no encontrado' });
     res.json(marker);
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    serverError(res, e);
   }
 });
 
@@ -71,7 +77,7 @@ router.patch('/:id/photo', requireAdmin, async (req, res) => {
     if (!marker) return res.status(404).json({ error: 'Marcador no encontrado' });
     res.json({ _id: marker._id, photo: marker.photo });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    serverError(res, e);
   }
 });
 
@@ -82,7 +88,7 @@ router.delete('/:id', requireAdmin, async (req, res) => {
     if (!result) return res.status(404).json({ error: 'Marcador no encontrado' });
     res.json({ success: true });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    serverError(res, e);
   }
 });
 

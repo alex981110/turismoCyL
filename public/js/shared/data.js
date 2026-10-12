@@ -1,11 +1,16 @@
 // ============================================================
 // DATA STORE (simulated localStorage-free, in-memory)
 // ============================================================
+// Escapa texto antes de meterlo en innerHTML (nombres de usuario, reseñas de
+// Google, datos de la API…): evita que un nombre como <img onerror=…> se ejecute
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"'`]/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#96;'
+  })[c]);
+}
+
 const appState = {
   currentUser: null,
-  users: [
-    { id: 1, name: 'Admin', email: 'admin@turismo.es', password: 'admin123', role: 'admin', date: '2025-01-01' }
-  ],
   markers: [],  // loaded below
   selectedProvince: null,
   filterCat: null,

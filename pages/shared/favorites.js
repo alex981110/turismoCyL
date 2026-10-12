@@ -2,6 +2,7 @@ const express   = require('express');
 const router    = express.Router();
 const Favorite  = require('../../models/Favorite');
 const { requireAuth } = require('../../middleware/auth');
+const { serverError } = require('../../middleware/errors');
 
 // Todas las rutas de favoritos requieren auth
 router.use(requireAuth);
@@ -12,7 +13,7 @@ router.get('/', async (req, res) => {
     const favs = await Favorite.find({ userId: req.user.id }).sort({ createdAt: -1 });
     res.json(favs);
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    serverError(res, e);
   }
 });
 
@@ -28,7 +29,7 @@ router.post('/', async (req, res) => {
     );
     res.status(201).json(fav);
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    serverError(res, e);
   }
 });
 
@@ -40,7 +41,7 @@ router.delete('/', async (req, res) => {
     await Favorite.deleteOne({ userId: req.user.id, markerId });
     res.json({ success: true });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    serverError(res, e);
   }
 });
 

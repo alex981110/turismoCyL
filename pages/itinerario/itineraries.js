@@ -2,6 +2,7 @@ const express      = require('express');
 const router       = express.Router();
 const Itinerary    = require('../../models/Itinerary');
 const { requireAuth } = require('../../middleware/auth');
+const { serverError } = require('../../middleware/errors');
 
 // Todas las rutas requieren autenticación
 router.use(requireAuth);
@@ -14,7 +15,7 @@ router.get('/', async (req, res) => {
     const items = await Itinerary.find({ userId: req.user.id }).sort({ createdAt: -1 });
     res.json(items);
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    serverError(res, e);
   }
 });
 
@@ -25,7 +26,7 @@ router.get('/:id', async (req, res) => {
     if (!item) return res.status(404).json({ error: 'No encontrado' });
     res.json(item);
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    serverError(res, e);
   }
 });
 
@@ -53,7 +54,7 @@ router.post('/', async (req, res) => {
     });
     res.status(201).json(item);
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    serverError(res, e);
   }
 });
 
@@ -69,7 +70,7 @@ router.put('/:id', async (req, res) => {
     if (!item) return res.status(404).json({ error: 'No encontrado' });
     res.json(item);
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    serverError(res, e);
   }
 });
 
@@ -80,7 +81,7 @@ router.delete('/:id', async (req, res) => {
     if (!item) return res.status(404).json({ error: 'No encontrado' });
     res.json({ success: true });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    serverError(res, e);
   }
 });
 
