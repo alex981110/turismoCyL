@@ -696,6 +696,17 @@
 .plan-item.is-night .plan-item-cat { display: inline-flex; align-items: center; gap: 4px; }
 .plan-item.is-night .plan-item-cat .cat-ico { width: 13px; height: 13px; }
 .plan-item.is-night .timeline-content .plan-item-desc { -webkit-line-clamp: 3; }
+.rv-plan-note { flex-basis: 100%; margin: 0; font-size: 0.8rem; line-height: 1.4; color: var(--steel); }
+/* Aparcamiento sugerido bajo cada lugar: abre el sitio en la capa de pernocta */
+.plan-rv-park {
+  display: flex; align-items: flex-start; gap: 6px;
+  min-height: 32px; margin: 6px 0 0; padding: 4px 0;
+  background: transparent; border: none;
+  color: var(--board-text); font-family: var(--font-body); font-size: 0.84rem; line-height: 1.35; text-align: left;
+  cursor: pointer;
+}
+.plan-rv-park .cat-ico { flex-shrink: 0; width: 15px; height: 15px; margin-top: 1px; color: var(--signal); }
+.plan-rv-park:hover span { text-decoration: underline; text-decoration-color: var(--signal); text-underline-offset: 0.2em; }
 /* La afinidad la lleva solo su etiqueta: el panel sigue en tinta y el amarillo relleno queda para la línea de ruta */
 .time-badge.is-hidden { color: var(--board-muted); opacity: 0.6; filter: blur(2px); user-select: none; }
 .plan-sched { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }

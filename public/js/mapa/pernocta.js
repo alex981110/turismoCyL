@@ -248,6 +248,40 @@ function _rvPickNight(from, next) {
   return best;
 }
 
+const RV_PARK_KM = 3;   // aparcamiento sugerido para cada lugar del plan
+
+const _rvFmtKm = km => km < 1 ? `${Math.max(50, Math.round(km * 20) * 50)} m` : `${km.toFixed(1).replace('.', ',')} km`;
+
+// Sitio más cercano a un punto que cumpla una condición, con su distancia en línea recta
+function _rvNearest(at, pred) {
+  let best = null, bestKm = Infinity;
+  for (const s of rvState.data.sitios) {
+    if (!pred(s)) continue;
+    const km = _planKm(at, { lat: s.la, lng: s.lo });
+    if (km < bestKm) { bestKm = km; best = s; }
+  }
+  return best ? { s: best, km: bestKm } : null;
+}
+
+// Dónde dejar la autocaravana para visitar un lugar: área o parking autorizado cercano
+function _rvParkFor(item) {
+  const near = _rvNearest(item, s => s.k === 'area' || s.k === 'parking');
+  return near && near.km <= RV_PARK_KM ? { id: near.s.id, name: rvName(near.s), km: near.km } : null;
+}
+
+// Avisos de la noche: agua y vaciado que el sitio no confirma, y dónde están los más cercanos
+function _rvNightWarnings(s) {
+  const at = { lat: s.la, lng: s.lo };
+  const warn = [];
+  [['w', 'agua', 'confirmada'], ['d', 'vaciado', 'confirmado']].forEach(([f, label, confirmed]) => {
+    if (s[f] === true) return;
+    const near = _rvNearest(at, x => x[f] === true && x.id !== s.id);
+    if (!near || near.km > RV_NIGHT_FAR_KM) warn.push(`Sin ${label} a menos de ${RV_NIGHT_FAR_KM} km`);
+    else warn.push(`Sin ${label} ${confirmed} · más cerca: ${rvName(near.s)}, a ${_rvFmtKm(near.km)}`);
+  });
+  return warn;
+}
+
 function _rvNightItem(s, last) {
   const at = { lat: s.la, lng: s.lo };
   const km = Math.round(_planKm(last, at));
@@ -272,6 +306,7 @@ function _rvNightItem(s, last) {
     photo: null,
     marker: { name: rvName(s), lat: s.la, lng: s.lo, cat: 'pernocta', province: s.p, osm: rvOsmUrl(s.id) },
     _rv: s,
+    _rvWarn: _rvNightWarnings(s),
   };
 }
 
@@ -280,10 +315,14 @@ function _rvNightItem(s, last) {
 function applyRvNights(allDays) {
   if (!allDays) return;
   allDays.forEach(d => {
-    for (let i = d.items.length - 1; i >= 0; i--) if (d.items[i].kind === 'night') d.items.splice(i, 1);
+    for (let i = d.items.length - 1; i >= 0; i--) {
+      if (d.items[i].kind === 'night') d.items.splice(i, 1);
+      else delete d.items[i]._rvPark;
+    }
   });
   if (!rvState.plan || !rvState.data) return;
   allDays.forEach((d, i) => {
+    d.items.forEach(it => { if (it.lat) it._rvPark = _rvParkFor(it); });
     if (i === allDays.length - 1) return;           // la última noche se vuelve a casa
     const located = d.items.filter(it => it.lat);
     const last = located[located.length - 1];
@@ -292,6 +331,18 @@ function applyRvNights(allDays) {
     const site = _rvPickNight(last, next);
     if (site) d.items.push(_rvNightItem(site, last));
   });
+}
+
+// Aparcamiento sugerido bajo un lugar del plan (botón que abre el sitio en el mapa)
+function rvParkHTML(item) {
+  const p = item._rvPark;
+  if (!p) return '';
+  return `<button type="button" class="plan-rv-park" data-action="rv-focus" data-id="${escHTML(p.id)}">${RV_KINDS.parking.icon}<span>Aparcar: ${escHTML(p.name)} · a ${_rvFmtKm(p.km)}</span></button>`;
+}
+
+function rvWarningsHTML(item) {
+  return item._rvWarn && item._rvWarn.length
+    ? `<div class="plan-sched plan-rv-warn">${item._rvWarn.map(w => `<span>${escHTML(w)}</span>`).join('')}</div>` : '';
 }
 
 // Pone las noches al plan; si aún no hay datos, los carga y avisa con onReady para repintar
@@ -309,7 +360,8 @@ function rvPlanToggleHTML() {
   return `<button type="button" class="rv-toggle${rvState.plan ? ' is-active' : ''}" data-action="rv-plan-toggle" aria-pressed="${rvState.plan}">
     <span class="rv-toggle-track" aria-hidden="true"></span>
     <span class="rv-toggle-label">Viajo en autocaravana: añadir dónde dormir cada noche</span>
-  </button>`;
+  </button>${rvState.plan ? `
+  <p class="rv-plan-note">Los cascos históricos suelen estar cerrados a autocaravanas. Donde no indicamos dónde aparcar, busca sitio a las afueras. Distancias en línea recta.</p>` : ''}`;
 }
 
 registerActions({

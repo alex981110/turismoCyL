@@ -449,6 +449,7 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
           <h4>${escHTML(item.place)}</h4>
           <div class="plan-tags"><span class="plan-item-cat" data-fam="cama">${catIcon.pernocta} Dormir</span></div>
           <p class="plan-item-desc">${escHTML(item.desc)}</p>
+          ${rvWarningsHTML(item)}
           <span class="plan-map-link">${catIcon.default} Ver en el mapa</span>
         </div>
       </div>
@@ -486,6 +487,7 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
             <div class="plan-tags">${cat ? `<span class="plan-item-cat" data-fam="${catFam(mk?.cat)}">${escHTML(cat)}</span>` : ''}${matchBadge}${lowNote}</div>
             <p class="plan-item-desc">${item.desc}</p>
             ${sched}
+            ${rvParkHTML(item)}
             <span class="plan-map-link">${catIcon.default} Ver en el mapa</span>
           </div>
         </div>
