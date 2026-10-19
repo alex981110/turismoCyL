@@ -146,6 +146,8 @@ function loadProvinceMarkers(province) {
   renderMarkerCards();
 
   document.getElementById('markerCount').textContent = displayed.length > 0 ? displayed.length + ' lugares' : '';
+
+  refreshPernocta(province);
 }
 
 function renderMarkerCards() {
@@ -252,6 +254,7 @@ function loadAllMarkersOnMap() {
   map.addLayer(clusterGroup);
   // Fit to CyL bounds
   map.setView([41.6, -4.0], 7);
+  refreshPernocta(null);
 }
 
 function toggleSidebar() {

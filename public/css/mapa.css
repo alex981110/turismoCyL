@@ -150,6 +150,39 @@
 .cat-chip-n { font-family: var(--font-mono); font-size: 0.75rem; color: var(--steel); }
 .cat-chip.is-active .cat-chip-n { color: var(--board-muted); }
 
+/* Dormir en autocaravana */
+#rvSection[hidden] { display: none; }
+.rv-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.rv-head .msb-section-label { margin-bottom: 0; }
+.rv-toggle {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 44px; margin: 0; padding: 0;
+  background: transparent; border: none;
+  color: var(--ink); font-family: var(--font-body); font-weight: 500; font-size: 0.88rem;
+  cursor: pointer;
+}
+.rv-toggle-track {
+  position: relative; flex-shrink: 0;
+  width: 36px; height: 20px;
+  background: var(--panel); border: 1.5px solid var(--line-strong); border-radius: var(--radius);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.rv-toggle-track::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 13px; height: 13px;
+  background: var(--steel); border-radius: 2px;
+  transition: transform 0.16s var(--ease-out), background-color 0.15s ease;
+}
+.rv-toggle:hover .rv-toggle-track { border-color: var(--ink); }
+.rv-toggle.is-active .rv-toggle-track { background: var(--ink); border-color: var(--ink); }
+.rv-toggle.is-active .rv-toggle-track::after { transform: translateX(16px); background: var(--signal); }
+#rvBody .msb-cat-filters { margin-top: 10px; }
+.rv-source { margin: 10px 0 0; font-size: 0.78rem; line-height: 1.45; color: var(--steel); }
+.rv-source a { color: var(--ink); }
+@media (prefers-reduced-motion: reduce) {
+  .rv-toggle-track::after { transition: none; }
+}
+
 /* ═══════════════════════════════════════════
    LISTA DE LUGARES: filas de billete
    ═══════════════════════════════════════════ */
@@ -485,6 +518,24 @@
 .lf-popup-prov { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--steel); }
 .lf-popup-hint { margin: 0; font-weight: 600; font-size: 0.9rem; color: var(--ink); text-decoration: underline; text-decoration-color: var(--signal-deep); text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
 .lf-popup:hover .lf-popup-hint { text-decoration-color: var(--ink); }
+
+/* Popup de pernocta: ficha de datos, no abre el cajón de reseñas */
+.lf-popup-rv { cursor: default; }
+.lf-popup-rv .lf-popup-hero .cat-ico { width: 22px; height: 22px; }
+.rv-note { margin: 0 0 8px; font-size: 0.82rem; line-height: 1.35; color: var(--steel); }
+.rv-note.is-ok { color: var(--ok); font-weight: 600; }
+.rv-services { margin: 0 0 8px; font-size: 0.88rem; line-height: 1.4; color: var(--ink); }
+.rv-facts { display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; margin: 0 0 8px; font-size: 0.82rem; }
+.rv-facts dt { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--steel); padding-top: 2px; }
+.rv-facts dd { margin: 0; color: var(--ink); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.rv-registry { margin: 0 0 8px; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--steel); }
+.rv-links { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0; }
+.rv-links a {
+  display: inline-flex; align-items: center; min-height: 32px;
+  font-weight: 600; font-size: 0.9rem; color: var(--ink);
+  text-decoration: underline; text-decoration-color: var(--signal-deep); text-decoration-thickness: 2px; text-underline-offset: 0.2em;
+}
+.rv-links a:hover { text-decoration-color: var(--ink); }
 
 .marker-link {
   display: inline-block; margin-top: 8px; padding: 4px 10px;

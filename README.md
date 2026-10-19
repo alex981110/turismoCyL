@@ -10,6 +10,7 @@ Explora más de 2.600 puntos de interés en las 9 provincias de Castilla y León
 
 - **Explorador de mapa** — Mapa interactivo Leaflet con marcadores por categoría y mapa D3 de provincias
 - **Filtros en tiempo real** — Por categoría, provincia y texto libre
+- **Dormir en autocaravana** — Capa opcional con áreas, campings, parkings y puntos de vaciado de la provincia, con los datos del proyecto [Caravana](https://github.com/alex981110/caravana) (OpenStreetMap + registros oficiales)
 - **Generador de itinerarios** — Plan diario optimizado geográficamente (algoritmo Haversine)
 - **Visualización de rutas** — Overlay de pantalla completa con cálculo de ruta real por carretera (OSRM)
 - **Exportar PDF** — Descarga el itinerario completo
@@ -149,6 +150,7 @@ Esto crea un usuario con rol `admin` que da acceso al panel de administración (
 | PUT | `/api/markers/:id` | Admin | Editar marcador |
 | DELETE | `/api/markers/:id` | Admin | Borrar marcador |
 | GET | `/api/photos/details` | — | Foto de Google Places para un lugar |
+| GET | `/api/pernocta` | — | Sitios para dormir en autocaravana en CyL (Caravana, caché de 12 h; si falla, copia de respaldo) |
 | GET | `/api/itineraries` | ✓ | Itinerarios del usuario |
 | POST | `/api/itineraries` | ✓ | Guardar itinerario |
 | DELETE | `/api/itineraries/:id` | ✓ | Borrar itinerario |
@@ -174,6 +176,7 @@ Esto crea un usuario con rol `admin` que da acceso al panel de administración (
 
 ```bash
 npm start          # Arranca el servidor
+npm run pernocta   # Renueva la copia de respaldo de los sitios de autocaravana (public/assets/data/pernocta.json)
 node createAdmin.js  # Crea usuario administrador
 node import-jcyl.js  # Importa dataset de la Junta de CyL (opcional)
 ```
