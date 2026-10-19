@@ -691,6 +691,11 @@
 }
 .plan-match--top { background: transparent; border-color: var(--signal); color: var(--signal); }
 .plan-match--low { border-style: dashed; color: var(--board-muted); }
+/* Parada para dormir: cierra el día, antes del cambio de día */
+.plan-prefs .rv-toggle { flex-basis: 100%; min-height: 40px; text-align: left; }
+.plan-item.is-night .plan-item-cat { display: inline-flex; align-items: center; gap: 4px; }
+.plan-item.is-night .plan-item-cat .cat-ico { width: 13px; height: 13px; }
+.plan-item.is-night .timeline-content .plan-item-desc { -webkit-line-clamp: 3; }
 /* La afinidad la lleva solo su etiqueta: el panel sigue en tinta y el amarillo relleno queda para la línea de ruta */
 .time-badge.is-hidden { color: var(--board-muted); opacity: 0.6; filter: blur(2px); user-select: none; }
 .plan-sched { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }

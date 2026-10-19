@@ -10,7 +10,7 @@ Explora más de 2.600 puntos de interés en las 9 provincias de Castilla y León
 
 - **Explorador de mapa** — Mapa interactivo Leaflet con marcadores por categoría y mapa D3 de provincias
 - **Filtros en tiempo real** — Por categoría, provincia y texto libre
-- **Dormir en autocaravana** — Capa opcional con áreas, campings, parkings y puntos de vaciado de la provincia, con los datos del proyecto [Caravana](https://github.com/alex981110/caravana) (OpenStreetMap + registros oficiales)
+- **Dormir en autocaravana** — Capa opcional con áreas, campings, parkings y puntos de vaciado de la provincia, con los datos del proyecto [Caravana](https://github.com/alex981110/caravana) (OpenStreetMap + registros oficiales). En el plan, «Viajo en autocaravana» añade al final de cada día (menos el último) el sitio para dormir más conveniente, que entra también en la ruta, el PDF y los itinerarios guardados
 - **Generador de itinerarios** — Plan diario optimizado geográficamente (algoritmo Haversine)
 - **Visualización de rutas** — Overlay de pantalla completa con cálculo de ruta real por carretera (OSRM)
 - **Exportar PDF** — Descarga el itinerario completo

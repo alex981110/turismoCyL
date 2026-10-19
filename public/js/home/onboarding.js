@@ -402,6 +402,8 @@ function launchTripPlan(provincesList, ranking, numDays) {
   const isLogged = !!appState.currentUser;
   const allDays = buildTripPlan(provincesList, ranking, numDays);
   if (!allDays.length) { showToast('No se pudo generar el itinerario'); return; }
+  // Dónde dormir cada noche si viaja en autocaravana (pernocta.js); si aún no hay datos, repinta al llegar
+  ensureRvNights(allDays, () => rerenderTripPlan());
 
   const mainProv = provincesList[0];
   const multi = provincesList.length > 1;
@@ -435,10 +437,24 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
   let badge = document.getElementById('personalizedBadge');
   if (!badge) { badge = document.createElement('div'); badge.id = 'personalizedBadge'; badge.style.cssText = 'grid-column:1/-1;'; container.parentNode.insertBefore(badge, container); }
   const topPrefs = ranking.slice(0, 3).map(id => { const p = OB_PREFS.find(x => x.id === id); return p ? `<span class="plan-pref">${p.icon} ${escHTML(p.label)}</span>` : ''; }).filter(Boolean);
-  badge.innerHTML = `<div class="plan-prefs"><span class="plan-prefs-label">Ordenado por tus gustos</span><div class="plan-prefs-list">${topPrefs.join('')}</div><button type="button" class="plan-prefs-btn" data-action="ob-open">Cambiar</button></div>`;
-  const _allScores = (allDays && allDays.length ? allDays.flatMap(d => d.items) : [...dia1, ...dia2]).map(i => planAffinity(i, ranking));
+  badge.innerHTML = `<div class="plan-prefs"><span class="plan-prefs-label">Ordenado por tus gustos</span><div class="plan-prefs-list">${topPrefs.join('')}</div><button type="button" class="plan-prefs-btn" data-action="ob-open">Cambiar</button>${rvPlanToggleHTML()}</div>`;
+  const _allScores = (allDays && allDays.length ? allDays.flatMap(d => d.items) : [...dia1, ...dia2])
+    .filter(i => i.kind !== 'night').map(i => planAffinity(i, ranking));
   const _maxScore = Math.max(..._allScores, 1);
+  // Parada para dormir (pernocta.js): sin afinidad ni foto; abre el sitio en la capa de autocaravanas
+  const renderNight = (item) => `<div class="timeline-item has-marker plan-item is-night" data-action="rv-focus" data-id="${escHTML(item._rv.id)}">
+      <div class="time-badge">${item.time}</div>
+      <div class="timeline-content">
+        <div class="plan-item-text">
+          <h4>${escHTML(item.place)}</h4>
+          <div class="plan-tags"><span class="plan-item-cat" data-fam="cama">${catIcon.pernocta} Dormir</span></div>
+          <p class="plan-item-desc">${escHTML(item.desc)}</p>
+          <span class="plan-map-link">${catIcon.default} Ver en el mapa</span>
+        </div>
+      </div>
+    </div>`;
   const renderItem = (item) => {
+    if (item.kind === 'night') return renderNight(item);
     const mk = item.marker;
     const photo = item.photo || mk?.photo || '';
     const cat = mk ? (catLabel[mk.cat] || mk.cat) : '';
@@ -484,7 +500,8 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
   } else {
     container.innerHTML = renderDay(dia1, 'Sábado') + renderDay(dia2, 'Domingo');
   }
-  appState.currentPlan = { province, dia1, dia2, allDays: allDays || appState.currentPlan?.allDays, numDays: appState.currentPlan?.numDays };
+  // Se conservan provincesList y _savedId para poder repintar y volver a guardar el mismo plan
+  appState.currentPlan = { ...appState.currentPlan, province, dia1, dia2, allDays: allDays || appState.currentPlan?.allDays, numDays: appState.currentPlan?.numDays };
   const pdfBtn = document.getElementById('pdfBtn');
   if (pdfBtn) pdfBtn.style.display = appState.currentUser ? 'inline-flex' : 'none';
 
@@ -521,6 +538,14 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
     if (days.reduce((s, d) => s + d.places.length, 0) < 2) { showToast('No hay suficientes marcadores'); return; }
     openRouteMap(null, cp.province || province, days);
   };
+}
+
+// Vuelve a pintar el plan actual (p. ej. al activar o quitar las noches en autocaravana)
+function rerenderTripPlan() {
+  const cp = appState.currentPlan;
+  if (!cp || !cp.allDays) return;
+  const title = Array.isArray(cp.provincesList) ? cp.provincesList.join(' · ') : cp.province;
+  renderPersonalizedDayPlanner(title, cp.dia1, cp.dia2, appState.personalizedPlan?.ranking || [], null, cp.allDays);
 }
 
 // ============================================================

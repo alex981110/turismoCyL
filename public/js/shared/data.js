@@ -579,7 +579,7 @@ const catFamily = {
   'teatro': 'escena', 'cine': 'escena',
   'naturaleza': 'naturaleza',
   'gastronomia': 'mesa', 'bar': 'mesa',
-  'alojamiento': 'cama',
+  'alojamiento': 'cama', 'pernocta': 'cama',
 };
 const catFam = cat => catFamily[cat] || 'cultura';
 
@@ -597,6 +597,7 @@ const catIcon = {
   'historia':    _catSvg('<path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2M14.5 6.5 18 3h3v3l-3.5 3.5M5 14l4 4M7 17l-3 3M3 19l2 2"/>'),
   'gastronomia': _catSvg('<path d="M8 22h8M7 10h10M12 15v7"/><path d="M12 15a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5Z"/>'),
   'alojamiento': _catSvg('<path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9"/>'),
+  'pernocta':    _catSvg('<path d="M2 16V8a2 2 0 0 1 2-2h11l5 4.5V16z"/><path d="M15 6v4.5h5"/><circle cx="7" cy="17" r="2"/><circle cx="16" cy="17" r="2"/>'),
   'bar':         _catSvg('<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>'),
   'default':     _catSvg('<path d="M20 10c0 5-5.5 10.2-7.4 11.8a1 1 0 0 1-1.2 0C9.5 20.2 4 15 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>')
 };
@@ -616,6 +617,7 @@ const catLabel = {
   'historia':    'Historia',
   'gastronomia': 'Gastronomía',
   'alojamiento': 'Alojamientos',
+  'pernocta':    'Dormir en autocaravana',
   'bar':         'Bares y Restaurantes',
 };
 

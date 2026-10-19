@@ -24,7 +24,7 @@ const PLACE_COORDS = {
   "Teatro Principal de Burgos": [42.34056, -3.7002],
   "Barrio Húmedo de León": [42.59581, -5.56787],
   "Enoturismo D.O. Bierzo (Villafranca del Bierzo)": [42.606, -6.811],
-  "Barrio Romántico de León (tapeo)": [42.49993, -5.41703],
+  "Barrio Romántico de León (tapeo)": [42.59656, -5.56870],
   "Picos de Europa (Posada de Valdeón)": [43.15147, -4.91896],
   "Hoces de Vegacervera": [42.90352, -5.53975],
   "Castrillo de los Polvazares": [42.46464, -6.12797],
