@@ -695,7 +695,7 @@
 .plan-prefs .rv-toggle { flex-basis: 100%; min-height: 40px; text-align: left; }
 .plan-item.is-night .plan-item-cat { display: inline-flex; align-items: center; gap: 4px; }
 .plan-item.is-night .plan-item-cat .cat-ico { width: 13px; height: 13px; }
-.plan-item.is-night .timeline-content .plan-item-desc { -webkit-line-clamp: 3; }
+.plan-item.is-night .timeline-content .plan-item-desc { -webkit-line-clamp: 4; }
 .rv-plan-note { flex-basis: 100%; margin: 0; font-size: 0.8rem; line-height: 1.4; color: var(--steel); }
 /* Aparcamiento sugerido bajo cada lugar: abre el sitio en la capa de pernocta */
 .plan-rv-park {

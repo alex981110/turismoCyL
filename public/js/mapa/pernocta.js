@@ -224,28 +224,54 @@ function toggleRvLayer() {
 }
 
 // ── Plan: dónde dormir cada noche ───────────────────────────
-// Cada día menos el último termina en un sitio de pernocta cerca de la última parada,
-// teniendo en cuenta también la primera del día siguiente. La parada se añade como un
-// lugar más del día (kind 'night', cat 'pernocta'), así la ruta, el PDF y «Guardar» la incluyen.
+// Cada día menos el último termina en un sitio de pernocta. Si el día acaba con un plan de
+// noche (tapeo, teatro…) se duerme cerca de la última parada, para no conducir de noche; si
+// acaba con una visita, se duerme junto a la primera visita del día siguiente, y ese día sale
+// a las 9:30 desde allí. La parada se añade como un lugar más del día (kind 'night',
+// cat 'pernocta'), así la ruta, el PDF y «Guardar» la incluyen.
 const RV_NIGHT_FAR_KM = 40;
+const RV_DEPART_MIN = 9 * 60 + 30;   // salida del sitio de pernocta por la mañana
 
-function _rvNightScore(s, from, next) {
+function _rvNightScore(s, anchor, other) {
   const at = { lat: s.la, lng: s.lo };
-  let score = _planKm(from, at) + (next ? 0.5 * _planKm(at, next) : 0);
+  let score = _planKm(anchor, at) + (other ? 0.25 * _planKm(at, other) : 0);
   if (s.k === 'camping' && !s.ok) score += 8;     // sin confirmar que admita autocaravanas
   if (s.w) score -= 2;
   if (s.d) score -= 2;
   return score;
 }
 
-function _rvPickNight(from, next) {
+function _rvPickNight(anchor, other) {
   let best = null, bestScore = Infinity;
   for (const s of rvState.data.sitios) {
     if (s.k === 'vaciado') continue;              // solo para vaciar, no para dormir
-    const score = _rvNightScore(s, from, next);
+    const score = _rvNightScore(s, anchor, other);
     if (score < bestScore) { bestScore = score; best = s; }
   }
   return best;
+}
+
+// Minutos de coche estimados: los saltos cortos como el resto del plan; los largos van por
+// carretera principal (un 25 % más que en línea recta, a 80 km/h), redondeados a 15 min
+function _rvDriveMin(a, b) {
+  const km = _planKm(a, b);
+  if (km < 30) return _planTravelMin(a, b);
+  return Math.ceil(km * 1.25 / 80 * 60 / 15) * 15;
+}
+
+// Horario de un día que empieza en el sitio donde se ha dormido
+function _rvDayFrom(items, night) {
+  const at = { lat: night.lat, lng: night.lng };
+  const visits = items.filter(it => it.kind === 'visit');
+  const meal = items.find(it => it.kind === 'meal');
+  const evening = items.find(it => it.kind === 'evening');
+  if (!visits.length) return items;
+  const first = _planRoute(visits, at)[0];
+  const travel = _rvDriveMin(at, first);
+  const out = _planSchedule(visits, meal, evening, { from: at, startMin: Math.max(PLAN_CFG.startMin, RV_DEPART_MIN + travel) });
+  const dur = travel < 60 ? `${travel} min` : `${Math.floor(travel / 60)} h${travel % 60 ? ' ' + (travel % 60) + ' min' : ''}`;
+  out[0]._rvWarn = [`Salida a las ${_planTime(RV_DEPART_MIN)} desde ${night.place} · unos ${dur} de coche`];
+  return out;
 }
 
 const RV_PARK_KM = 3;   // aparcamiento sugerido para cada lugar del plan
@@ -282,9 +308,12 @@ function _rvNightWarnings(s) {
   return warn;
 }
 
-function _rvNightItem(s, last) {
+// last: última parada del día; anchor: junto a qué se duerme (last o la visita de mañana)
+function _rvNightItem(s, last, anchor) {
   const at = { lat: s.la, lng: s.lo };
-  const km = Math.round(_planKm(last, at));
+  const km = Math.round(_planKm(anchor, at));
+  const tomorrow = anchor !== last;
+  const where = tomorrow ? `${anchor.place}, primera visita de mañana` : last.place;
   const [h, m] = (last.time || '20:00').split(':').map(Number);
   const lastEnd = h * 60 + m + (last.kind === 'evening' ? 90 : PLAN_CFG.visitMin);
   const services = RV_SERVICES.filter(([f]) => s[f] === true).map(([, label]) => label.toLowerCase());
@@ -292,15 +321,16 @@ function _rvNightItem(s, last) {
   const list = services.length > 1 ? services.slice(0, -1).join(', ') + ' y ' + services[services.length - 1] : services[0];
   const desc = [
     RV_KINDS[s.k].label + (list ? ' con ' + list : ''),
-    km > RV_NIGHT_FAR_KM ? `el sitio más cercano está a ${km} km en línea recta de ${last.place}`
-      : km < 1 ? `a menos de 1 km de ${last.place}`
-      : `a ${km} km en línea recta de ${last.place}`,
+    km > RV_NIGHT_FAR_KM ? `el sitio más cercano está a ${km} km en línea recta de ${where}`
+      : km < 1 ? `a menos de 1 km de ${where}`
+      : `a ${km} km en línea recta de ${where}`,
+    tomorrow ? `${Math.round(_planKm(last, at))} km desde ${last.place}` : null,
     fit,
   ].filter(Boolean).join(' · ');
   return {
     place: rvName(s),
     desc,
-    time: _planTime(Math.min(lastEnd + _planTravelMin(last, at), 23 * 60 + 45)),
+    time: _planTime(Math.min(lastEnd + _rvDriveMin(last, at), 23 * 60 + 45)),
     kind: 'night',
     lat: s.la, lng: s.lo,
     photo: null,
@@ -310,26 +340,32 @@ function _rvNightItem(s, last) {
   };
 }
 
-// Quita y, si toca, vuelve a poner la parada de cada noche. Modifica los días en su sitio
-// porque currentPlan.dia1 / dia2 apuntan a los mismos arrays.
+// Vuelve al plan original y, si toca, pone la parada de cada noche y rehace el horario del
+// día siguiente. Modifica los días en su sitio porque currentPlan.dia1 / dia2 apuntan a los
+// mismos arrays; d._rvBase guarda el día tal como lo montó buildTripPlan.
 function applyRvNights(allDays) {
   if (!allDays) return;
   allDays.forEach(d => {
-    for (let i = d.items.length - 1; i >= 0; i--) {
-      if (d.items[i].kind === 'night') d.items.splice(i, 1);
-      else delete d.items[i]._rvPark;
-    }
+    if (!d._rvBase) d._rvBase = d.items.filter(it => it.kind !== 'night').map(it => ({ ...it }));
+    d.items.splice(0, d.items.length, ...d._rvBase.map(it => ({ ...it })));
   });
   if (!rvState.plan || !rvState.data) return;
   allDays.forEach((d, i) => {
+    if (i > 0) {
+      const prevNight = allDays[i - 1].items.find(it => it.kind === 'night');
+      if (prevNight) d.items.splice(0, d.items.length, ..._rvDayFrom(d.items, prevNight));
+    }
     d.items.forEach(it => { if (it.lat) it._rvPark = _rvParkFor(it); });
     if (i === allDays.length - 1) return;           // la última noche se vuelve a casa
     const located = d.items.filter(it => it.lat);
     const last = located[located.length - 1];
     if (!last) return;
-    const next = allDays[i + 1].items.find(it => it.lat) || null;
-    const site = _rvPickNight(last, next);
-    if (site) d.items.push(_rvNightItem(site, last));
+    // Visita de mañana por la que se entra en esa zona: la más cercana a la última parada de hoy
+    const tomorrow = allDays[i + 1].items.filter(it => it.lat && it.kind === 'visit')
+      .sort((a, b) => _planKm(last, a) - _planKm(last, b))[0] || null;
+    const anchor = last.kind === 'evening' || !tomorrow ? last : tomorrow;
+    const site = _rvPickNight(anchor, anchor === last ? tomorrow : last);
+    if (site) d.items.push(_rvNightItem(site, last, anchor));
   });
 }
 

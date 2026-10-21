@@ -147,13 +147,14 @@ function _planZones(visits, numDays) {
   return days;
 }
 
-// Orden de visita más corto (pocas paradas: se prueban todas las permutaciones)
-function _planRoute(stops) {
-  if (stops.length <= 2) return stops.slice();
+// Orden de visita más corto (pocas paradas: se prueban todas las permutaciones).
+// from: punto de salida opcional (p. ej. donde se ha dormido), cuenta en el recorrido.
+function _planRoute(stops, from) {
+  if (stops.length <= (from ? 1 : 2)) return stops.slice();
   let best = null, bestLen = Infinity;
   const permute = (arr, done) => {
     if (!arr.length) {
-      let len = 0;
+      let len = from ? _planKm(from, done[0]) : 0;
       for (let i = 1; i < done.length; i++) len += _planKm(done[i - 1], done[i]);
       if (len < bestLen) { bestLen = len; best = done; }
       return;
@@ -164,11 +165,12 @@ function _planRoute(stops) {
   return best;
 }
 
-// Horario de un día: visitas de mañana, comida, visitas de tarde y plan de noche
-function _planSchedule(visits, meal, evening) {
-  const route = _planRoute(visits);
+// Horario de un día: visitas de mañana, comida, visitas de tarde y plan de noche.
+// opts.from / opts.startMin: salir de otro punto y a otra hora (días en autocaravana)
+function _planSchedule(visits, meal, evening, opts = {}) {
+  const route = _planRoute(visits, opts.from);
   const out = [];
-  let t = PLAN_CFG.startMin, prev = null, lunchDone = false;
+  let t = opts.startMin || PLAN_CFG.startMin, prev = null, lunchDone = false;
   for (const v of route) {
     if (prev) t += _planTravelMin(prev, v);
     // Si la visita no termina antes de comer, se pasa a la tarde

@@ -487,6 +487,7 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
             <div class="plan-tags">${cat ? `<span class="plan-item-cat" data-fam="${catFam(mk?.cat)}">${escHTML(cat)}</span>` : ''}${matchBadge}${lowNote}</div>
             <p class="plan-item-desc">${item.desc}</p>
             ${sched}
+            ${rvWarningsHTML(item)}
             ${rvParkHTML(item)}
             <span class="plan-map-link">${catIcon.default} Ver en el mapa</span>
           </div>
