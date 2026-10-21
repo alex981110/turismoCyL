@@ -537,7 +537,9 @@ function itinDrawRoute() {
     const label     = `Día ${di + 1}, ${dateLabel}`;
     const places    = day.places.map(p => {
       const mk = appState.markers.find(m => m.name === p.name && m.province === itinResult.province);
-      return mk ? { lat: mk.lat, lng: mk.lng, name: p.name } : null;
+      // Las noches en autocaravana no son marcadores: se usan las coordenadas guardadas
+      if (mk) return { lat: mk.lat, lng: mk.lng, name: p.name, cat: mk.cat };
+      return p.lat && p.lng ? { lat: p.lat, lng: p.lng, name: p.name, cat: p.cat } : null;
     }).filter(Boolean);
     return { label, places };
   }).filter(d => d.places.length > 0);

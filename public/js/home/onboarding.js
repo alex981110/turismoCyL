@@ -530,7 +530,7 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
     if (cp.allDays && cp.allDays.length > 0) {
       days = cp.allDays.map((d, i) => ({
         label: d.label,
-        places: d.items.filter(p => p.marker?.lat).map(p => ({ lat: p.marker.lat, lng: p.marker.lng, name: p.marker.name }))
+        places: d.items.filter(p => p.marker?.lat).map(p => ({ lat: p.marker.lat, lng: p.marker.lng, name: p.marker.name, cat: p.marker.cat }))
       })).filter(d => d.places.length > 0);
     } else {
       days = [

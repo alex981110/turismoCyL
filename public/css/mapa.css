@@ -592,6 +592,7 @@
   border-radius: 3px;
   font-family: var(--font-mono); font-weight: 600; font-size: 0.75rem; font-variant-numeric: tabular-nums;
 }
+.route-stop-num .cat-ico { width: 15px; height: 15px; }
 .route-stop-info { min-width: 0; }
 .route-stop-name { font-weight: 600; font-size: 0.95rem; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .route-stop-cat { margin-top: 2px; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--board-muted); }

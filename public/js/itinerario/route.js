@@ -7,8 +7,11 @@ let _routeTotals = {};
 const fmtKm   = m => `${(m / 1000).toLocaleString('es-ES', { maximumFractionDigits: 1 })} km`;
 const fmtTime = s => { const min = Math.round(s / 60); return min >= 60 ? `${Math.floor(min / 60)} h ${min % 60} min` : `${min} min`; };
 
+// Paradas de un día con su punto de salida (donde se durmió la noche anterior), si lo hay
+const _routeStops = day => day.start ? [day.start, ...day.places] : day.places;
+
 function buildGoogleMapsUrl(dayGroups) {
-  const allPlaces = dayGroups.flatMap(d => d.places);
+  const allPlaces = dayGroups.flatMap(_routeStops);
   if (allPlaces.length < 2) return '#';
   const origin      = `${allPlaces[0].lat},${allPlaces[0].lng}`;
   const destination = `${allPlaces[allPlaces.length - 1].lat},${allPlaces[allPlaces.length - 1].lng}`;
@@ -26,8 +29,12 @@ function openRouteMap(places, title, days) {
     return;
   }
 
-  // Normalizar: si no hay días, crear uno solo
-  const dayGroups = days || [{ label: null, places }];
+  // Normalizar: si no hay días, crear uno solo. Si un día acaba durmiendo en autocaravana
+  // (cat 'pernocta'), el siguiente sale desde ahí: cuenta en su ruta y en Google Maps.
+  const dayGroups = (days || [{ label: null, places }]).map((d, di, arr) => {
+    const prevLast = di > 0 ? arr[di - 1].places[arr[di - 1].places.length - 1] : null;
+    return { ...d, start: prevLast && prevLast.cat === 'pernocta' ? prevLast : null };
+  });
 
   const allPlaces = dayGroups.flatMap(d => d.places);
   if (!allPlaces || allPlaces.length < 2) {
@@ -52,19 +59,29 @@ function openRouteMap(places, title, days) {
         <span class="route-day-count">${day.places.length} paradas</span>
         <span class="route-day-km" id="routeDayKm${di}"></span>
       </div>` : '';
+    const start = day.start ? `
+        <div class="route-stop-item is-start" data-action="route-fly" data-lat="${day.start.lat}" data-lng="${day.start.lng}">
+          <div class="route-stop-num" style="background:${color};">${catIcon.pernocta}</div>
+          <div class="route-stop-info">
+            <div class="route-stop-name">${escHTML(day.start.name)}</div>
+            <div class="route-stop-cat">Salida · donde se durmió</div>
+          </div>
+        </div>` : '';
     const stops = day.places.map((p, i) => {
       const mk  = appState.markers.find(m => m.name === p.name);
-      const cat = mk ? (catLabel[mk.cat] || mk.cat) : '';
+      const catKey = mk ? mk.cat : p.cat;
+      const cat = catKey ? (catLabel[catKey] || catKey) : '';
       return `
         <div class="route-stop-item" data-action="route-fly" data-lat="${p.lat}" data-lng="${p.lng}" >
           <div class="route-stop-num" style="background:${color};">${i + 1}</div>
           <div class="route-stop-info">
             <div class="route-stop-name">${escHTML(p.name)}</div>
-            ${cat ? `<div class="route-stop-cat">${catIcon[mk.cat] || catIcon.default} ${cat}</div>` : ''}
+            ${cat ? `<div class="route-stop-cat">${catIcon[catKey] || catIcon.default} ${escHTML(cat)}</div>` : ''}
           </div>
         </div>`;
     }).join('');
-    const gmapsUrl = day.places.length >= 2 ? buildGoogleMapsUrl([day]) : '#';
+    const canRoute = _routeStops(day).length >= 2;
+    const gmapsUrl = canRoute ? buildGoogleMapsUrl([day]) : '#';
     const gmapsBtn = `
       <a href="${gmapsUrl}" target="_blank" rel="noopener" class="route-gmaps">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -72,7 +89,7 @@ function openRouteMap(places, title, days) {
         </svg>
         ${multiDay ? `Abrir ${day.label || DAY_ROUTE_LABELS[di]} en Google Maps` : 'Abrir en Google Maps'}
       </a>`;
-    return header + stops + (day.places.length >= 2 ? gmapsBtn : '');
+    return header + start + stops + (canRoute ? gmapsBtn : '');
   }).join('');
 
   // Mostrar overlay
@@ -99,7 +116,8 @@ function openRouteMap(places, title, days) {
   // Dibujar cada día por separado
   dayGroups.forEach((day, di) => {
     const color    = DAY_ROUTE_COLORS[di % DAY_ROUTE_COLORS.length];
-    const latlngs  = day.places.map(p => L.latLng(p.lat, p.lng));
+    // La salida ya tiene su marcador como última parada del día anterior
+    const latlngs  = _routeStops(day).map(p => L.latLng(p.lat, p.lng));
     if (latlngs.length < 1) return;
     allLatLngs.push(...latlngs);
 
