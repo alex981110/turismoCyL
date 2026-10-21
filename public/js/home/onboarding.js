@@ -155,6 +155,7 @@ registerActions({
   'ob-pref':         d => obTogglePref(d.pref),
   'ob-days':         d => obSelectDays(+d.days),
   'ob-province':     d => obToggleProvince(d.province),
+  'ob-prov-days':    d => obChangeProvDays(d.province, +d.delta),
   'ob-register':     () => { closeOnboarding(); openModal('register'); },
   'ob-open':         () => openOnboarding(),
 });
@@ -261,10 +262,10 @@ function renderObStep() {
     body.innerHTML = `
       <h3 style="font-family:var(--font-display);color:${OB_C.text};font-size:1.2rem;margin:0 0 4px;font-weight:700;">¿A qué provincias viajas?</h3>
       <p style="color:${OB_C.textMuted};font-size:0.85rem;margin:0 0 6px;line-height:1.6;">
-        Itinerario de <strong style="color:${OB_C.accent};font-weight:700;">${numDays} días</strong> · Puedes elegir <strong>varias provincias</strong>.
+        Itinerario de <strong id="obProvTotal" style="color:${OB_C.accent};font-weight:700;">${numDays} días</strong> · Puedes elegir <strong>varias provincias</strong>.
       </p>
       <p id="obProvHint" style="color:${OB_C.textMuted};font-size:0.78rem;margin:0 0 14px;">
-        ${numDays === 1 ? 'Selecciona 1 provincia.' : `Hasta ${Math.min(numDays, provs.length)} provincias (los días se reparten entre ellas).`}
+        Los días se reparten entre ellas; abajo puedes cambiar cuántos pasas en cada una (máximo ${_obMaxDays()} en total${appState.currentUser ? '' : ' sin cuenta'}).
       </p>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
         ${provs.map(p => `
@@ -322,19 +323,67 @@ function _obPaintProvince(name, selected) {
   if (badge && selected) badge.textContent = (window._obSelectedProvinces.indexOf(name) + 1).toString();
 }
 
+// Tope de días del viaje: 7 con cuenta; sin cuenta, el fin de semana (como en el paso 2)
+function _obMaxDays() { return appState.currentUser ? 7 : 2; }
+
+// Días de cada provincia elegida, en el orden de selección. Hasta que el usuario los cambia
+// con − / + son el reparto automático de los días del paso 2 (al menos uno por provincia).
+function _obProvSplit() {
+  const list = window._obSelectedProvinces || [];
+  const days = window._obProvDays || (window._obProvDays = {});
+  if (!window._obDaysEdited) {
+    const split = _obSplitDays(Math.max(window._obSelectedDays || 2, list.length), list.length);
+    list.forEach((p, i) => { days[p] = split[i]; });
+  }
+  return list.map(p => days[p] || 1);
+}
+
+const _obDaysLabel = n => `${n} día${n !== 1 ? 's' : ''}`;
+
 function _obUpdateProvSummary() {
   const sum = document.getElementById('obProvSummary');
   if (!sum) return;
   const list = window._obSelectedProvinces || [];
-  const numDays = window._obSelectedDays || 2;
+  const stepDays = window._obSelectedDays || 2;
+  const split = _obProvSplit();
+  const total = split.reduce((a, n) => a + n, 0);
+  const totalEl = document.getElementById('obProvTotal');
+  if (totalEl) totalEl.textContent = _obDaysLabel(list.length ? total : stepDays);
   if (!list.length) {
     sum.innerHTML = `<span style="color:${OB_C.textMuted};">Aún no has elegido ninguna provincia.</span>`;
     return;
   }
-  // Distribución de días sugerida
-  const split = _obSplitDays(numDays, list.length);
-  const parts = list.map((p, i) => `<strong style="color:${OB_C.accent};">${p}</strong> <span style="color:${OB_C.textMuted};">(${split[i]} día${split[i] !== 1 ? 's' : ''})</span>`).join(' · ');
-  sum.innerHTML = `${parts}`;
+  const atMax = total >= _obMaxDays();
+  sum.innerHTML = `<div class="ob-split">
+    ${list.map((p, i) => `
+      <div class="ob-split-row">
+        <span class="ob-split-code">${provinceCode[p]}</span>
+        <span class="ob-split-name">${p}</span>
+        <div class="ob-stepper">
+          <button type="button" data-action="ob-prov-days" data-province="${p}" data-delta="-1" aria-label="Un día menos en ${p}"${split[i] <= 1 ? ' disabled' : ''}>−</button>
+          <span class="ob-stepper-n" aria-live="polite">${_obDaysLabel(split[i])}</span>
+          <button type="button" data-action="ob-prov-days" data-province="${p}" data-delta="1" aria-label="Un día más en ${p}"${atMax ? ' disabled' : ''}>+</button>
+        </div>
+      </div>`).join('')}
+    <div class="ob-split-total">Total: ${_obDaysLabel(total)}${total !== stepDays ? ` · en el paso anterior elegiste ${stepDays}` : ''}</div>
+  </div>`;
+}
+
+function obChangeProvDays(name, delta) {
+  const split = _obProvSplit();
+  const total = split.reduce((a, n) => a + n, 0);
+  const days = window._obProvDays;
+  const next = (days[name] || 1) + delta;
+  if (next < 1) return;
+  if (delta > 0 && total >= _obMaxDays()) {
+    showToast(appState.currentUser ? `Máximo ${_obMaxDays()} días en total` : 'Sin cuenta, el itinerario es de 2 días como máximo');
+    return;
+  }
+  // A partir de aquí se respetan los días elegidos aunque cambien las provincias
+  (window._obSelectedProvinces || []).forEach((p, i) => { days[p] = split[i]; });
+  days[name] = next;
+  window._obDaysEdited = true;
+  _obUpdateProvSummary();
 }
 
 // Reparte numDays entre numProvs lo más equitativamente posible
@@ -349,23 +398,29 @@ function _obSplitDays(numDays, numProvs) {
 function obToggleProvince(name) {
   if (!Array.isArray(window._obSelectedProvinces)) window._obSelectedProvinces = [];
   const list = window._obSelectedProvinces;
-  const numDays = window._obSelectedDays || 2;
-  const maxProvs = Math.min(numDays, 9);
+  // Cada provincia necesita al menos un día, así que el tope de provincias es el de días
+  const maxDays = _obMaxDays();
+  const total = _obProvSplit().reduce((a, n) => a + n, 0);
 
   const idx = list.indexOf(name);
   if (idx !== -1) {
     // Deseleccionar
     list.splice(idx, 1);
+    if (window._obProvDays) delete window._obProvDays[name];
     _obPaintProvince(name, false);
     // Repintar el resto para actualizar números de orden
     list.forEach(p => _obPaintProvince(p, true));
   } else {
-    // Comprobar límite
-    if (list.length >= maxProvs) {
-      showToast(`Para ${numDays} días puedes elegir hasta ${maxProvs} provincia${maxProvs !== 1 ? 's' : ''}`);
+    // Comprobar límite: con días elegidos a mano, la nueva provincia suma un día
+    const full = window._obDaysEdited ? total >= maxDays : list.length >= maxDays;
+    if (full) {
+      showToast(window._obDaysEdited
+        ? `Ya tienes ${maxDays} días: quita un día de otra provincia para añadir ${name}`
+        : `Con ${maxDays} días puedes elegir hasta ${maxDays} provincias`);
       return;
     }
     list.push(name);
+    if (window._obDaysEdited) window._obProvDays[name] = 1;
     _obPaintProvince(name, true);
   }
   _obUpdateProvSummary();
@@ -375,6 +430,7 @@ function obPrev() { if (obStep > 1) { obStep--; renderObStep(); } }
 
 function obSelectDays(d) {
   window._obSelectedDays = d;
+  window._obDaysEdited = false;   // vuelve al reparto automático de los nuevos días
   document.querySelectorAll('[id^="obDay_"]').forEach(btn => {
     btn.classList.toggle('is-selected', btn.id === 'obDay_' + d);
   });
@@ -391,16 +447,17 @@ function obNext() {
     if (!provList.length) { showToast('Selecciona al menos una provincia'); return; }
     obSavePrefs();
     closeOnboarding();
-    const days = window._obSelectedDays || 2;
-    launchTripPlan(provList, obRanking, days);
+    const split = _obProvSplit();
+    launchTripPlan(provList, obRanking, split.reduce((a, n) => a + n, 0), split);
   }
 }
 
 // Monta el plan con plan-builder.js y lo muestra en la pestaña «Itinerario» del mapa
-function launchTripPlan(provincesList, ranking, numDays) {
+// daysSplit: días de cada provincia (mismo orden que provincesList); opcional
+function launchTripPlan(provincesList, ranking, numDays, daysSplit) {
   numDays = numDays || 2;
   const isLogged = !!appState.currentUser;
-  const allDays = buildTripPlan(provincesList, ranking, numDays);
+  const allDays = buildTripPlan(provincesList, ranking, numDays, daysSplit);
   if (!allDays.length) { showToast('No se pudo generar el itinerario'); return; }
   // Dónde dormir cada noche si viaja en autocaravana (pernocta.js); si aún no hay datos, repinta al llegar
   ensureRvNights(allDays, () => rerenderTripPlan());

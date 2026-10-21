@@ -216,12 +216,14 @@ function planProvinceDays(province, ranking, numDays) {
   return groups.map((g, i) => _planSchedule(g.visits, mealOf.get(i), eveningOf.get(i)));
 }
 
-// Plan completo: una o varias provincias, con los días repartidos entre ellas
-function buildTripPlan(provinces, ranking, numDays) {
+// Plan completo: una o varias provincias. daysSplit: días de cada provincia elegidos en el
+// cuestionario; si no se pasa, los días se reparten a partes iguales
+function buildTripPlan(provinces, ranking, numDays, daysSplit) {
   const EMOJIS = ['🌅', '🌄', '🌇', '🌆', '🌃', '🌉', '🌁'];
   const DAY_LABELS = ['Sábado', 'Domingo', 'Día 3', 'Día 4', 'Día 5', 'Día 6', 'Día 7'];
   const multi = provinces.length > 1;
-  const split = multi ? _obSplitDays(numDays, provinces.length) : [numDays];
+  const split = daysSplit && daysSplit.length === provinces.length ? daysSplit
+    : multi ? _obSplitDays(numDays, provinces.length) : [numDays];
   const allDays = [];
   provinces.forEach((prov, pi) => {
     planProvinceDays(prov, ranking, split[pi]).forEach((items, d) => {

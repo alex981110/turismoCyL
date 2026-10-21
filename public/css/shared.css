@@ -756,6 +756,33 @@ select.form-control-cyl { background-color: var(--surface) !important; }
 .ob-prov.is-selected .ob-prov-badge { display: flex; }
 .ob-prov-icon { font-size: 1.2rem; margin-bottom: 4px; }
 
+/* Días por provincia (paso 3) */
+.ob-split { display: flex; flex-direction: column; gap: 6px; }
+.ob-split-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 6px 6px 10px;
+  background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius);
+}
+.ob-split-code {
+  min-width: 26px; padding: 2px 4px;
+  background: var(--ink); color: #fff; border-radius: 3px;
+  font-family: var(--font-mono); font-weight: 600; font-size: 0.7rem; text-align: center;
+}
+.ob-split-name { flex: 1; min-width: 0; font-weight: 600; font-size: 0.95rem; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ob-stepper { display: flex; align-items: center; gap: 4px; }
+.ob-stepper button {
+  width: 40px; height: 40px; margin: 0; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface); border: 1.5px solid var(--line-strong); border-radius: var(--radius);
+  color: var(--ink); font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; line-height: 1;
+  cursor: pointer; transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.16s var(--ease-out);
+}
+.ob-stepper button:hover:not(:disabled) { border-color: var(--ink); }
+.ob-stepper button:active:not(:disabled) { transform: scale(0.97); }
+.ob-stepper button:disabled { opacity: 0.35; cursor: default; }
+.ob-stepper-n { min-width: 64px; text-align: center; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+.ob-split-total { margin-top: 2px; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--steel); }
+
 /* Plan personalizado en la barra lateral */
 .plan-prefs-btn {
   margin-left: auto;
