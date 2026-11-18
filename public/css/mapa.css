@@ -68,18 +68,6 @@
   flex-shrink: 0;
 }
 .msb-logo { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--steel); }
-/* Selector de tema: segmentado, como las pestañas del panel */
-.theme-switch { display: flex; gap: 2px; margin-left: auto; margin-right: 8px; padding: 3px; background: var(--panel); border-radius: var(--radius); }
-.theme-switch button {
-  width: 34px; height: 30px; padding: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: transparent; border: none; border-radius: 3px;
-  color: var(--steel); cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-.theme-switch button svg { width: 16px; height: 16px; }
-.theme-switch button:hover { color: var(--fg); }
-.theme-switch button.is-active { background: var(--fg); color: var(--on-fg); }
 .msb-collapse-btn {
   width: 34px; height: 34px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
@@ -736,7 +724,7 @@
 .ob-prov-icon {
   display: inline-block; margin: 0 auto 6px;
   padding: 2px 6px; border-radius: 3px;
-  background: var(--ink); color: #fff;
+  background: var(--fg); color: var(--on-fg);
   font-family: var(--font-mono); font-weight: 600; font-size: 0.78rem; letter-spacing: 0.02em;
 }
 .ob-prov.is-selected .ob-prov-icon { background: var(--ink); color: var(--signal); }
@@ -749,26 +737,26 @@
 /* Mis itinerarios */
 .myitin-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
 .myitin-counter { font-size: 0.98rem; color: var(--steel); }
-.myitin-counter strong { font-family: var(--font-mono); color: var(--ink); }
+.myitin-counter strong { font-family: var(--font-mono); color: var(--fg); }
 .myitin-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 .myitin-band { display: flex; align-items: center; gap: 10px; margin: 0 !important; padding: 14px 20px; background: var(--ink); color: #fff; }
 .myitin-code { padding: 3px 6px; border-radius: 3px; background: var(--signal); color: var(--ink); font-family: var(--font-mono); font-weight: 600; font-size: 0.8rem; }
 .myitin-title { font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; line-height: 1.05; letter-spacing: 0.02em; text-transform: uppercase; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.myitin-fields { display: grid; grid-template-columns: auto auto 1fr; margin-top: 4px !important; margin-bottom: 0; border-bottom: 2px dashed rgba(14,17,20,0.2); padding-bottom: 14px; }
+.myitin-fields { display: grid; grid-template-columns: auto auto 1fr; margin-top: 4px !important; margin-bottom: 0; border-bottom: 2px dashed var(--line-strong); padding-bottom: 14px; }
 .myitin-fields > div { padding: 0 14px; border-left: 1px solid var(--line); }
 .myitin-fields > div:first-child { padding-left: 0; border-left: none; }
 .myitin-fields dt { font-family: var(--font-mono); font-size: 0.64rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--steel); }
-.myitin-fields dd { margin: 2px 0 0; font-family: var(--font-mono); font-weight: 600; font-size: 1.05rem; color: var(--ink); font-variant-numeric: tabular-nums; }
+.myitin-fields dd { margin: 2px 0 0; font-family: var(--font-mono); font-weight: 600; font-size: 1.05rem; color: var(--fg); font-variant-numeric: tabular-nums; }
 .myitin-saved { margin-top: 0; margin-bottom: 0; font-family: var(--font-mono); font-size: 0.72rem; color: var(--steel); }
 .myitin-provs { display: flex; flex-wrap: wrap; gap: 6px; }
-.myitin-prov { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px 3px 3px; border: 1px solid var(--line-strong); border-radius: 3px; font-size: 0.85rem; color: var(--ink); }
-.myitin-prov b { padding: 1px 4px; background: var(--ink); color: #fff; border-radius: 2px; font-family: var(--font-mono); font-weight: 600; font-size: 0.68rem; }
-.myitin-rv { display: flex; align-items: center; gap: 8px; margin-top: 0; margin-bottom: 0; font-size: 0.88rem; color: var(--ink); }
+.myitin-prov { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px 3px 3px; border: 1px solid var(--line-strong); border-radius: 3px; font-size: 0.85rem; color: var(--fg); }
+.myitin-prov b { padding: 1px 4px; background: var(--fg); color: var(--on-fg); border-radius: 2px; font-family: var(--font-mono); font-weight: 600; font-size: 0.68rem; }
+.myitin-rv { display: flex; align-items: center; gap: 8px; margin-top: 0; margin-bottom: 0; font-size: 0.88rem; color: var(--fg); }
 .myitin-rv .cat-ico { flex-shrink: 0; width: 18px; height: 18px; color: var(--cat-cama); }
 .myitin-date-wrap, .plan-date { display: flex; flex-direction: column; gap: 4px; margin-top: 0; margin-bottom: 0; }
 .myitin-date-wrap > span, .plan-date > span { font-family: var(--font-mono); font-size: 0.64rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--steel); }
 .myitin-date, .plan-date input { height: 44px; padding: 0 10px; border: 1.5px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); color: var(--fg); font-family: var(--font-mono); font-size: 0.92rem; }
-.myitin-closures { padding: 10px 12px; border: 1px solid var(--line-strong); border-left: 3px solid var(--danger); border-radius: var(--radius); font-size: 0.85rem; line-height: 1.4; color: var(--ink); }
+.myitin-closures { padding: 10px 12px; border: 1px solid var(--line-strong); border-left: 3px solid var(--danger); border-radius: var(--radius); font-size: 0.85rem; line-height: 1.4; color: var(--fg); }
 .myitin-closures[hidden] { display: none; }
 .myitin-closures.is-ok { border-left-color: var(--ok); }
 .myitin-closures ul { margin: 6px 0 0; padding-left: 18px; }
@@ -777,7 +765,7 @@
 .btn.myitin-route-btn { min-height: 40px; padding: 0 12px; font-size: 0.95rem; }
 .myitin-actions-row .itin-del-btn { margin-left: 16px; }
 .myitin-empty { text-align: center; padding: 56px 20px; }
-.myitin-empty-ico { width: 48px; height: 48px; color: var(--ink); margin-bottom: 14px; }
+.myitin-empty-ico { width: 48px; height: 48px; color: var(--fg); margin-bottom: 14px; }
 .myitin-empty h3 { font-size: 1.7rem; text-transform: uppercase; margin-bottom: 10px; }
 .myitin-empty p { max-width: 48ch; margin: 0 auto 24px; color: var(--steel); }
 

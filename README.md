@@ -19,6 +19,7 @@ Explora más de 2.600 puntos de interés en las 9 provincias de Castilla y León
 - **Ficha del lugar** — Horario de OpenStreetMap y resumen y foto de Wikipedia (artículo buscado por coordenadas); las fotos, reseñas y horario de Google Places solo aparecen si hay clave
 - **Panel de administración** — CRUD de marcadores (rol admin)
 - **Diseño responsivo** — Adaptado a móvil, tablet y escritorio
+- **Modo claro y oscuro** — Automático (sigue al sistema), claro u oscuro, desde la barra superior; se recuerda en el navegador. El PDF se genera siempre en claro
 
 ---
 

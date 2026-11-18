@@ -20,32 +20,33 @@ const OB_KEYWORDS = {
 
 // ── Paleta del onboarding ──────────────────────────────────────────────────
 // Superficie clara · tinta para el texto y la selección · amarillo señal para lo elegido
+// Tokens con tema: --fg es el texto sobre papel (claro en modo oscuro); --ink, la tinta fija
 const OB_C = {
   bg:           'var(--surface)',
   bgCard:       'var(--surface)',
   bgCardSel:    'var(--signal)',          // tarjeta elegida
-  border:       'rgba(14,17,20,0.26)',
-  borderSel:    'var(--ink)',
-  accent:       'var(--ink)',
+  border:       'var(--line-strong)',
+  borderSel:    'var(--ink)',             // sobre la tarjeta amarilla
+  accent:       'var(--fg)',
   accentLight:  'var(--steel)',
   accentBg:     'var(--panel)',
-  accentBg2:    'rgba(14,17,20,0.12)',
-  text:         'var(--ink)',
+  accentBg2:    'var(--line)',
+  text:         'var(--fg)',
   textMuted:    'var(--steel)',
   textSoft:     'var(--ink-soft)',
   badge:        'var(--ink)',             // número de orden
   badgeText:    'var(--signal)',
-  progressBg:   'rgba(14,17,20,0.12)',
+  progressBg:   'var(--line)',
   rankBg:       'var(--panel)',
-  rankBorder:   'rgba(14,17,20,0.26)',
-  rankText:     'var(--ink)',
-  btnPrimary:   'var(--ink)',
-  btnPrimaryHov:'var(--slate-2)',
+  rankBorder:   'var(--line-strong)',
+  rankText:     'var(--fg)',
+  btnPrimary:   'var(--fg)',
+  btnPrimaryHov:'var(--fg-hover)',
   btnSecBg:     'transparent',
-  btnSecBorder: 'rgba(14,17,20,0.26)',
-  btnSecText:   'var(--ink)',
+  btnSecBorder: 'var(--line-strong)',
+  btnSecText:   'var(--fg)',
   lockBg:       'var(--panel)',
-  lockBorder:   'rgba(14,17,20,0.14)',
+  lockBorder:   'var(--line)',
   shadow:       'var(--shadow-md)',
 };
 
@@ -126,7 +127,7 @@ function openOnboarding() {
       if (btnNext) {
         btnNext.style.background = OB_C.btnPrimary;
         btnNext.style.border = 'none';
-        btnNext.style.color = '#fff';
+        btnNext.style.color = 'var(--on-fg)';
         btnNext.style.borderRadius = '10px';
         btnNext.style.padding = '10px 26px';
         btnNext.style.fontWeight = '700';

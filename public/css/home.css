@@ -239,7 +239,7 @@
   background: var(--surface);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-lg);
-  color: var(--ink);
+  color: var(--fg);
   text-decoration: none;
   transition: border-color 0.15s ease, box-shadow 0.2s ease, transform 0.2s var(--ease-out);
 }
@@ -249,11 +249,11 @@
 .province-tile-text {
   display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px;
   padding: 12px 14px 13px;
-  border-top: 2px dashed rgba(14,17,20,0.22);
+  border-top: 2px dashed var(--line-strong);
 }
 .province-tile-code {
   min-width: 42px; padding: 4px 6px;
-  background: var(--ink); color: #fff;
+  background: var(--fg); color: var(--on-fg);
   border-radius: 3px;
   font-family: var(--font-mono); font-weight: 600; font-size: 0.9rem; text-align: center;
 }
@@ -262,14 +262,14 @@
 .province-tile-names span { font-size: 0.9rem; color: var(--steel); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .province-tile--feature .province-tile-names strong { font-size: 2rem; }
 .province-tile--feature .province-tile-code { font-size: 1.1rem; min-width: 52px; padding: 6px 8px; }
-.province-tile-arrow { width: 22px; height: 22px; color: var(--ink); transition: transform 0.25s var(--ease-out); }
+.province-tile-arrow { width: 22px; height: 22px; color: var(--fg); transition: transform 0.25s var(--ease-out); }
 @media (hover: hover) and (pointer: fine) {
-  .province-tile:hover { border-color: var(--ink); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .province-tile:hover { border-color: var(--fg); box-shadow: var(--shadow-md); transform: translateY(-2px); }
   .province-tile:hover img { transform: scale(1.04); }
   .province-tile:hover .province-tile-arrow { transform: translateX(4px); }
   .province-tile:hover .province-tile-code { background: var(--signal); color: var(--ink); }
 }
-.province-tile:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.province-tile:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
 
 @media (max-width: 960px) {
   .home-provinces-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -344,12 +344,12 @@
   display: grid; grid-template-columns: auto 1fr; grid-template-areas: "code count" "name name" "place place";
   align-items: center; gap: 4px 10px;
   padding: 14px 18px 18px;
-  border-top: 2px dashed rgba(14,17,20,0.22);
+  border-top: 2px dashed var(--line-strong);
 }
 .ri-card-code { grid-area: code; padding: 3px 6px; background: var(--ink); color: var(--signal); border-radius: 3px; font-family: var(--font-mono); font-weight: 600; font-size: 0.8rem; }
 .ri-card-code:empty { display: none; }
 .ri-card-count { grid-area: count; font-family: var(--font-mono); font-size: 0.75rem; color: var(--steel); font-variant-numeric: tabular-nums; }
-.ri-card-name { grid-area: name; margin-top: 4px; font-family: var(--font-display); font-weight: 700; font-size: clamp(2rem, 3vw, 2.6rem); line-height: 1; text-transform: uppercase; color: var(--ink); }
+.ri-card-name { grid-area: name; margin-top: 4px; font-family: var(--font-display); font-weight: 700; font-size: clamp(2rem, 3vw, 2.6rem); line-height: 1; text-transform: uppercase; color: var(--fg); }
 .ri-card-place { grid-area: place; font-size: 1rem; color: var(--steel); }
 
 /* Aterrizaje: el fondo se vuelve transparente y el contorno encaja sobre el mapa */
