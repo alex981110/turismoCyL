@@ -13,46 +13,27 @@ function downloadItinerarioPDF(source) {
 function _downloadItinerarioPDF(source) {
 
   // ── Normalizar fuente de datos ───────────────────────────────
-  // currentPlan (panel del mapa): { province, provincesList?, allDays:[{label, items:[{time,place,desc,marker}]}] }
-  // itinResult (dinámico): { province, dateStr, days:[{date:Date, dayName, places:[{name,cat,desc,time}]}] }
+  // currentPlan (panel del mapa): { province, provincesList?, dateStr?, allDays:[{label, items:[{time,place,desc,marker}]}] }
   // dayPlans   (estático): { dia1:[{time,place,desc}], dia2:... }
   let province, headerDate, days;
 
   const cp = appState.currentPlan;
   const usePlan = source === 'plan' && cp && cp.allDays && cp.allDays.length;
-  const useDynamic = typeof itinResult !== 'undefined' && itinResult && itinResult.days && itinResult.days.length;
+  const longDate = d => d.toLocaleDateString('es-ES', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 
   if (usePlan) {
     province   = Array.isArray(cp.provincesList) ? cp.provincesList.join(' · ') : cp.province;
-    headerDate = new Date().toLocaleDateString('es-ES', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-    days = cp.allDays.map((day, di) => ({
-      label:  day.label || `Día ${di + 1}`,
-      places: (day.items || []).map((p, i) => ({
-        time:  p.time  || _autoTime(i),
-        name:  p.place || p.marker?.name || '—',
-        cat:   p.marker?.cat || '',
-        desc:  p.kind === 'night' ? 'Dormir · ' + p.desc : (p.desc || '')
-      }))
-    }));
-
-  } else if (useDynamic) {
-    province   = itinResult.province;
-    const d0   = itinResult.days[0].date;
-    headerDate = (d0 instanceof Date ? d0 : new Date(d0 + 'T00:00:00'))
-      .toLocaleDateString('es-ES', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-
-    days = itinResult.days.map((day, di) => {
-      const dateObj  = day.date instanceof Date ? day.date : new Date(day.date + 'T00:00:00');
-      const dayLabel = day.dayName
-        ? `${day.dayName} — ${dateObj.toLocaleDateString('es-ES',{day:'numeric',month:'long'})}`
-        : `Día ${di + 1}`;
+    // Con fecha de salida: la cabecera y cada día llevan su fecha
+    headerDate = cp.dateStr ? 'Salida el ' + longDate(tripDayDate(cp.dateStr, 0)) : longDate(new Date());
+    days = cp.allDays.map((day, di) => {
+      const date = tripDayDate(cp.dateStr, di);
       return {
-        label:  dayLabel,
-        places: (day.places || []).map((p, i) => ({
+        label:  (day.label || `Día ${di + 1}`) + (date ? ' · ' + date.toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long' }) : ''),
+        places: (day.items || []).map((p, i) => ({
           time:  p.time  || _autoTime(i),
-          name:  p.name  || p.place || '—',
-          cat:   p.cat   || '',
-          desc:  p.desc  || ''
+          name:  p.place || p.marker?.name || '—',
+          cat:   p.marker?.cat || '',
+          desc:  p.kind === 'night' ? 'Dormir · ' + p.desc : (p.desc || '')
         }))
       };
     });

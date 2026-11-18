@@ -3,7 +3,7 @@ const SPA_ROUTES = {
   '/mapa':            'spa-mapa',
   '/sobre':           'spa-home',
   '/planificador':    'spa-mapa',
-  '/itinerario':      'spa-itinerario',
+  '/itinerario':      'spa-mis-itinerarios',   // el antiguo creador manual: los enlaces llevan a sus itinerarios
   '/mis-itinerarios': 'spa-mis-itinerarios',
 };
 

@@ -625,12 +625,6 @@
   transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 .itin-del-btn:hover, .itin-del-btn:focus-visible { border-color: var(--danger); background: rgba(180,35,24,0.06); }
-.itin-fav-btn {
-  position: absolute; top: 6px; right: 6px;
-  padding: 4px; background: transparent; border: none; cursor: pointer; line-height: 1;
-  transition: transform 0.16s var(--ease-out);
-}
-.itin-fav-btn:active { transform: scale(0.9); }
 
 /* ═══════════════════════════════════════════
    MÓVIL
@@ -698,6 +692,14 @@
 .plan-item.is-night .plan-item-cat .cat-ico { width: 13px; height: 13px; }
 .plan-item.is-night .timeline-content .plan-item-desc { -webkit-line-clamp: 4; }
 .rv-plan-note { flex-basis: 100%; margin: 0; font-size: 0.8rem; line-height: 1.4; color: var(--steel); }
+.plan-prefs .plan-date { flex-basis: 100%; }
+.plan-saved-note { flex-basis: 100%; margin: 0; font-size: 0.85rem; line-height: 1.4; color: var(--ink-soft); }
+.plan-hours-note { flex-basis: 100%; margin: 0; font-size: 0.8rem; line-height: 1.4; color: var(--steel); }
+.plan-day-date { display: block; margin-top: 2px; font-family: var(--font-mono); font-weight: 400; font-size: 0.75rem; letter-spacing: 0.02em; text-transform: none; color: var(--board-muted); }
+/* Horario del lugar el día del plan (horarios.js) */
+.plan-hours { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; padding: 2px 6px; border: 1px solid var(--board-line); border-radius: 3px; font-family: var(--font-mono); font-size: 0.7rem; color: var(--board-text); }
+.plan-hours.is-closed { border-color: #E5705F; color: #FFB4A8; }
+.plan-hours small { color: var(--board-muted); font-size: 0.64rem; }
 /* Aparcamiento sugerido bajo cada lugar: abre el sitio en la capa de pernocta */
 .plan-rv-park {
   display: flex; align-items: flex-start; gap: 6px;
@@ -728,19 +730,9 @@
 .ob-prov.is-selected .ob-prov-icon { background: var(--ink); color: var(--signal); }
 
 /* ═══════════════════════════════════════════
-   CREADOR DE ITINERARIO
+   SECCIONES DE PÁGINA (Mis itinerarios)
    ═══════════════════════════════════════════ */
 .day-planner-section { padding-top: calc(var(--nav-h) + 24px); min-height: 100dvh; }
-.itin-loading { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 32px 0; color: var(--steel); font-size: 0.98rem; }
-.itin-spinner { width: 20px; height: 20px; flex-shrink: 0; border: 2px solid var(--ink); border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
-.itin-pick-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-.itin-sel-count { font-family: var(--font-mono); font-size: 0.8rem; color: var(--steel); font-variant-numeric: tabular-nums; }
-.itin-result-head { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
-.itin-result-title { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1; text-transform: uppercase; color: var(--ink); }
-.itin-result-sub { margin-top: 6px; font-family: var(--font-mono); font-size: 0.78rem; color: var(--steel); }
-.itin-result-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-.itin-result-actions .pdf-btn { margin-top: 0; }
-#itinDayCards .day-plan-card h3 span { font-family: var(--font-mono); font-weight: 400; font-size: 0.8rem !important; letter-spacing: 0; text-transform: none; color: var(--board-muted); }
 
 /* Mis itinerarios */
 .myitin-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
@@ -755,8 +747,22 @@
 .myitin-fields > div:first-child { padding-left: 0; border-left: none; }
 .myitin-fields dt { font-family: var(--font-mono); font-size: 0.64rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--steel); }
 .myitin-fields dd { margin: 2px 0 0; font-family: var(--font-mono); font-weight: 600; font-size: 1.05rem; color: var(--ink); font-variant-numeric: tabular-nums; }
-.myitin-saved { margin: 0; font-family: var(--font-mono); font-size: 0.72rem; color: var(--steel); }
+.myitin-saved { margin-top: 0; margin-bottom: 0; font-family: var(--font-mono); font-size: 0.72rem; color: var(--steel); }
+.myitin-provs { display: flex; flex-wrap: wrap; gap: 6px; }
+.myitin-prov { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px 3px 3px; border: 1px solid var(--line-strong); border-radius: 3px; font-size: 0.85rem; color: var(--ink); }
+.myitin-prov b { padding: 1px 4px; background: var(--ink); color: #fff; border-radius: 2px; font-family: var(--font-mono); font-weight: 600; font-size: 0.68rem; }
+.myitin-rv { display: flex; align-items: center; gap: 8px; margin-top: 0; margin-bottom: 0; font-size: 0.88rem; color: var(--ink); }
+.myitin-rv .cat-ico { flex-shrink: 0; width: 18px; height: 18px; color: var(--cat-cama); }
+.myitin-date-wrap, .plan-date { display: flex; flex-direction: column; gap: 4px; margin-top: 0; margin-bottom: 0; }
+.myitin-date-wrap > span, .plan-date > span { font-family: var(--font-mono); font-size: 0.64rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--steel); }
+.myitin-date, .plan-date input { height: 44px; padding: 0 10px; border: 1.5px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); color: var(--ink); font-family: var(--font-mono); font-size: 0.92rem; }
+.myitin-closures { padding: 10px 12px; border: 1px solid var(--line-strong); border-left: 3px solid var(--danger); border-radius: var(--radius); font-size: 0.85rem; line-height: 1.4; color: var(--ink); }
+.myitin-closures[hidden] { display: none; }
+.myitin-closures.is-ok { border-left-color: var(--ok); }
+.myitin-closures ul { margin: 6px 0 0; padding-left: 18px; }
+.myitin-closures small { display: block; margin-top: 6px; color: var(--steel); }
 .myitin-actions-row { display: flex; gap: 8px; margin-top: auto !important; }
+.btn.myitin-route-btn { min-height: 40px; padding: 0 12px; font-size: 0.95rem; }
 .myitin-actions-row .itin-del-btn { margin-left: 16px; }
 .myitin-empty { text-align: center; padding: 56px 20px; }
 .myitin-empty-ico { width: 48px; height: 48px; color: var(--ink); margin-bottom: 14px; }

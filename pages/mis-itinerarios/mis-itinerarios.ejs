@@ -15,7 +15,7 @@
         <div id="myItinCounter" class="myitin-counter"></div>
         <div class="myitin-actions">
           <button class="btn btn-outline" onclick="navigateTo('/mapa')">Crear desde el mapa</button>
-          <button class="btn" onclick="navigateTo('/itinerario')">Nuevo itinerario</button>
+          <button class="btn" data-action="myitin-new">Nuevo itinerario</button>
         </div>
       </div>
 
@@ -26,8 +26,8 @@
       <div id="myItinEmpty" class="myitin-empty" style="display:none;">
         <svg class="myitin-empty-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9a3 3 0 0 0 0 6v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3a3 3 0 0 0 0-6V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2M13 17v2M13 11v2"/></svg>
         <h3>Todavía no has guardado ningún itinerario</h3>
-        <p>Genera uno en el creador o desde «Mis gustos» en el mapa y pulsa Guardar. Aquí aparecerán hasta tres.</p>
-        <button class="btn" onclick="navigateTo('/itinerario')">Crear mi primer itinerario</button>
+        <p>Créalo con «Mis gustos» y pulsa Guardar en el plan. Aquí aparecerán hasta tres, con su ruta y su fecha de salida.</p>
+        <button class="btn" data-action="myitin-new">Crear mi primer itinerario</button>
       </div>
 
     </div>

@@ -461,18 +461,29 @@ function launchTripPlan(provincesList, ranking, numDays, daysSplit) {
   if (!allDays.length) { showToast('No se pudo generar el itinerario'); return; }
   // Dónde dormir cada noche si viaja en autocaravana (pernocta.js); si aún no hay datos, repinta al llegar
   ensureRvNights(allDays, () => rerenderTripPlan());
+  showTripPlan({ allDays, provincesList, numDays, ranking, isLogged });
+}
 
+// Muestra un plan en la pestaña «Itinerario» del mapa: uno recién montado o uno guardado
+// (frozen: se ve tal como se guardó; las noches y horarios no se recalculan)
+function showTripPlan({ allDays, provincesList, numDays, ranking, isLogged, dateStr, savedId, title, frozen }) {
   const mainProv = provincesList[0];
   const multi = provincesList.length > 1;
   const dia1 = allDays[0]?.items || [];
   const dia2 = allDays[1]?.items || [];
-  appState.currentPlan = { province: mainProv, dia1, dia2, allDays, numDays, ...(multi ? { provincesList, isMultiProvince: true } : {}) };
-  appState.personalizedPlan = { ranking, isLogged };
+  appState.currentPlan = {
+    province: mainProv, dia1, dia2, allDays, numDays, provincesList,
+    ...(multi ? { isMultiProvince: true } : {}),
+    dateStr: dateStr || null,
+    ...(savedId ? { _savedId: savedId, _title: title } : {}),
+    frozen: !!frozen,
+  };
+  appState.personalizedPlan = { ranking, isLogged: isLogged ?? !!appState.currentUser };
   appState.selectedProvince = mainProv;
 
-  const title = provincesList.join(' · ');
+  const heading = provincesList.join(' · ');
   const plannerProv = document.getElementById('plannerProvince');
-  if (plannerProv) plannerProv.textContent = title;
+  if (plannerProv) plannerProv.textContent = heading;
   selectProvince(mainProv, true);
   navigateTo('/mapa');
   setTimeout(() => {
@@ -481,7 +492,18 @@ function launchTripPlan(provincesList, ranking, numDays, daysSplit) {
     const emptyState = document.getElementById('mapEmptyState');
     if (emptyState) emptyState.style.display = 'none';
     switchMapTab('planificador');
-    setTimeout(() => renderPersonalizedDayPlanner(title, dia1, dia2, ranking, isLogged, allDays), 100);
+    // En el móvil el panel arranca plegado: se abre para que se vea el plan
+    const sidebar = document.getElementById('mapSidebar');
+    if (sidebar && sidebar.classList.contains('collapsed') && window.innerWidth <= 768) toggleSidebar();
+    setTimeout(() => {
+      renderPersonalizedDayPlanner(heading, dia1, dia2, ranking, null, allDays);
+      // Plan guardado en autocaravana: dónde aparcar en cada lugar (necesita los sitios de pernocta)
+      if (frozen && allDays.some(d => d.items.some(i => i.kind === 'night'))) {
+        loadRvData().then(d => { if (d) { decorateRvParks(allDays); rerenderTripPlan(); } });
+      }
+      // Con fecha de salida: horarios de los lugares de cada día (horarios.js)
+      if (typeof loadTripHours === 'function') loadTripHours(appState.currentPlan).then(rerenderTripPlan);
+    }, 100);
   }, 300);
 }
 
@@ -493,13 +515,27 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
   if (overlay) overlay.style.display = 'none';
   let badge = document.getElementById('personalizedBadge');
   if (!badge) { badge = document.createElement('div'); badge.id = 'personalizedBadge'; badge.style.cssText = 'grid-column:1/-1;'; container.parentNode.insertBefore(badge, container); }
+  const cpNow = appState.currentPlan || {};
   const topPrefs = ranking.slice(0, 3).map(id => { const p = OB_PREFS.find(x => x.id === id); return p ? `<span class="plan-pref">${p.icon} ${escHTML(p.label)}</span>` : ''; }).filter(Boolean);
-  badge.innerHTML = `<div class="plan-prefs"><span class="plan-prefs-label">Ordenado por tus gustos</span><div class="plan-prefs-list">${topPrefs.join('')}</div><button type="button" class="plan-prefs-btn" data-action="ob-open">Cambiar</button>${rvPlanToggleHTML()}</div>`;
+  // Un plan guardado se ve tal cual: en vez del interruptor de autocaravana, de dónde viene
+  const savedNote = cpNow.frozen
+    ? `<p class="plan-saved-note">Plan guardado${cpNow._title ? ` «${escHTML(cpNow._title)}»` : ''}. Para cambiar gustos o autocaravana, crea uno nuevo.</p>` : rvPlanToggleHTML();
+  const today = new Date().toISOString().split('T')[0];
+  badge.innerHTML = `<div class="plan-prefs">
+    ${topPrefs.length ? `<span class="plan-prefs-label">Ordenado por tus gustos</span><div class="plan-prefs-list">${topPrefs.join('')}</div>` : ''}
+    <button type="button" class="plan-prefs-btn" data-action="ob-open">${cpNow.frozen ? 'Nuevo plan' : 'Cambiar'}</button>
+    ${savedNote}
+    <label class="plan-date"><span>Fecha de salida</span><input type="date" id="planDate" class="form-control-cyl" min="${today}" value="${escHTML(cpNow.dateStr || '')}"></label>
+    ${cpNow.dateStr && typeof tripHoursNoteHTML === 'function' ? tripHoursNoteHTML(cpNow) : ''}
+  </div>`;
   const _allScores = (allDays && allDays.length ? allDays.flatMap(d => d.items) : [...dia1, ...dia2])
     .filter(i => i.kind !== 'night').map(i => planAffinity(i, ranking));
   const _maxScore = Math.max(..._allScores, 1);
   // Parada para dormir (pernocta.js): sin afinidad ni foto; abre el sitio en la capa de autocaravanas
-  const renderNight = (item) => `<div class="timeline-item has-marker plan-item is-night" data-action="rv-focus" data-id="${escHTML(item._rv.id)}">
+  // (un plan guardado antiguo puede no traer el id del sitio: entonces se centra el mapa en él)
+  const renderNight = (item) => `<div class="timeline-item has-marker plan-item is-night" ${item._rv && item._rv.id
+      ? `data-action="rv-focus" data-id="${escHTML(item._rv.id)}"`
+      : `data-action="focus" data-lat="${item.lat || 0}" data-lng="${item.lng || 0}"`}>
       <div class="time-badge">${item.time}</div>
       <div class="timeline-content">
         <div class="plan-item-text">
@@ -511,7 +547,7 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
         </div>
       </div>
     </div>`;
-  const renderItem = (item) => {
+  const renderItem = (item, date) => {
     if (item.kind === 'night') return renderNight(item);
     const mk = item.marker;
     const photo = item.photo || mk?.photo || '';
@@ -538,12 +574,13 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
       <div class="time-badge">${item.time}</div>
       <div class="timeline-content">
         <div class="plan-item-row">
-          ${photo ? `<div class="plan-item-photo"><img src="${photo}" alt="" onerror="this.parentNode.style.display='none'"></div>` : ''}
+          ${photo ? `<div class="plan-item-photo"><img src="${escHTML(photo)}" alt="" onerror="this.parentNode.style.display='none'"></div>` : ''}
           <div class="plan-item-text">
             <h4>${escHTML(item.place)}</h4>
             <div class="plan-tags">${cat ? `<span class="plan-item-cat" data-fam="${catFam(mk?.cat)}">${escHTML(cat)}</span>` : ''}${matchBadge}${lowNote}</div>
-            <p class="plan-item-desc">${item.desc}</p>
+            <p class="plan-item-desc">${escHTML(item.desc)}</p>
             ${sched}
+            ${date && typeof placeDayHoursHTML === 'function' ? placeDayHoursHTML(item, date) : ''}
             ${rvWarningsHTML(item)}
             ${rvParkHTML(item)}
             <span class="plan-map-link">${catIcon.default} Ver en el mapa</span>
@@ -552,11 +589,12 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
       </div>
     </div>`;
   };
-  const renderDay = (items, dayLabel) =>
-    `<div class="col-12 col-md-6"><div class="day-plan-card h-100"><h3>${dayLabel} en ${province}</h3><div class="timeline">${items.length ? items.map(renderItem).join('') : '<p class="plan-day-empty">Sin lugares disponibles.</p>'}</div></div></div>`;
+  const renderDay = (items, dayLabel, date) =>
+    `<div class="col-12 col-md-6"><div class="day-plan-card h-100"><h3>${escHTML(dayLabel)} en ${escHTML(province)}${date
+      ? `<span class="plan-day-date">${date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}</span>` : ''}</h3><div class="timeline">${items.length ? items.map(it => renderItem(it, date)).join('') : '<p class="plan-day-empty">Sin lugares disponibles.</p>'}</div></div></div>`;
   const planAllDays = allDays || appState.currentPlan?.allDays;
   if (planAllDays && planAllDays.length > 0) {
-    container.innerHTML = planAllDays.map(d => renderDay(d.items, d.label)).join('');
+    container.innerHTML = planAllDays.map((d, i) => renderDay(d.items, d.label, tripDayDate(cpNow.dateStr, i))).join('');
   } else {
     container.innerHTML = renderDay(dia1, 'Sábado') + renderDay(dia2, 'Domingo');
   }
@@ -600,6 +638,22 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
   };
 }
 
+// Fecha de salida del plan: cada día pasa a tener fecha y se miran los horarios de esos días.
+// Si el plan ya está guardado, la fecha se guarda también.
+document.addEventListener('change', e => {
+  if (e.target.id !== 'planDate') return;
+  const cp = appState.currentPlan;
+  if (!cp) return;
+  cp.dateStr = e.target.value || null;
+  rerenderTripPlan();
+  if (typeof loadTripHours === 'function') loadTripHours(cp).then(rerenderTripPlan);
+  if (cp._savedId && appState.currentUser) {
+    fetch('/api/itineraries/' + cp._savedId, { method: 'PUT', headers: authHeaders(), body: JSON.stringify({ dateStr: cp.dateStr || '' }) })
+      .then(r => { if (r.ok && typeof loadMyItineraries === 'function') loadMyItineraries(); })
+      .catch(() => {});
+  }
+});
+
 // Vuelve a pintar el plan actual (p. ej. al activar o quitar las noches en autocaravana)
 function rerenderTripPlan() {
   const cp = appState.currentPlan;
@@ -620,48 +674,42 @@ async function savePlannerItinerary() {
   const cp = appState.currentPlan;
   if (!cp) { showToast('No hay itinerario que guardar'); return; }
 
-  // Convertir el plan del cuestionario al formato del modelo Itinerary
-  // (mismo shape que usa "Mi Itinerario" para que se vea igual al cargarlo)
-  const provLabel = Array.isArray(cp.provincesList) ? cp.provincesList.join(' · ') : cp.province;
-  const days = (cp.allDays && cp.allDays.length > 0)
-    ? cp.allDays.map((d, i) => ({
-        date: new Date(Date.now() + i * 86400000),
-        dayName: d.label || ('Día ' + (i + 1)),
-        jsDay: i,
-        places: (d.items || []).map(it => ({
-          name:    it.place || it.marker?.name || '',
-          time:    it.time || '',
-          desc:    it.desc || '',
-          cat:     it.marker?.cat || null,
-          lat:     it.marker?.lat || 0,
-          lng:     it.marker?.lng || 0,
-          photo:   it.photo || it.marker?.photo || null,
-          province: it.marker?.province || cp.province
-        }))
-      }))
-    : [
-        { date: new Date(), dayName: 'Día 1', jsDay: 0,
-          places: (cp.dia1 || []).map(it => ({
-            name: it.place, time: it.time, desc: it.desc,
-            cat: it.marker?.cat, lat: it.marker?.lat || 0, lng: it.marker?.lng || 0,
-            photo: it.photo || it.marker?.photo, province: it.marker?.province || cp.province
-          })) },
-        { date: new Date(Date.now() + 86400000), dayName: 'Día 2', jsDay: 1,
-          places: (cp.dia2 || []).map(it => ({
-            name: it.place, time: it.time, desc: it.desc,
-            cat: it.marker?.cat, lat: it.marker?.lat || 0, lng: it.marker?.lng || 0,
-            photo: it.photo || it.marker?.photo, province: it.marker?.province || cp.province
-          })) }
-      ];
+  // Convertir el plan al formato del modelo Itinerary. Se guarda lo necesario para volver a
+  // abrirlo tal cual en el mapa (savedToAllDays en itinerary.js): tipo de parada, sitio de
+  // pernocta y avisos de cada lugar, provincia de cada día, gustos y fecha de salida.
+  const provinces = Array.isArray(cp.provincesList) && cp.provincesList.length ? cp.provincesList : [cp.province];
+  const provLabel = provinces.join(' · ');
+  const toPlace = (it, dayProv) => ({
+    name:     it.place || it.marker?.name || '',
+    time:     it.time || '',
+    desc:     it.desc || '',
+    kind:     it.kind || 'visit',
+    cat:      it.marker?.cat || null,
+    lat:      it.marker?.lat || 0,
+    lng:      it.marker?.lng || 0,
+    photo:    it.photo || it.marker?.photo || null,
+    province: it.marker?.province || dayProv,
+    ...(it.marker?._id ? { markerId: it.marker._id } : {}),
+    ...(it._rv?.id ? { rvId: it._rv.id } : {}),
+    ...(it._rvWarn?.length ? { notes: it._rvWarn } : {}),
+  });
+  const planDays = cp.allDays && cp.allDays.length
+    ? cp.allDays.map((d, i) => ({ label: d.label || 'Día ' + (i + 1), province: d.province || provinces[0], items: d.items || [] }))
+    : [{ label: 'Sábado', province: provinces[0], items: cp.dia1 || [] }, { label: 'Domingo', province: provinces[0], items: cp.dia2 || [] }];
+  const days = planDays.map(d => ({ dayName: d.label, province: d.province, places: d.items.map(it => toPlace(it, d.province)) }));
+  const hasNights = days.some(d => d.places.some(p => p.kind === 'night'));
 
-  const defaultTitle = `${provLabel} · ${cp.numDays || days.length} día${(cp.numDays || days.length) !== 1 ? 's' : ''}`;
+  const defaultTitle = cp._title || `${provLabel} · ${cp.numDays || days.length} día${(cp.numDays || days.length) !== 1 ? 's' : ''}`;
   const title = prompt('Nombre del itinerario:', defaultTitle);
   if (title === null) return;
 
   const payload = {
     title:    title.trim() || defaultTitle,
-    province: cp.province,
-    dateStr:  new Date().toISOString().split('T')[0],
+    province: provinces[0],
+    provincesList: provinces,
+    ranking:  appState.personalizedPlan?.ranking || [],
+    rv:       hasNights,
+    dateStr:  cp.dateStr || '',
     numDays:  cp.numDays || days.length,
     days,
     warnings: []
@@ -674,7 +722,8 @@ async function savePlannerItinerary() {
     const data = await res.json();
     if (!res.ok) { showToast('' + (data.error || 'No se pudo guardar')); return; }
     cp._savedId = data._id;
-    showToast('Itinerario guardado en "Mis Itinerarios"');
+    cp._title = data.title;
+    showToast('Itinerario guardado en «Mis itinerarios»');
     // Refrescar listas si están visibles
     if (typeof loadMyItineraries === 'function') loadMyItineraries();
   } catch(e) {

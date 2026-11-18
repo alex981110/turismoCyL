@@ -35,6 +35,7 @@ app.use('/api/favorites',   require('./pages/shared/favorites'));
 app.use('/api/markers',     require('./pages/mapa/markers'));
 app.use('/api/photos',      require('./pages/mapa/photos'));
 app.use('/api/pernocta',    require('./pages/mapa/pernocta'));
+app.use('/api/horarios',    require('./pages/mapa/horarios'));
 app.use('/api/itineraries', require('./pages/itinerario/itineraries'));
 
 // ── Estáticos + vistas ───────────────────────────────────────

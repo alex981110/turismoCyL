@@ -197,10 +197,6 @@ function _routeMapFlyTo(lat, lng) {
 // Keep drawItineraryRoute as alias for backwards compat
 function drawItineraryRoute(places) { openRouteMap(places); }
 
-// Hook into itinerary result rendering to add route button
-
-const _origItinRenderResult = typeof itinRenderResult !== 'undefined' ? itinRenderResult : null;
-
 // ============================================================
 // EDICIÓN COMPLETA DE MARCADORES (Admin)
 // ============================================================

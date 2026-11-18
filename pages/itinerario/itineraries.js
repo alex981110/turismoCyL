@@ -40,13 +40,16 @@ router.post('/', async (req, res) => {
         current: count
       });
     }
-    const { title, province, dateStr, numDays, days, warnings } = req.body;
+    const { title, province, provincesList, ranking, rv, dateStr, numDays, days, warnings } = req.body;
     if (!province) return res.status(400).json({ error: 'Falta provincia' });
     const item = await Itinerary.create({
       userId:   req.user.id,
       title:    title    || `Itinerario en ${province}`,
       province,
-      dateStr,
+      provincesList,
+      ranking,
+      rv:       !!rv,
+      dateStr:  dateStr  || undefined,
       numDays:  numDays  || 2,
       days:     days     || [],
       warnings: warnings || []
@@ -57,13 +60,18 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT /api/itineraries/:id — actualizar (sobreescribir) un itinerario existente
+// PUT /api/itineraries/:id — actualizar un itinerario existente. Solo cambia los campos
+// recibidos (p. ej. { dateStr } desde la tarjeta); dateStr vacío quita la fecha.
+const EDITABLE = ['title', 'province', 'provincesList', 'ranking', 'rv', 'dateStr', 'numDays', 'days', 'warnings'];
 router.put('/:id', async (req, res) => {
   try {
-    const { title, province, dateStr, numDays, days, warnings } = req.body;
+    const set = {}, unset = {};
+    EDITABLE.forEach(k => { if (req.body[k] !== undefined) set[k] = req.body[k]; });
+    if (set.dateStr === '' || set.dateStr === null) { delete set.dateStr; unset.dateStr = 1; }
+    if (set.dateStr && !/^\d{4}-\d{2}-\d{2}$/.test(set.dateStr)) return res.status(400).json({ error: 'Fecha no válida' });
     const item = await Itinerary.findOneAndUpdate(
       { _id: req.params.id, userId: req.user.id },
-      { title, province, dateStr, numDays, days, warnings },
+      { $set: set, ...(Object.keys(unset).length ? { $unset: unset } : {}) },
       { new: true }
     );
     if (!item) return res.status(404).json({ error: 'No encontrado' });

@@ -3,6 +3,12 @@ const router  = express.Router();
 
 const KEY = process.env.GOOGLE_PLACES_KEY;
 
+// Sin clave de Google Places no se llama a Google: respuestas vacías al momento
+router.use((req, res, next) => {
+  if (KEY) return next();
+  res.json(req.path === '/search' ? { photo: null } : { reviews: [], photos: [], hours: null });
+});
+
 // ── Helper: busca el place_id por nombre + provincia ────────
 async function findPlaceId(name, province) {
   const query = encodeURIComponent(`${name} ${province || ''} España`);

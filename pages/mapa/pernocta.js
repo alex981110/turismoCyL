@@ -12,32 +12,11 @@ const path    = require('path');
 const fs      = require('fs');
 const router  = express.Router();
 
+const { provinceOf } = require('./geo');
+
 const SOURCE        = process.env.PERNOCTA_URL || 'https://alex981110.github.io/caravana/data/sitios.json';
 const SNAPSHOT_PATH = path.join(__dirname, '../../public/assets/data/pernocta.json');
-const GEOJSON_PATH  = path.join(__dirname, '../../public/assets/data/cyl-provinces.geojson');
 const TTL_MS        = 12 * 60 * 60 * 1000;
-
-const provinces = JSON.parse(fs.readFileSync(GEOJSON_PATH, 'utf8')).features.map(f => ({
-  name: f.properties.name,
-  polygons: f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates,
-}));
-
-// Punto en anillo por trazado de rayos (coordenadas [lng, lat])
-function inRing(lng, lat, ring) {
-  let inside = false;
-  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
-    const [xi, yi] = ring[i], [xj, yj] = ring[j];
-    if ((yi > lat) !== (yj > lat) && lng < (xj - xi) * (lat - yi) / (yj - yi) + xi) inside = !inside;
-  }
-  return inside;
-}
-
-// El primer anillo de cada polígono es el contorno; los siguientes, huecos
-function provinceOf(lng, lat) {
-  const hit = provinces.find(p => p.polygons.some(([outer, ...holes]) =>
-    inRing(lng, lat, outer) && !holes.some(h => inRing(lng, lat, h))));
-  return hit ? hit.name : null;
-}
 
 async function buildPernocta() {
   const res = await fetch(SOURCE, { signal: AbortSignal.timeout(15000) });

@@ -11,11 +11,12 @@ Explora más de 2.600 puntos de interés en las 9 provincias de Castilla y León
 - **Explorador de mapa** — Mapa interactivo Leaflet con marcadores por categoría y mapa D3 de provincias
 - **Filtros en tiempo real** — Por categoría, provincia y texto libre
 - **Dormir en autocaravana** — Capa opcional con áreas, campings, parkings y puntos de vaciado de la provincia, con los datos del proyecto [Caravana](https://github.com/alex981110/caravana) (OpenStreetMap + registros oficiales). En el plan, «Viajo en autocaravana» añade al final de cada día (menos el último) dónde dormir: cerca de la última parada si el día acaba con un plan de noche, o junto a la primera visita del día siguiente si acaba con una visita (ese día sale a las 9:30 desde allí y el horario se rehace con el trayecto), que entra también en la ruta, el PDF y los itinerarios guardados (en «Ver ruta» y en Google Maps, el día siguiente sale desde donde se durmió); además indica dónde aparcar cerca de cada lugar (área o parking autorizado a menos de 3 km) y avisa si la noche no tiene agua o vaciado confirmados, con el más cercano
-- **Generador de itinerarios** — Plan diario optimizado geográficamente (algoritmo Haversine); con varias provincias se elige cuántos días pasar en cada una (máximo 7 en total, 2 sin cuenta)
+- **Generador de itinerarios** — Cuestionario «Mis gustos»: plan diario por zonas y con horario (algoritmo Haversine); con varias provincias se elige cuántos días pasar en cada una (máximo 7 en total, 2 sin cuenta). Con fecha de salida, cada lugar muestra si abre ese día (horarios de OpenStreetMap y de las descripciones)
 - **Visualización de rutas** — Overlay de pantalla completa con cálculo de ruta real por carretera (OSRM)
 - **Exportar PDF** — Descarga el itinerario completo
 - **Favoritos y reseñas** — Guarda lugares y valora con puntuación y comentario
-- **Mis Itinerarios** — Guarda hasta 3 itinerarios en tu cuenta
+- **Mis Itinerarios** — Guarda hasta 3 itinerarios en tu cuenta; cada tarjeta resume el viaje (días por provincia, lugares, km aproximados, noches en autocaravana), deja poner la fecha de salida y avisa de lo que está cerrado esos días, y abre el plan en el mapa o su ruta
+- **Ficha del lugar** — Horario de OpenStreetMap y resumen y foto de Wikipedia (artículo buscado por coordenadas); las fotos, reseñas y horario de Google Places solo aparecen si hay clave
 - **Panel de administración** — CRUD de marcadores (rol admin)
 - **Diseño responsivo** — Adaptado a móvil, tablet y escritorio
 
@@ -56,7 +57,7 @@ cyl-turismo/
 │   ├── shared/                      # navbar, footer, head, modals, API auth/favoritos
 │   ├── home/                        # hero.ejs
 │   ├── mapa/                        # mapa.ejs + API marcadores y fotos
-│   ├── itinerario/                  # itinerario.ejs, planner.ejs + API itinerarios
+│   ├── itinerario/                  # planner.ejs + API itinerarios
 │   ├── mis-itinerarios/
 │   └── admin/
 │
@@ -149,10 +150,12 @@ Esto crea un usuario con rol `admin` que da acceso al panel de administración (
 | POST | `/api/markers` | Admin | Crear marcador |
 | PUT | `/api/markers/:id` | Admin | Editar marcador |
 | DELETE | `/api/markers/:id` | Admin | Borrar marcador |
-| GET | `/api/photos/details` | — | Foto de Google Places para un lugar |
+| GET | `/api/photos/details` | — | Fotos, reseñas y horario de Google Places (vacío si no hay `GOOGLE_PLACES_KEY`) |
+| GET | `/api/horarios?province=` | — | Lugares con horario de OpenStreetMap por provincia (caché de 7 días; si falla, copia de respaldo) |
 | GET | `/api/pernocta` | — | Sitios para dormir en autocaravana en CyL (Caravana, caché de 12 h; si falla, copia de respaldo) |
 | GET | `/api/itineraries` | ✓ | Itinerarios del usuario |
 | POST | `/api/itineraries` | ✓ | Guardar itinerario |
+| PUT | `/api/itineraries/:id` | ✓ | Actualizar itinerario (solo los campos enviados, p. ej. la fecha de salida) |
 | DELETE | `/api/itineraries/:id` | ✓ | Borrar itinerario |
 | GET | `/api/favorites` | ✓ | Favoritos del usuario |
 | POST | `/api/favorites` | ✓ | Añadir favorito |
@@ -166,7 +169,7 @@ Esto crea un usuario con rol `admin` que da acceso al panel de administración (
 |-----|---------|
 | `/` | Home — hero y animación |
 | `/mapa` | Explorador de mapa |
-| `/itinerario` | Generador de itinerarios |
+| `/itinerario` | Antiguo creador manual: lleva a «Mis itinerarios» |
 | `/mis-itinerarios` | Itinerarios guardados |
 | `/admin` | Panel de administración (solo admin) |
 
@@ -177,6 +180,7 @@ Esto crea un usuario con rol `admin` que da acceso al panel de administración (
 ```bash
 npm start          # Arranca el servidor
 npm run pernocta   # Renueva la copia de respaldo de los sitios de autocaravana (public/assets/data/pernocta.json)
+npm run horarios   # Renueva la copia de respaldo de los horarios de OpenStreetMap (public/assets/data/horarios.json)
 node createAdmin.js  # Crea usuario administrador
 node import-jcyl.js  # Importa dataset de la Junta de CyL (opcional)
 ```

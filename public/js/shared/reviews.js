@@ -80,9 +80,17 @@ async function openReviewsDrawer(name, province) {
 
   renderPlaceRatings();
 
-  const google = document.getElementById('placeGoogle');
-  google.hidden = true;
-  google.innerHTML = '';
+  ['placeGoogle', 'placeWiki', 'placeHoursOsm'].forEach(id => {
+    const sec = document.getElementById(id);
+    sec.hidden = true;
+    sec.innerHTML = '';
+  });
+  // Sin depender de Google: horario de OpenStreetMap y resumen de Wikipedia (si los hay)
+  if (mk && mk.lat) {
+    const place = { name, lat: mk.lat, lng: mk.lng, province, desc: mk.desc };
+    loadProvinceHours(province).then(() => { if (req === _placeReq) renderPlaceOsmHours(place); });
+    loadPlaceWiki(place).then(wiki => { if (wiki && req === _placeReq) renderPlaceWiki(wiki, name); });
+  }
 
   _placeLastFocus = document.activeElement;
   document.getElementById('drawerOverlay').classList.add('active');
@@ -145,6 +153,72 @@ function renderPlaceRatings() {
         <div class="place-stars">${_stars(r.stars)}</div>
         ${r.comment ? `<p>${escHTML(r.comment)}</p>` : ''}
       </article>`).join('')}`;
+}
+
+// Horario de OpenStreetMap (horarios.js): estado de hoy y horario completo
+function renderPlaceOsmHours(place) {
+  const osm = osmHoursFor(place);
+  if (!osm) return;
+  const today = placeHoursOn(place, new Date());
+  const badge = today.state === 'open' ? `<span class="place-open is-open">Hoy ${escHTML(today.text)}</span>`
+              : today.state === 'closed' ? '<span class="place-open">Hoy cerrado</span>' : '';
+  const sec = document.getElementById('placeHoursOsm');
+  sec.innerHTML = `<details class="place-hours" open><summary>${_placeIco.clock}Horario ${badge}</summary>
+    <p class="place-hours-text">${escHTML(fmtOSMHours(osm.oh))}</p>
+    <p class="place-credit">Fuente: <a href="https://www.openstreetmap.org/${{ n: 'node', w: 'way', r: 'relation' }[osm.id[0]]}/${escHTML(osm.id.slice(1))}" target="_blank" rel="noopener">OpenStreetMap</a> (ODbL). Puede cambiar en festivos: confírmalo antes de ir.</p>
+  </details>`;
+  sec.hidden = false;
+}
+
+// Artículo de Wikipedia del lugar: se busca por coordenadas (artículos a menos de 800 m) y se
+// acepta solo si su título coincide con el nombre, para no confundir dos sitios cercanos
+const _wikiCache = {};
+function loadPlaceWiki(place) {
+  const key = place.name + '|' + place.lat + '|' + place.lng;
+  if (key in _wikiCache) return Promise.resolve(_wikiCache[key]);
+  const api = 'https://es.wikipedia.org/w/api.php?action=query&list=geosearch&gsradius=800&gslimit=30&format=json&origin=*&gscoord=' + place.lat + '%7C' + place.lng;
+  const words = _hoursNorm(place.name).split(' ').filter(w => w.length > 3);
+  return fetch(api).then(r => r.json()).then(d => {
+    let best = null, bestScore = 0;
+    for (const p of (d.query && d.query.geosearch) || []) {
+      const title = _hoursNorm(p.title);
+      const shared = words.filter(w => title.split(' ').includes(w)).length;
+      const score = words.length ? shared / words.length : 0;
+      if (score > bestScore) { bestScore = score; best = p; }   // vienen ordenados por distancia
+    }
+    if (!best || bestScore < 0.5) return null;
+    return fetch('https://es.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(best.title.replace(/ /g, '_')))
+      .then(r => r.ok ? r.json() : null);
+  }).then(s => {
+    const wiki = s && s.extract ? {
+      title: s.title, extract: s.extract,
+      url: s.content_urls && s.content_urls.desktop && s.content_urls.desktop.page,
+      // La miniatura del resumen es pequeña: se pide a 500 px (Wikimedia solo sirve tamaños
+      // estándar) o, si la original es menor, la original
+      image: !s.thumbnail ? null
+        : (s.originalimage && s.originalimage.width >= 500) ? s.thumbnail.source.replace(/\/\d+px-/, '/500px-')
+        : (s.originalimage ? s.originalimage.source : s.thumbnail.source),
+    } : null;
+    _wikiCache[key] = wiki;
+    return wiki;
+  }).catch(() => null);
+}
+
+function renderPlaceWiki(wiki, name) {
+  const hero = document.getElementById('placeHero');
+  let usedImage = false;
+  if (wiki.image && !hero.classList.contains('has-photo')) {
+    hero.innerHTML = `<img src="${escHTML(wiki.image)}" alt="${escHTML(name)}" onerror="document.getElementById('placeWikiPhoto')?.remove();placeHeroError(this)">`;
+    hero.classList.add('has-photo');
+    usedImage = true;
+  }
+  const text = wiki.extract.length > 600 ? wiki.extract.slice(0, 600).replace(/\s+\S*$/, '') + '…' : wiki.extract;
+  const sec = document.getElementById('placeWiki');
+  sec.innerHTML = `<h4 class="place-section-title">En Wikipedia</h4>
+    <p class="place-wiki-text">${escHTML(text)}</p>
+    ${wiki.url ? `<a class="place-wiki-link" href="${escHTML(wiki.url)}" target="_blank" rel="noopener">Leer «${escHTML(wiki.title)}» en Wikipedia</a>` : ''}
+    <p class="place-credit">Texto de Wikipedia (CC BY-SA 4.0)${usedImage ? '<span id="placeWikiPhoto">; foto de Wikimedia Commons, con la licencia que indica su página</span>' : ''}.</p>`;
+  sec.hidden = false;
 }
 
 function renderPlaceGoogle(data, name) {

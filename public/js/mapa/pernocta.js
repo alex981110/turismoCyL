@@ -48,17 +48,7 @@ function loadRvData() {
 }
 
 // ── Formato de los datos de OpenStreetMap ───────────────────
-const RV_MONTHS = { Jan: 'ene', Feb: 'feb', Mar: 'mar', Apr: 'abr', May: 'may', Jun: 'jun', Jul: 'jul', Aug: 'ago', Sep: 'sep', Oct: 'oct', Nov: 'nov', Dec: 'dic' };
-const RV_DAYS = { Mo: 'L', Tu: 'M', We: 'X', Th: 'J', Fr: 'V', Sa: 'S', Su: 'D', PH: 'festivos' };
-
-function rvHours(oh) {
-  if (!oh) return null;
-  if (oh.trim() === '24/7') return '24 horas, todos los días';
-  return oh.replace(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b/g, m => RV_MONTHS[m])
-    .replace(/\b(Mo|Tu|We|Th|Fr|Sa|Su|PH)\b/g, d => RV_DAYS[d])
-    .replace(/\boff\b/g, 'cerrado')
-    .replace(/;\s*/g, ' · ');
-}
+const rvHours = oh => fmtOSMHours(oh);   // horarios.js
 
 function rvStay(ms) {
   if (!ms) return null;
@@ -369,6 +359,12 @@ function applyRvNights(allDays) {
   });
 }
 
+// Plan guardado en autocaravana: solo se añade dónde aparcar en cada lugar (el resto ya viene guardado)
+function decorateRvParks(allDays) {
+  if (!rvState.data) return;
+  allDays.forEach(d => d.items.forEach(it => { if (it.lat && it.kind !== 'night') it._rvPark = _rvParkFor(it); }));
+}
+
 // Aparcamiento sugerido bajo un lugar del plan (botón que abre el sitio en el mapa)
 function rvParkHTML(item) {
   const p = item._rvPark;
@@ -405,7 +401,7 @@ registerActions({
     rvState.plan = !rvState.plan;
     try { localStorage.setItem(RV_PLAN_KEY, rvState.plan ? '1' : '0'); } catch { /* sin almacenamiento */ }
     const cp = appState.currentPlan;
-    if (!cp || !cp.allDays) return;
+    if (!cp || !cp.allDays || cp.frozen) return;   // un plan guardado no se recalcula
     const repaint = () => rerenderTripPlan();
     ensureRvNights(cp.allDays, repaint);
     repaint();
