@@ -88,7 +88,53 @@
   --bs-body-bg: var(--ground);
   --bs-body-color: var(--ink);
   --bs-font-sans-serif: var(--font-body);
+
+  /* Tema: --ink es la tinta fija (paneles, barra, texto sobre amarillo); --fg es el texto y
+     las líneas sobre papel, y el relleno de lo seleccionado, que en oscuro pasa a claro */
+  --fg: #0E1114;
+  --on-fg: #FFFFFF;
+  --fg-hover: #2A3038;
+  --map-land: #D6DADF;              /* provincias del mapa D3 */
+  --map-bg: #E4E6E8;                /* fondo del mapa mientras cargan las teselas */
+  --attr-bg: rgba(252,252,251,0.85);
 }
+
+/* ── Modo oscuro ──
+   Mismo sistema con los valores en oscuro: el papel pasa a pizarra, el texto a casi blanco y
+   el amarillo señal no cambia. De momento solo en el mapa y la vista de ruta (el resto de la
+   web aún usa --ink como texto); data-theme lo pone theme.js. */
+:root[data-theme="dark"] :is(#spa-mapa, #routeMapOverlay) {
+  color-scheme: dark;
+  --fg: #E9ECEF;
+  --on-fg: #0E1114;
+  --fg-hover: #C9CFD6;
+  --ink-soft: #C3C9D0;
+  --steel: #9AA3AE;
+  --panel: #2A3038;
+  --ground: #121519;
+  --surface: #1A1F25;
+  --line: rgba(233,236,239,0.12);
+  --line-strong: rgba(233,236,239,0.26);
+  --ok: #3FA66B;
+  --danger: #E5534B;
+  /* Familias de categoría algo más claras para que destaquen sobre fondo oscuro */
+  --cat-patrimonio: #D2654D;
+  --cat-cultura: #4D86D6;
+  --cat-escena: #9479CC;
+  --cat-naturaleza: #3E9A63;
+  --cat-mesa: #D0782A;
+  --cat-cama: #2E9AA3;
+  --map-land: #2E353D;
+  --map-bg: #15181C;
+  --attr-bg: rgba(26,31,37,0.85);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-md: 0 6px 18px rgba(0,0,0,0.45), 0 2px 4px rgba(0,0,0,0.3);
+  --shadow-lg: 0 16px 40px rgba(0,0,0,0.55), 0 4px 10px rgba(0,0,0,0.3);
+}
+/* Teselas: el mismo gris neutro, invertido; el color sigue reservado a los marcadores */
+:root[data-theme="dark"] .tiles-neutral { filter: grayscale(1) invert(1) brightness(0.88) contrast(0.82); }
+/* Los paneles tinta se separan del papel oscuro con un filete */
+:root[data-theme="dark"] #spa-mapa .day-plan-card { box-shadow: 0 0 0 1px var(--board-line), var(--shadow-md); }
 
 /* ── Base ── */
 *, *::before, *::after { box-sizing: border-box; }
@@ -107,7 +153,7 @@ button, [role="button"], .province-pill, .cat-chip, .hero-dot, .msb-tab, .modal-
 body {
   font-family: var(--font-body);
   background: var(--ground);
-  color: var(--ink);
+  color: var(--fg);
   overflow-x: hidden;
   font-size: 16px;
   line-height: 1.55;
@@ -119,7 +165,7 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   font-weight: 700;
-  color: var(--ink);
+  color: var(--fg);
   line-height: 1.05;
   letter-spacing: -0.005em;
   text-wrap: balance;
@@ -129,8 +175,8 @@ p { text-wrap: pretty; }
 /* Superficies del navegador */
 ::selection { background: var(--signal); color: var(--ink); }
 :root { accent-color: var(--ink); caret-color: var(--ink); scrollbar-color: rgba(14,17,20,0.32) transparent; scrollbar-width: thin; }
-:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 2px; box-shadow: 0 0 0 5px var(--signal); }
-a { color: var(--ink); text-underline-offset: 0.22em; text-decoration-thickness: 1px; }
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; border-radius: 2px; box-shadow: 0 0 0 5px var(--signal); }
+a { color: var(--fg); text-underline-offset: 0.22em; text-decoration-thickness: 1px; }
 a:hover { text-decoration-color: var(--signal-deep); }
 .tabular, time { font-variant-numeric: tabular-nums; }
 
@@ -250,20 +296,20 @@ a:hover { text-decoration-color: var(--signal-deep); }
   transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.16s var(--ease-out);
 }
 .btn {
-  background: var(--ink);
-  color: #fff;
-  border: 1.5px solid var(--ink);
+  background: var(--fg);
+  color: var(--on-fg);
+  border: 1.5px solid var(--fg);
   box-shadow: none;
 }
-.btn:hover { background: var(--slate-2); border-color: var(--slate-2); color: #fff; }
+.btn:hover { background: var(--fg-hover); border-color: var(--fg-hover); color: var(--on-fg); }
 .btn:active, .btn-outline:active, .pdf-btn:active { transform: scale(0.97); }
 .btn:disabled, .btn.disabled { background: var(--panel); border-color: var(--panel); color: var(--steel); cursor: not-allowed; }
 .btn-outline {
   background: transparent !important;
-  color: var(--ink) !important;
-  border: 1.5px solid var(--ink) !important;
+  color: var(--fg) !important;
+  border: 1.5px solid var(--fg) !important;
 }
-.btn-outline:hover { background: var(--ink) !important; color: #fff !important; }
+.btn-outline:hover { background: var(--fg) !important; color: var(--on-fg) !important; }
 .btn svg, .btn-outline svg { width: 18px; height: 18px; flex-shrink: 0; }
 
 /* En la barra tinta, la cuenta va en blanco: el amarillo queda para la acción principal de cada pantalla */
@@ -279,11 +325,11 @@ a:hover { text-decoration-color: var(--signal-deep); }
 .user-status .btn-logout { min-height: 36px; padding: 0 14px; font-size: 0.9rem; }
 
 .pdf-btn {
-  background: transparent; color: var(--ink);
-  border: 1.5px solid var(--ink);
+  background: transparent; color: var(--fg);
+  border: 1.5px solid var(--fg);
   margin-top: 20px;
 }
-.pdf-btn:hover { background: var(--ink); color: #fff; }
+.pdf-btn:hover { background: var(--fg); color: var(--on-fg); }
 .pdf-btn svg { width: 16px; height: 16px; }
 
 /* ═══════════════════════════════════════════
@@ -350,7 +396,7 @@ a:hover { text-decoration-color: var(--signal-deep); }
 .form-control-cyl {
   background: var(--surface) !important;
   border: 1.5px solid var(--line-strong) !important;
-  color: var(--ink) !important;
+  color: var(--fg) !important;
   font-family: var(--font-body);
   font-size: 1rem;
   border-radius: var(--radius) !important;
@@ -358,9 +404,9 @@ a:hover { text-decoration-color: var(--signal-deep); }
   min-height: 46px;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
-.form-control-cyl:hover { border-color: rgba(14,17,20,0.45) !important; }
-.form-control-cyl:focus { border-color: var(--ink) !important; box-shadow: 0 0 0 3px var(--signal) !important; outline: none; }
-.form-control-cyl::placeholder { color: #7A828C !important; }
+.form-control-cyl:hover { border-color: var(--steel) !important; }
+.form-control-cyl:focus { border-color: var(--fg) !important; box-shadow: 0 0 0 3px var(--signal) !important; outline: none; }
+.form-control-cyl::placeholder { color: var(--steel) !important; }
 select.form-control-cyl { background-color: var(--surface) !important; }
 .form-label-cyl, .rating-label {
   display: block;
@@ -793,13 +839,13 @@ select.form-control-cyl { background-color: var(--surface) !important; }
   margin-left: auto;
   display: inline-flex; align-items: center; gap: 6px;
   min-height: 32px; padding: 0 10px;
-  background: transparent; border: 1.5px solid var(--ink); border-radius: var(--radius);
-  color: var(--ink); cursor: pointer;
+  background: transparent; border: 1.5px solid var(--fg); border-radius: var(--radius);
+  color: var(--fg); cursor: pointer;
   font-family: var(--font-display); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.05em; text-transform: uppercase;
   transition: background-color 0.15s ease, color 0.15s ease;
 }
-.plan-prefs-btn:hover { background: var(--ink); color: #fff; }
-.plan-register-link { color: var(--ink); font-weight: 600; text-decoration: underline; text-decoration-color: var(--signal-deep); text-decoration-thickness: 2px; }
+.plan-prefs-btn:hover { background: var(--fg); color: var(--on-fg); }
+.plan-register-link { color: var(--fg); font-weight: 600; text-decoration: underline; text-decoration-color: var(--signal-deep); text-decoration-thickness: 2px; }
 
 /* ═══════════════════════════════════════════
    RESPONSIVE

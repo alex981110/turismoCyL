@@ -138,9 +138,9 @@ async function loadProvinceBoundaries() {
 
     provinceBoundariesLayer = L.geoJSON({ type:'FeatureCollection', features: cylFeatures }, {
       style: {
-        color: '#6B5C4E',
+        color: themeColor('--fg'),
         weight: 1.2,
-        opacity: 0.55,
+        opacity: 0.4,
         fillColor: 'transparent',
         fillOpacity: 0,
         dashArray: null
@@ -163,18 +163,25 @@ async function loadProvinceBoundaries() {
   }
 }
 
+// Límites de provincia: en el color del texto del tema (Leaflet no lee var(), se lee al pintar)
 function highlightProvinceBoundary(name) {
   if (!provinceBoundariesLayer) return;
+  const line = themeColor('--fg'), signal = themeColor('--signal');
+  // El tinte amarillo de la provincia elegida, sobre teselas oscuras, ensucia: solo en claro
+  const tint = document.documentElement.dataset.theme === 'dark' ? 0 : 0.04;
   provinceBoundariesLayer.eachLayer(layer => {
     const n = PROVINCE_NAME_MAP[layer.feature.properties.name] || layer.feature.properties.name;
     if (n === name) {
-      layer.setStyle({ color: '#0E1114', weight: 2.5, opacity: 1, fillColor: '#FFD400', fillOpacity: 0.04 });
+      layer.setStyle({ color: line, weight: 2.5, opacity: 1, fillColor: signal, fillOpacity: tint });
       layer.bringToFront();
     } else {
-      layer.setStyle({ color: '#0E1114', weight: 1.2, opacity: 0.4, fillOpacity: 0 });
+      layer.setStyle({ color: line, weight: 1.2, opacity: 0.4, fillOpacity: 0 });
     }
   });
 }
+
+// Al cambiar de tema, los límites se repintan con los colores nuevos
+document.addEventListener('themechange', () => highlightProvinceBoundary(appState.selectedProvince));
 
 // Province list buttons — show 3 initially + "Ver más"
 // province list rendered via renderProvinceList()

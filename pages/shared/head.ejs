@@ -4,6 +4,16 @@
 <title>Castilla y León | Planifica tu escapada</title>
 <meta name="description" content="Más de 2.600 lugares en las nueve provincias de Castilla y León. Dinos qué te gusta y te armamos el plan con horario y ruta.">
 <meta name="theme-color" content="#0E1114">
+<script>
+  // Tema antes de pintar, sin destello: la preferencia guardada (auto/claro/oscuro) o la del sistema. Ver theme.js
+  (function () {
+    var pref = 'auto';
+    try { pref = localStorage.getItem('cyl.theme') || 'auto'; } catch (e) {}
+    var dark = pref === 'dark' || (pref === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme-pref', pref);
+  })();
+</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 
 <!-- Fuentes propias (public/fonts) -->

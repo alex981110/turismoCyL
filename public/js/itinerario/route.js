@@ -1,5 +1,9 @@
-// Un color de serie por día; el primero es la tinta del sistema
+// Un color de serie por día; el primero es el color del texto del tema (tinta en claro,
+// casi blanco en oscuro), que se lee al pintar porque Leaflet no entiende var()
 const DAY_ROUTE_COLORS = ['#0E1114', '#2459A6', '#B35E0B', '#6A4C9C', '#2D7A4C'];
+const _routeTheme = name => themeColor(name, document.getElementById('routeMapOverlay'));
+const routeDayColor = di => di % DAY_ROUTE_COLORS.length === 0 ? (_routeTheme('--fg') || DAY_ROUTE_COLORS[0]) : DAY_ROUTE_COLORS[di % DAY_ROUTE_COLORS.length];
+const routeDayText  = di => di % DAY_ROUTE_COLORS.length === 0 ? (_routeTheme('--on-fg') || '#fff') : '#fff';
 const DAY_ROUTE_LABELS = ['Día 1', 'Día 2', 'Día 3', 'Día 4', 'Día 5'];
 
 // Distancia y tiempo por carretera que devuelve OSRM, por índice de día
@@ -51,7 +55,7 @@ function openRouteMap(places, title, days) {
   const list = document.getElementById('routeMapStopList');
   const multiDay = dayGroups.length > 1;
   list.innerHTML = dayGroups.map((day, di) => {
-    const color = DAY_ROUTE_COLORS[di % DAY_ROUTE_COLORS.length];
+    const color = routeDayColor(di);
     const header = multiDay ? `
       <div class="route-day" style="--day:${color};">
         <span class="route-day-dot"></span>
@@ -61,7 +65,7 @@ function openRouteMap(places, title, days) {
       </div>` : '';
     const start = day.start ? `
         <div class="route-stop-item is-start" data-action="route-fly" data-lat="${day.start.lat}" data-lng="${day.start.lng}">
-          <div class="route-stop-num" style="background:${color};">${catIcon.pernocta}</div>
+          <div class="route-stop-num" style="background:${color};color:${routeDayText(di)};">${catIcon.pernocta}</div>
           <div class="route-stop-info">
             <div class="route-stop-name">${escHTML(day.start.name)}</div>
             <div class="route-stop-cat">Salida · donde se durmió</div>
@@ -73,7 +77,7 @@ function openRouteMap(places, title, days) {
       const cat = catKey ? (catLabel[catKey] || catKey) : '';
       return `
         <div class="route-stop-item" data-action="route-fly" data-lat="${p.lat}" data-lng="${p.lng}" >
-          <div class="route-stop-num" style="background:${color};">${i + 1}</div>
+          <div class="route-stop-num" style="background:${color};color:${routeDayText(di)};">${i + 1}</div>
           <div class="route-stop-info">
             <div class="route-stop-name">${escHTML(p.name)}</div>
             ${cat ? `<div class="route-stop-cat">${catIcon[catKey] || catIcon.default} ${escHTML(cat)}</div>` : ''}
@@ -115,7 +119,7 @@ function openRouteMap(places, title, days) {
 
   // Dibujar cada día por separado
   dayGroups.forEach((day, di) => {
-    const color    = DAY_ROUTE_COLORS[di % DAY_ROUTE_COLORS.length];
+    const color    = routeDayColor(di);
     // La salida ya tiene su marcador como última parada del día anterior
     const latlngs  = _routeStops(day).map(p => L.latLng(p.lat, p.lng));
     if (latlngs.length < 1) return;
@@ -124,7 +128,7 @@ function openRouteMap(places, title, days) {
     // Marcadores numerados con color del día
     day.places.forEach((p, i) => {
       const icon = L.divIcon({
-        html: `<div style="background:${color};color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:0.75rem;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.25);">${i + 1}</div>`,
+        html: `<div style="background:${color};color:${routeDayText(di)};width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:0.75rem;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.25);">${i + 1}</div>`,
         className: '', iconSize: [28, 28], iconAnchor: [14, 14]
       });
       const label = multiDay ? `${day.label || DAY_ROUTE_LABELS[di]} · ${i + 1}. ${p.name}` : `${i + 1}. ${p.name}`;
