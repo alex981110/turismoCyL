@@ -685,7 +685,17 @@ function _planEditTarget(dataset) {
 function _planAfterEdit({ cp, day, list }) {
   if (cp.frozen) {
     const night = day.items.find(it => it.kind === 'night');
-    day.items.splice(0, day.items.length, ..._planReschedule(day.items), ...(night ? [night] : []));
+    // Si el día anterior acabó durmiendo en autocaravana, el día sigue saliendo desde allí
+    // a las 9:30 (como al montarlo, _rvDayFrom); el aviso de salida viejo se descarta
+    const di = cp.allDays.indexOf(day);
+    const prevNight = di > 0 ? cp.allDays[di - 1].items.find(it => it.kind === 'night') : null;
+    const rest = day.items.filter(it => it.kind !== 'night').map(it => {
+      const w = (it._rvWarn || []).filter(t => !/^Salida a las /.test(t));
+      return { ...it, _rvWarn: w.length ? w : undefined };
+    });
+    const scheduled = prevNight && typeof _rvDayFrom === 'function' && rest.some(it => it.kind === 'visit')
+      ? _rvDayFrom(rest, prevNight) : _planReschedule(rest);
+    day.items.splice(0, day.items.length, ...scheduled, ...(night ? [night] : []));
     if (typeof rvState !== 'undefined' && rvState.data) decorateRvParks(cp.allDays);
   } else {
     list.splice(0, list.length, ..._planReschedule(list));

@@ -250,7 +250,8 @@ function _rvDriveMin(a, b) {
 }
 
 // Minutos de coche en texto: «45 min», «1 h», «1 h 30 min»
-const _rvFmtDur = min => min < 60 ? `${min} min` : `${Math.floor(min / 60)} h${min % 60 ? ' ' + (min % 60) + ' min' : ''}`;
+// «45 min», «60 min» (no «1 h», que tras «unos» suena mal), «1 h 30 min», «2 h»
+const _rvFmtDur = min => min <= 60 ? `${min} min` : `${Math.floor(min / 60)} h${min % 60 ? ' ' + (min % 60) + ' min' : ''}`;
 
 // Horario de un día que empieza en el sitio donde se ha dormido
 function _rvDayFrom(items, night) {

@@ -162,8 +162,17 @@ function _downloadItinerarioPDF(source) {
 
     day.places.forEach((item, i) => {
       const ROW = 18;
+      const nameX = ML + 40;
+      const nameW = CW - 40 - 2;
+      // Descripción en hasta dos líneas (con «…» si sigue); la segunda alarga la fila 4 mm
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      const descAll = item.desc ? doc.splitTextToSize(item.desc, nameW) : [];
+      const descLines = descAll.slice(0, 2);
+      if (descAll.length > 2) descLines[1] = descLines[1].replace(/\s*\S*$/, '') + '…';
+      const descExtra = descLines.length > 1 ? 4 : 0;
       const extras = item.extras || [];
-      const rowH = ROW + 4.5 * extras.length;   // la fila crece 4.5 mm por línea extra
+      const rowH = ROW + descExtra + 4.5 * extras.length;   // y 4.5 mm por cada línea extra
       if (y + rowH > 278) {
         doc.addPage(); initPage(); y = 20;
         fillRR(ML, y, CW, 9, 2, TERRA);
@@ -190,27 +199,25 @@ function _downloadItinerarioPDF(source) {
 
 
       // Nombre del lugar
-      const nameX = ML + 40;
-      const nameW = CW - 40 - 2;
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(9.5);
       doc.setTextColor(...INK);
       doc.text(doc.splitTextToSize(item.name, nameW)[0], nameX, y + 7.5);
 
       // Descripción
-      if (item.desc) {
+      if (descLines.length) {
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(7.5);
         doc.setTextColor(...INK_M);
-        doc.text(doc.splitTextToSize(item.desc, nameW)[0], nameX, y + 13.5);
+        descLines.forEach((line, k) => doc.text(line, nameX, y + 13.5 + 4 * k));
       }
 
-      // Líneas extra (aparcamiento, avisos, horario), una línea cada una
+      // Líneas extra (aparcamiento, avisos, horario), una línea cada una, bajo la descripción
       extras.forEach((ex, k) => {
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(7);
         doc.setTextColor(...(ex.color || INK_M));
-        doc.text(doc.splitTextToSize(ex.text, nameW)[0], nameX, y + 13.5 + 4.5 * (k + 1));
+        doc.text(doc.splitTextToSize(ex.text, nameW)[0], nameX, y + 13.5 + descExtra + 4.5 * (k + 1));
       });
 
       y += rowH + 1;
