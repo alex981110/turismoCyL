@@ -244,7 +244,7 @@ function renderGenericPlan() {
     if (pdfBtn) {
       pdfBtn.parentNode.insertBefore(routeBtn, pdfBtn.nextSibling);
     } else {
-      const btnWrap = document.querySelector('#spa-planificador .text-center');
+      const btnWrap = document.getElementById('plannerBtnWrap');
       if (btnWrap) btnWrap.appendChild(routeBtn);
     }
   }

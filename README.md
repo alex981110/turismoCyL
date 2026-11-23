@@ -186,6 +186,8 @@ node createAdmin.js  # Crea usuario administrador
 node import-jcyl.js  # Importa dataset de la Junta de CyL (opcional)
 ```
 
+La GitHub Action `.github/workflows/datos.yml` («Actualizar datos») ejecuta `npm run pernocta` y `npm run horarios` cada lunes a las 05:30 UTC (y a mano desde la pestaña Actions) y sube los cambios si los hay.
+
 ---
 
 ## 📄 Licencia

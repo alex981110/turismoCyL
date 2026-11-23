@@ -191,6 +191,12 @@ async function openMyItinerary(id) {
     const it = await res.json();
     const allDays = savedToAllDays(it);
     if (!allDays.length) { showToast('Este itinerario está vacío'); return; }
+    // Noches guardadas sin el sitio de pernocta: se completan antes de pintar el plan
+    // (showTripPlan ya pone después los aparcamientos con los datos en caché)
+    if (allDays.some(d => d.items.some(i => i.kind === 'night'))) {
+      const d = await loadRvData();
+      if (d) completeSavedRvNights(allDays);
+    }
     showTripPlan({
       allDays,
       provincesList: it.provincesList && it.provincesList.length ? it.provincesList : [it.province],

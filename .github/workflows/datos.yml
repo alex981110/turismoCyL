@@ -1,0 +1,107 @@
+# Renueva cada semana las copias de respaldo de datos del mapa:
+#  - public/assets/data/pernocta.json (sitios de autocaravana del proyecto Caravana)
+#  - public/assets/data/horarios.json (horarios de OpenStreetMap vía Overpass)
+# Corre los lunes a las 05:30 UTC, después de que Caravana publique su sitios.json.
+# Ojo: GitHub solo ejecuta `schedule` desde la rama predeterminada (main);
+# en otras ramas solo se puede lanzar a mano (workflow_dispatch).
+name: Actualizar datos
+
+on:
+  schedule:
+    - cron: '30 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: actualizar-datos-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Preparar Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Actualizar sitios de autocaravana (pernocta)
+        id: pernocta
+        run: npm run pernocta
+
+      # Si Overpass está saturado el script conserva las provincias anteriores y
+      # termina bien; si no responde para ninguna termina con error, pero eso no
+      # debe tumbar el job: se anota en el resumen.
+      - name: Actualizar horarios de OpenStreetMap
+        id: horarios
+        continue-on-error: true
+        run: npm run horarios
+
+      - name: Guardar y subir cambios
+        id: commit
+        run: |
+          FICHEROS="public/assets/data/pernocta.json public/assets/data/horarios.json"
+          if git diff --quiet -- $FICHEROS; then
+            echo "No hay cambios en los datos."
+            echo "hubo=no" >> "$GITHUB_OUTPUT"
+          else
+            for f in $FICHEROS; do
+              if git diff --quiet -- "$f"; then
+                echo "$(basename "$f" .json)=no" >> "$GITHUB_OUTPUT"
+              else
+                echo "$(basename "$f" .json)=si" >> "$GITHUB_OUTPUT"
+              fi
+            done
+            git config user.name "github-actions[bot]"
+            git config user.email "41898828+github-actions[bot]@users.noreply.github.com"
+            git add -- $FICHEROS
+            git commit -m "Datos: pernocta y horarios del $(date -u +%F)"
+            # Si alguien ha subido a la rama mientras tanto, se pone el commit encima
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+            echo "hubo=si" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Resumen
+        if: always()
+        env:
+          PERNOCTA: ${{ steps.pernocta.outcome }}
+          HORARIOS: ${{ steps.horarios.outcome }}
+          COMMIT: ${{ steps.commit.outcome }}
+          CAMBIO_PERNOCTA: ${{ steps.commit.outputs.pernocta }}
+          CAMBIO_HORARIOS: ${{ steps.commit.outputs.horarios }}
+        run: |
+          estado() {
+            # $1 = resultado del paso, $2 = "si" si el fichero cambió
+            if [ "$1" != "success" ]; then
+              echo "no se pudo actualizar"
+            elif [ "$COMMIT" != "success" ]; then
+              echo "descargado, pero no se pudo guardar el cambio"
+            elif [ "$2" = "si" ]; then
+              echo "actualizado"
+            else
+              echo "sin cambios"
+            fi
+          }
+          {
+            echo "### Actualizar datos ($(date -u +%F))"
+            echo ""
+            echo "- \`pernocta.json\`: $(estado "$PERNOCTA" "$CAMBIO_PERNOCTA")"
+            echo "- \`horarios.json\`: $(estado "$HORARIOS" "$CAMBIO_HORARIOS")"
+            if [ "$HORARIOS" = "failure" ]; then
+              echo ""
+              echo "> Overpass no respondió para ninguna provincia; se conservan los horarios anteriores."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

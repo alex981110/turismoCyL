@@ -425,6 +425,23 @@ function decorateRvParks(allDays) {
   allDays.forEach(d => d.items.forEach(it => { if (it.lat && it.kind !== 'night') it._rvPark = _rvParkFor(it); }));
 }
 
+// Planes guardados antes de guardar el sitio de cada noche: se busca el sitio de pernocta
+// en el mismo punto (a 200 m como mucho) y se le ponen sus avisos. Solo en memoria.
+const RV_SAVED_NIGHT_KM = 0.2;
+function completeSavedRvNights(allDays) {
+  if (!rvState.data || !allDays) return 0;
+  let n = 0;
+  allDays.forEach(d => d.items.forEach(item => {
+    if (item.kind !== 'night' || item._rv?.id || !item.lat || !item.lng) return;
+    const near = _rvNearest({ lat: item.lat, lng: item.lng }, s => s.k !== 'vaciado');
+    if (!near || near.km > RV_SAVED_NIGHT_KM) return;
+    item._rv = near.s;
+    if (!item._rvWarn?.length) item._rvWarn = _rvNightWarnings(near.s);
+    n++;
+  }));
+  return n;
+}
+
 // Aparcamiento sugerido bajo un lugar del plan (botón que abre el sitio en el mapa)
 function rvParkHTML(item) {
   const p = item._rvPark;
