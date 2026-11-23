@@ -87,7 +87,10 @@ function loginSuccess(user, token) {
   unlockFeatures();
   loadFavorites();
   showToast(_t('toast.welcome', { name: user.name.split(' ')[0] }, `Bienvenido/a, ${user.name.split(' ')[0]}`));
-  if (appState.personalizedPlan) {
+  if (appState.currentPlan?.generic) {
+    // Plan de fin de semana sin cuestionario: al entrar se destapa el domingo
+    setTimeout(() => renderGenericPlan(), 300);
+  } else if (appState.personalizedPlan) {
     const { ranking } = appState.personalizedPlan;
     const cp = appState.currentPlan;
     if (cp) setTimeout(() => renderPersonalizedDayPlanner(cp.province, cp.dia1, cp.dia2, ranking, true), 300);

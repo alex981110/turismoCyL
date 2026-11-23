@@ -10,6 +10,33 @@ function downloadItinerarioPDF(source) {
     .catch(() => showToast('No se pudo cargar el generador de PDF. Revisa la conexión.'));
 }
 
+// Líneas extra de un lugar del plan: aparcamiento, avisos de autocaravana y horario del día.
+// Devuelve [{ text, color? }]; color solo para la línea de «Cerrado» (rojo).
+function _pdfPlaceExtras(p, date) {
+  const out = [];
+  if (p._rvPark) {
+    const km = typeof _rvFmtKm === 'function'
+      ? _rvFmtKm(p._rvPark.km)
+      : (Number(p._rvPark.km) || 0).toFixed(1).replace('.', ',') + ' km';
+    out.push({ text: `Aparcar: ${p._rvPark.name} · a ${km}` });
+  }
+  if (Array.isArray(p._rvWarn)) {
+    p._rvWarn.forEach(w => { if (w) out.push({ text: String(w) }); });
+  }
+  if (date && p.kind !== 'night' && typeof placeHoursOn === 'function') {
+    const h = placeHoursOn({
+      name: p.place || p.marker?.name,
+      lat: p.marker?.lat || p.lat,
+      lng: p.marker?.lng || p.lng,
+      province: p.marker?.province,
+      desc: p.desc
+    }, date);
+    if (h && h.state === 'open')   out.push({ text: `Abierto ${h.text} (${h.source})` });
+    if (h && h.state === 'closed') out.push({ text: `Cerrado este día (${h.source})`, color: [180, 35, 24] });
+  }
+  return out;
+}
+
 function _downloadItinerarioPDF(source) {
 
   // ── Normalizar fuente de datos ───────────────────────────────
@@ -28,12 +55,15 @@ function _downloadItinerarioPDF(source) {
     days = cp.allDays.map((day, di) => {
       const date = tripDayDate(cp.dateStr, di);
       return {
-        label:  (day.label || `Día ${di + 1}`) + (date ? ' · ' + date.toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long' }) : ''),
+        // Si la etiqueta ya es el día de la semana («Sábado»), la fecha va sin él
+        label:  (day.label || `Día ${di + 1}`) + (date ? ' · ' + date.toLocaleDateString('es-ES',
+          (day.label || '').toLowerCase() === date.toLocaleDateString('es-ES', { weekday: 'long' }) ? { day: 'numeric', month: 'long' } : { weekday: 'long', day: 'numeric', month: 'long' }) : ''),
         places: (day.items || []).map((p, i) => ({
           time:  p.time  || _autoTime(i),
           name:  p.place || p.marker?.name || '—',
           cat:   p.marker?.cat || '',
-          desc:  p.kind === 'night' ? 'Dormir · ' + p.desc : (p.desc || '')
+          desc:  p.kind === 'night' ? 'Dormir · ' + p.desc : (p.desc || ''),
+          extras: _pdfPlaceExtras(p, date)
         }))
       };
     });
@@ -52,7 +82,8 @@ function _downloadItinerarioPDF(source) {
         time:  p.time  || _autoTime(di),
         name:  p.place || p.name || '—',
         cat:   p.cat   || '',
-        desc:  p.desc  || ''
+        desc:  p.desc  || '',
+        extras: []
       }))
     }));
   }
@@ -131,7 +162,9 @@ function _downloadItinerarioPDF(source) {
 
     day.places.forEach((item, i) => {
       const ROW = 18;
-      if (y + ROW > 278) {
+      const extras = item.extras || [];
+      const rowH = ROW + 4.5 * extras.length;   // la fila crece 4.5 mm por línea extra
+      if (y + rowH > 278) {
         doc.addPage(); initPage(); y = 20;
         fillRR(ML, y, CW, 9, 2, TERRA);
         doc.setFont('helvetica', 'bold');
@@ -142,11 +175,11 @@ function _downloadItinerarioPDF(source) {
       }
 
       // Fondo fila alternante
-      fillRR(ML, y, CW, ROW, 1.5, i % 2 === 0 ? SAND : WHITE);
+      fillRR(ML, y, CW, rowH, 1.5, i % 2 === 0 ? SAND : WHITE);
 
       // Acento izquierdo
       doc.setFillColor(...TERRA_L);
-      doc.rect(ML, y, 2.5, ROW, 'F');
+      doc.rect(ML, y, 2.5, rowH, 'F');
 
       // Badge hora
       fillRR(ML + 5, y + 3.5, 22, 6.5, 1.5, TERRA_D);
@@ -172,7 +205,15 @@ function _downloadItinerarioPDF(source) {
         doc.text(doc.splitTextToSize(item.desc, nameW)[0], nameX, y + 13.5);
       }
 
-      y += ROW + 1;
+      // Líneas extra (aparcamiento, avisos, horario), una línea cada una
+      extras.forEach((ex, k) => {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7);
+        doc.setTextColor(...(ex.color || INK_M));
+        doc.text(doc.splitTextToSize(ex.text, nameW)[0], nameX, y + 13.5 + 4.5 * (k + 1));
+      });
+
+      y += rowH + 1;
     });
 
     y += 7;

@@ -216,6 +216,22 @@ function planProvinceDays(province, ranking, numDays) {
   return groups.map((g, i) => _planSchedule(g.visits, mealOf.get(i), eveningOf.get(i)));
 }
 
+// Botón «Cambiar» del plan: el lugar más afín del mismo tipo (visita, comida o noche) a menos
+// de 25 km del que se quiere cambiar (50 km si no hay ninguno) que no esté ya en el plan.
+// excludeNames: nombres que no se pueden proponer. Devuelve null si no hay ninguno.
+function planSwapCandidate(province, current, excludeNames, ranking) {
+  if (!current || !current.lat) return null;
+  const excluded = new Set((excludeNames || []).map(n => (n || '').toLowerCase()));
+  const options = planPool(province)
+    .filter(it => it.kind === current.kind && !excluded.has((it.place || '').toLowerCase()))
+    .map(it => ({ ...it, score: planScore(it, ranking || []), _km: _planKm(current, it) }));
+  for (const maxKm of [25, 50]) {
+    const near = options.filter(it => it._km <= maxKm).sort((a, b) => b.score - a.score);
+    if (near.length) { const { _km, ...best } = near[0]; return best; }
+  }
+  return null;
+}
+
 // Plan completo: una o varias provincias. daysSplit: días de cada provincia elegidos en el
 // cuestionario; si no se pasa, los días se reparten a partes iguales
 function buildTripPlan(provinces, ranking, numDays, daysSplit) {

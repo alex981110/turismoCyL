@@ -67,7 +67,7 @@ const PLACE_COORDS = {
   "Medinaceli": [41.16311, -2.43522],
   "Berlanga de Duero": [41.46619, -2.86088],
   "Palacio de la Audiencia (Soria)": [41.7636, -2.4649],
-  "Festival Internacional de Música de Soria": [41.60125, -2.72194],
+  "Festival Internacional de Música de Soria": [41.76399, -2.46523],
   "Enoturismo D.O. Cigales (Cigales)": [41.757, -4.698],
   "Mercado del Val (Valladolid)": [41.65366, -4.72849],
   "Museo del Vino Castilla (Peñafiel)": [41.59638, -4.11403],
@@ -87,7 +87,7 @@ const PLACE_COORDS = {
   "Sierra de la Culebra": [41.93852, -6.72464],
   "Toro": [41.5217, -5.39398],
   "Alcañices": [41.69797, -6.36569],
-  "Festival de Otoño de Zamora": [41.68577, -5.94231],
+  "Festival de Otoño de Zamora": [41.50331, -5.74583],
 };
 
 // Lugares curados cuya ubicación cae fuera de la provincia de su plan (clave «Provincia|Lugar»):

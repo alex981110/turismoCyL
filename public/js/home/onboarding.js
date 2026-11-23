@@ -532,23 +532,10 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
   const _allScores = (allDays && allDays.length ? allDays.flatMap(d => d.items) : [...dia1, ...dia2])
     .filter(i => i.kind !== 'night').map(i => planAffinity(i, ranking));
   const _maxScore = Math.max(..._allScores, 1);
-  // Parada para dormir (pernocta.js): sin afinidad ni foto; abre el sitio en la capa de autocaravanas
-  // (un plan guardado antiguo puede no traer el id del sitio: entonces se centra el mapa en él)
-  const renderNight = (item) => `<div class="timeline-item has-marker plan-item is-night" ${item._rv && item._rv.id
-      ? `data-action="rv-focus" data-id="${escHTML(item._rv.id)}"`
-      : `data-action="focus" data-lat="${item.lat || 0}" data-lng="${item.lng || 0}"`}>
-      <div class="time-badge">${item.time}</div>
-      <div class="timeline-content">
-        <div class="plan-item-text">
-          <h4>${escHTML(item.place)}</h4>
-          <div class="plan-tags"><span class="plan-item-cat" data-fam="cama">${catIcon.pernocta} Dormir</span></div>
-          <p class="plan-item-desc">${escHTML(item.desc)}</p>
-          ${rvWarningsHTML(item)}
-          <span class="plan-map-link">${catIcon.default} Ver en el mapa</span>
-        </div>
-      </div>
-    </div>`;
-  const renderItem = (item, date) => {
+  // Parada para dormir: la misma fila que en el plan genérico (pernocta.js)
+  const renderNight = item => rvNightRowHTML(item);
+  // di: índice del día en allDays (para los botones «Cambiar» / «Quitar»; sin él no se ponen)
+  const renderItem = (item, date, di) => {
     if (item.kind === 'night') return renderNight(item);
     const mk = item.marker;
     const photo = item.photo || mk?.photo || '';
@@ -571,6 +558,10 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
       return w.length ? `<div class="plan-sched">${w.map(x => `<span>${escHTML(x)}</span>`).join('')}</div>` : '';
     })();
     const lat = mk?.lat || 0; const lng = mk?.lng || 0;
+    const tools = typeof di === 'number' ? `<div class="plan-item-tools">
+              <button type="button" class="plan-tool" data-action="plan-swap" data-day="${di}" data-place="${escHTML(item.place)}" aria-label="Cambiar ${escHTML(item.place)} por otro lugar"><svg class="cat-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg> Cambiar</button>
+              <button type="button" class="plan-tool" data-action="plan-remove" data-day="${di}" data-place="${escHTML(item.place)}" aria-label="Quitar ${escHTML(item.place)} del plan"><svg class="cat-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg> Quitar</button>
+            </div>` : '';
     return `<div class="timeline-item has-marker plan-item${matchPct >= 0.75 ? ' is-match' : ''}${lat ? '' : ' is-unlocated'}" data-action="focus" data-lat="${lat}" data-lng="${lng}">
       <div class="time-badge">${item.time}</div>
       <div class="timeline-content">
@@ -585,17 +576,18 @@ function renderPersonalizedDayPlanner(province, dia1, dia2, ranking, _ignored, a
             ${rvWarningsHTML(item)}
             ${rvParkHTML(item)}
             <span class="plan-map-link">${catIcon.default} Ver en el mapa</span>
+            ${tools}
           </div>
         </div>
       </div>
     </div>`;
   };
-  const renderDay = (items, dayLabel, date) =>
+  const renderDay = (items, dayLabel, date, di) =>
     `<div class="col-12 col-md-6"><div class="day-plan-card h-100"><h3>${escHTML(dayLabel)} en ${escHTML(province)}${date
-      ? `<span class="plan-day-date">${date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}</span>` : ''}</h3><div class="timeline">${items.length ? items.map(it => renderItem(it, date)).join('') : '<p class="plan-day-empty">Sin lugares disponibles.</p>'}</div></div></div>`;
+      ? `<span class="plan-day-date">${date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}</span>` : ''}</h3><div class="timeline">${items.length ? items.map(it => renderItem(it, date, di)).join('') : '<p class="plan-day-empty">Sin lugares disponibles.</p>'}</div></div></div>`;
   const planAllDays = allDays || appState.currentPlan?.allDays;
   if (planAllDays && planAllDays.length > 0) {
-    container.innerHTML = planAllDays.map((d, i) => renderDay(d.items, d.label, tripDayDate(cpNow.dateStr, i))).join('');
+    container.innerHTML = planAllDays.map((d, i) => renderDay(d.items, d.label, tripDayDate(cpNow.dateStr, i), i)).join('');
   } else {
     container.innerHTML = renderDay(dia1, 'Sábado') + renderDay(dia2, 'Domingo');
   }
@@ -659,9 +651,78 @@ document.addEventListener('change', e => {
 function rerenderTripPlan() {
   const cp = appState.currentPlan;
   if (!cp || !cp.allDays) return;
+  if (cp.generic) { renderGenericPlan(); return; }   // plan de fin de semana sin cuestionario (planner.js)
   const title = Array.isArray(cp.provincesList) ? cp.provincesList.join(' · ') : cp.province;
   renderPersonalizedDayPlanner(title, cp.dia1, cp.dia2, appState.personalizedPlan?.ranking || [], null, cp.allDays);
 }
+
+// ============================================================
+// CAMBIAR / QUITAR UN LUGAR DEL PLAN
+// ============================================================
+// En un plan recién montado se edita el día base (d._rvBase, el día sin noches de autocaravana)
+// y applyRvNights vuelve a poner noches, aparcamientos y horarios. En un plan guardado (frozen)
+// se edita d.items: se rehace el horario sin la noche y la noche (si hay) se queda al final.
+// Los días se modifican en su sitio porque currentPlan.dia1 / dia2 apuntan a los mismos arrays.
+
+// Horario nuevo de un día con sus lugares que no son noche
+function _planReschedule(items) {
+  const rest = items.filter(it => it.kind !== 'night');
+  return _planSchedule(rest.filter(it => it.kind === 'visit'),
+    rest.find(it => it.kind === 'meal'), rest.find(it => it.kind === 'evening'));
+}
+
+// Día y lista que se edita para el lugar del botón; null si ya no está
+function _planEditTarget(dataset) {
+  const cp = appState.currentPlan;
+  const day = cp && cp.allDays && cp.allDays[+dataset.day];
+  if (!day) return null;
+  const list = !cp.frozen && day._rvBase ? day._rvBase : day.items;
+  const idx = list.findIndex(it => it.kind !== 'night' && it.place === dataset.place);
+  return idx < 0 ? null : { cp, day, list, idx };
+}
+
+// Tras quitar o cambiar un lugar: horario nuevo, noches de autocaravana y repintar
+function _planAfterEdit({ cp, day, list }) {
+  if (cp.frozen) {
+    const night = day.items.find(it => it.kind === 'night');
+    day.items.splice(0, day.items.length, ..._planReschedule(day.items), ...(night ? [night] : []));
+    if (typeof rvState !== 'undefined' && rvState.data) decorateRvParks(cp.allDays);
+  } else {
+    list.splice(0, list.length, ..._planReschedule(list));
+    if (typeof applyRvNights === 'function') applyRvNights(cp.allDays);
+  }
+  rerenderTripPlan();
+}
+
+function _planExclude(cp, name) {
+  if (!cp._excluded) cp._excluded = [];
+  if (!cp._excluded.includes(name)) cp._excluded.push(name);
+}
+
+registerActions({
+  'plan-remove': d => {
+    const t = _planEditTarget(d);
+    if (!t) return;
+    const [removed] = t.list.splice(t.idx, 1);
+    _planExclude(t.cp, removed.place);
+    _planAfterEdit(t);
+    showToast('Quitado: ' + removed.place);
+  },
+  'plan-swap': d => {
+    const t = _planEditTarget(d);
+    if (!t) return;
+    const current = t.list[t.idx];
+    // No se propone nada que ya esté en el plan (cualquier día) ni lo quitado o cambiado antes
+    const inPlan = t.cp.allDays.flatMap(day => [...day.items, ...(day._rvBase || [])]).map(it => it.place);
+    const cand = planSwapCandidate(t.day.province || t.cp.province, current,
+      [...inPlan, ...(t.cp._excluded || [])], appState.personalizedPlan?.ranking || []);
+    if (!cand) { showToast('No hay otro lugar parecido cerca'); return; }
+    t.list.splice(t.idx, 1, cand);
+    _planExclude(t.cp, current.place);
+    _planAfterEdit(t);
+    showToast('Cambiado por ' + cand.place);
+  },
+});
 
 // ============================================================
 // GUARDAR PLANIFICADOR DEL CUESTIONARIO (límite 3, vía MongoDB)

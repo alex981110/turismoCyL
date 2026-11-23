@@ -249,6 +249,9 @@ function _rvDriveMin(a, b) {
   return Math.ceil(km * 1.25 / 80 * 60 / 15) * 15;
 }
 
+// Minutos de coche en texto: «45 min», «1 h», «1 h 30 min»
+const _rvFmtDur = min => min < 60 ? `${min} min` : `${Math.floor(min / 60)} h${min % 60 ? ' ' + (min % 60) + ' min' : ''}`;
+
 // Horario de un día que empieza en el sitio donde se ha dormido
 function _rvDayFrom(items, night) {
   const at = { lat: night.lat, lng: night.lng };
@@ -259,8 +262,7 @@ function _rvDayFrom(items, night) {
   const first = _planRoute(visits, at)[0];
   const travel = _rvDriveMin(at, first);
   const out = _planSchedule(visits, meal, evening, { from: at, startMin: Math.max(PLAN_CFG.startMin, RV_DEPART_MIN + travel) });
-  const dur = travel < 60 ? `${travel} min` : `${Math.floor(travel / 60)} h${travel % 60 ? ' ' + (travel % 60) + ' min' : ''}`;
-  out[0]._rvWarn = [`Salida a las ${_planTime(RV_DEPART_MIN)} desde ${night.place} · unos ${dur} de coche`];
+  out[0]._rvWarn = [`Salida a las ${_planTime(RV_DEPART_MIN)} desde ${night.place} · unos ${_rvFmtDur(travel)} de coche`];
   return out;
 }
 
@@ -359,6 +361,63 @@ function applyRvNights(allDays) {
   });
 }
 
+// Plan genérico de fin de semana (planner.js): los horarios curados no se recalculan. Se quita
+// lo que se puso la vez anterior y, si toca, cada día menos el último termina en un sitio de
+// pernocta, cada lugar lleva dónde aparcar y el primer lugar del día siguiente avisa del trayecto
+// desde la noche (marcado con _rvTransfer). Modifica los días en su sitio porque
+// currentPlan.dia1 / dia2 apuntan a los mismos arrays.
+function applyGenericRvNights(allDays) {
+  if (!allDays) return;
+  allDays.forEach(d => {
+    for (let j = d.items.length - 1; j >= 0; j--) if (d.items[j].kind === 'night') d.items.splice(j, 1);
+    d.items.forEach(it => {
+      delete it._rvPark;
+      if (it._rvTransfer) { delete it._rvWarn; delete it._rvTransfer; }
+    });
+  });
+  if (!rvState.plan || !rvState.data) return;
+  allDays.forEach(d => d.items.forEach(it => { if (it.lat) it._rvPark = _rvParkFor(it); }));
+  allDays.forEach((d, i) => {
+    if (i === allDays.length - 1) return;           // la última noche se vuelve a casa
+    const located = d.items.filter(it => it.lat);
+    const last = located[located.length - 1];
+    if (!last) return;
+    const next = allDays[i + 1].items;
+    // Visita de mañana por la que se entra en esa zona: la más cercana a la última parada de hoy
+    const tomorrow = next.filter(it => it.lat && it.kind === 'visit')
+      .sort((a, b) => _planKm(last, a) - _planKm(last, b))[0] || null;
+    const anchor = last.kind === 'evening' || !tomorrow ? last : tomorrow;
+    const site = _rvPickNight(anchor, anchor === last ? tomorrow : last);
+    if (!site) return;
+    const night = _rvNightItem(site, last, anchor);
+    d.items.push(night);
+    const first = next.find(it => it.lat);
+    if (first) {
+      first._rvWarn = [`Desde ${night.place}: unos ${_rvFmtDur(_rvDriveMin(night, first))} de coche`];
+      first._rvTransfer = true;
+    }
+  });
+}
+
+// Parada para dormir en el plan: sin afinidad ni foto; abre el sitio en la capa de autocaravanas
+// (un plan guardado antiguo puede no traer el id del sitio: entonces se centra el mapa en él)
+function rvNightRowHTML(item) {
+  return `<div class="timeline-item has-marker plan-item is-night" ${item._rv && item._rv.id
+      ? `data-action="rv-focus" data-id="${escHTML(item._rv.id)}"`
+      : `data-action="focus" data-lat="${item.lat || 0}" data-lng="${item.lng || 0}"`}>
+      <div class="time-badge">${item.time}</div>
+      <div class="timeline-content">
+        <div class="plan-item-text">
+          <h4>${escHTML(item.place)}</h4>
+          <div class="plan-tags"><span class="plan-item-cat" data-fam="cama">${catIcon.pernocta} Dormir</span></div>
+          <p class="plan-item-desc">${escHTML(item.desc)}</p>
+          ${rvWarningsHTML(item)}
+          <span class="plan-map-link">${catIcon.default} Ver en el mapa</span>
+        </div>
+      </div>
+    </div>`;
+}
+
 // Plan guardado en autocaravana: solo se añade dónde aparcar en cada lugar (el resto ya viene guardado)
 function decorateRvParks(allDays) {
   if (!rvState.data) return;
@@ -402,6 +461,22 @@ registerActions({
     try { localStorage.setItem(RV_PLAN_KEY, rvState.plan ? '1' : '0'); } catch { /* sin almacenamiento */ }
     const cp = appState.currentPlan;
     if (!cp || !cp.allDays || cp.frozen) return;   // un plan guardado no se recalcula
+    if (cp.generic) {
+      // Plan genérico (planner.js): noches y aparcamientos sin tocar los horarios curados
+      const repaintGeneric = () => {
+        if (appState.currentPlan !== cp) return;    // entretanto se ha elegido otro plan
+        applyGenericRvNights(cp.allDays);
+        renderGenericPlan();
+      };
+      if (rvState.plan && !rvState.data) {
+        loadRvData().then(d => {
+          if (!d) { showToast('No se han podido cargar los sitios de pernocta'); return; }
+          repaintGeneric();
+        });
+      }
+      repaintGeneric();
+      return;
+    }
     const repaint = () => rerenderTripPlan();
     ensureRvNights(cp.allDays, repaint);
     repaint();

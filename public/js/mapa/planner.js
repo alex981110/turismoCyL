@@ -78,14 +78,20 @@ function generateWeekendPlan(province) {
   const dia2Markers = selected.slice(6, 12);
 
   function toItems(mkList, dayIdx) {
-    return mkList.map((mk, i) => ({
-      time:   DAY_SLOTS[dayIdx][i] || `${9 + i * 2}:00`,
-      place:  mk.name,
-      desc:   (mk.desc && mk.desc.trim() && mk.desc !== mk.name && mk.desc.length > 8)
-                ? mk.desc
-                : (CAT_DESC_TEMPLATE[mk.cat] || CAT_DESC_TEMPLATE.cultura)(mk.name),
-      marker: mk,
-    }));
+    return mkList.map((mk, i) => {
+      const item = {
+        time:   DAY_SLOTS[dayIdx][i] || `${9 + i * 2}:00`,
+        place:  mk.name,
+        desc:   (mk.desc && mk.desc.trim() && mk.desc !== mk.name && mk.desc.length > 8)
+                  ? mk.desc
+                  : (CAT_DESC_TEMPLATE[mk.cat] || CAT_DESC_TEMPLATE.cultura)(mk.name),
+        marker: mk,
+        lat:    mk.lat,
+        lng:    mk.lng,
+      };
+      item.kind = _planKind(item);
+      return item;
+    });
   }
 
   return {
@@ -109,9 +115,11 @@ function updateDayPlanner(province) {
         marker = { ...marker, photo };
       } else {
         // No marker in DB — create minimal object so renderItem can show photo
-        marker = { name: item.place, photo, cat: null, lat: 0, lng: 0 };
+        // (con las coordenadas del lugar curado si se conocen, para el mapa, la ruta y la autocaravana)
+        const c = PLACE_COORDS[item.place];
+        marker = { name: item.place, photo, cat: null, lat: c ? c[0] : 0, lng: c ? c[1] : 0, province };
       }
-      return { ...item, marker };
+      return { ...item, marker, lat: marker.lat, lng: marker.lng, kind: _planKind(item) };
     };
     plan = {
       dia1: (dayPlans[province].dia1 || []).map(enrichItem),
@@ -123,10 +131,47 @@ function updateDayPlanner(province) {
 
   if (!plan || (!plan.dia1.length && !plan.dia2.length)) {
     container.innerHTML = '<p class="plan-empty">No hay marcadores disponibles para esta provincia.</p>';
+    const badge = document.getElementById('personalizedBadge');
+    if (badge) badge.innerHTML = '';
     return;
   }
 
+  // Guardar para ruta, PDF y autocaravana (dia1 / dia2 son los mismos arrays que allDays[i].items)
+  const cp = appState.currentPlan = {
+    province, dia1: plan.dia1, dia2: plan.dia2,
+    allDays: [
+      { label: 'Sábado',  province, items: plan.dia1 },
+      { label: 'Domingo', province, items: plan.dia2 },
+    ],
+    generic: true,
+  };
+
+  // En autocaravana (pernocta.js): la noche del sábado y dónde aparcar, sin tocar los horarios
+  applyGenericRvNights(cp.allDays);
+  renderGenericPlan();
+  if (rvState.plan && !rvState.data) {
+    loadRvData().then(d => {
+      if (!d || appState.currentPlan !== cp) return;
+      applyGenericRvNights(cp.allDays);
+      renderGenericPlan();
+    });
+  }
+}
+
+// Pinta el plan genérico guardado en appState.currentPlan (también al repintar por la autocaravana)
+function renderGenericPlan() {
+  const cp = appState.currentPlan;
+  const container = document.getElementById('dayPlanContainer');
+  if (!cp || !cp.generic || !container) return;
+  const province = cp.province;
+
+  // Cabecera del plan: el interruptor de autocaravana (sustituye a la del plan personalizado)
+  let badge = document.getElementById('personalizedBadge');
+  if (!badge) { badge = document.createElement('div'); badge.id = 'personalizedBadge'; badge.style.cssText = 'grid-column:1/-1;'; container.parentNode.insertBefore(badge, container); }
+  badge.innerHTML = `<div class="plan-prefs">${rvPlanToggleHTML()}</div>`;
+
   const renderItem = (item) => {
+    if (item.kind === 'night') return rvNightRowHTML(item);
     const mk    = item.marker;
     const photo = item.photo || mk?.photo || '';
     const cat   = mk ? (catLabel[mk.cat] || mk.cat) : '';
@@ -145,6 +190,7 @@ function updateDayPlanner(province) {
                 ${cat ? `<span class="plan-item-cat" data-fam="${catFam(mk.cat)}">${escHTML(cat)}</span>` : ''}
               </h4>
               <p class="plan-item-desc">${escHTML(item.desc)}</p>
+              ${rvWarningsHTML(item)}${rvParkHTML(item)}
               <span class="plan-map-link">${catIcon.default} Ver en el mapa</span>
             </div>
           </div>
@@ -181,11 +227,8 @@ function updateDayPlanner(province) {
     </div>`;
 
   container.innerHTML =
-    renderDay(plan.dia1, 'Sábado') +
-    (appState.currentUser || !plan.dia2.length ? renderDay(plan.dia2, 'Domingo') : renderGatedDay(plan.dia2, 'Domingo'));
-
-  // Guardar para ruta y PDF
-  appState.currentPlan = { province, dia1: plan.dia1, dia2: plan.dia2 };
+    renderDay(cp.dia1, 'Sábado') +
+    (appState.currentUser || !cp.dia2.length ? renderDay(cp.dia2, 'Domingo') : renderGatedDay(cp.dia2, 'Domingo'));
 
   // Botón PDF
   const pdfBtn = document.getElementById('pdfBtn');
@@ -210,16 +253,18 @@ function updateDayPlanner(province) {
     const cp = appState.currentPlan;
     if (!cp) return;
     const labels = ['Sábado','Domingo','Día 3','Día 4','Día 5','Día 6','Día 7'];
+    // cat: la ruta del día siguiente sale desde la noche si el lugar anterior es 'pernocta'
+    const toPlace = p => ({ lat: p.marker.lat, lng: p.marker.lng, name: p.marker.name, cat: p.marker.cat });
     let days;
     if (cp.allDays && cp.allDays.length > 0) {
       days = cp.allDays.map((d, i) => ({
         label: d.label,
-        places: d.items.filter(p => p.marker && p.marker.lat).map(p => ({ lat: p.marker.lat, lng: p.marker.lng, name: p.marker.name }))
+        places: d.items.filter(p => p.marker && p.marker.lat).map(toPlace)
       })).filter(d => d.places.length > 0);
     } else {
       days = [
-        { label: 'Sábado',  places: (cp.dia1||[]).filter(p=>p.marker?.lat).map(p => ({ lat: p.marker.lat, lng: p.marker.lng, name: p.marker.name })) },
-        { label: 'Domingo', places: (cp.dia2||[]).filter(p=>p.marker?.lat).map(p => ({ lat: p.marker.lat, lng: p.marker.lng, name: p.marker.name })) },
+        { label: 'Sábado',  places: (cp.dia1||[]).filter(p=>p.marker?.lat).map(toPlace) },
+        { label: 'Domingo', places: (cp.dia2||[]).filter(p=>p.marker?.lat).map(toPlace) },
       ].filter(d => d.places.length > 0);
     }
     const total = days.reduce((s, d) => s + d.places.length, 0);
